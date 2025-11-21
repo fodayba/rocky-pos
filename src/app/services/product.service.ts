@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Product } from '../models';
@@ -13,6 +13,14 @@ export class ProductService {
 
   private productsSignal = signal<Product[]>([]);
   public readonly products = this.productsSignal.asReadonly();
+
+  public readonly getLowStockProducts = computed(() => {
+    return this.productsSignal().filter(p => p.stockQuantity <= p.minStockLevel);
+  });
+
+  getProductByBarcode(barcode: string): Product | undefined {
+    return this.productsSignal().find(p => p.barcode === barcode);
+  }
 
   findAll(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl).pipe(

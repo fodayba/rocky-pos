@@ -1,4 +1,5 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError, map } from 'rxjs';
@@ -10,12 +11,22 @@ interface LoginResponse {
   user: User;
 }
 
+interface SignupData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  businessName: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   private readonly currentUserSignal = signal<User | null>(null);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
@@ -29,6 +40,10 @@ export class AuthService {
   }
 
   private loadStoredAuth(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const userJson = localStorage.getItem('currentUser');
@@ -47,8 +62,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         // Store token and user
-        localStorage.setItem('token', response.access_token);
-        localStorage.setItem('currentUser', JSON.stringify(response.user));
+        if (this.isBrowser) {
+          localStorage.setItem('token', response.access_token);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+        }
         this.currentUserSignal.set(response.user);
       }),
       map(response => response.user),
@@ -59,14 +76,34 @@ export class AuthService {
     );
   }
 
+  signup(signupData: SignupData): Observable<User> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/signup`, signupData).pipe(
+      tap(response => {
+        // Store token and user
+        if (this.isBrowser) {
+          localStorage.setItem('token', response.access_token);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+        }
+        this.currentUserSignal.set(response.user);
+      }),
+      map(response => response.user),
+      catchError(error => {
+        console.error('Signup error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   logout(): void {
     this.clearAuth();
     this.router.navigate(['/login']);
   }
 
   private clearAuth(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
+    if (this.isBrowser) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
+    }
     this.currentUserSignal.set(null);
   }
 
@@ -80,11 +117,11 @@ export class AuthService {
   }
 
   // For development: Get available mock credentials
-  getMockCredentials(): { username: string; password: string; role: UserRole }[] {
+  getMockCredentials(): { email: string; password: string; role: UserRole }[] {
     return [
-      { username: 'admin', password: 'password123', role: 'admin' },
-      { username: 'manager', password: 'password123', role: 'manager' },
-      { username: 'cashier', password: 'password123', role: 'cashier' }
+      { email: 'admin@example.com', password: 'password123', role: 'admin' },
+      { email: 'manager@example.com', password: 'password123', role: 'manager' },
+      { email: 'cashier@example.com', password: 'password123', role: 'cashier' }
     ];
   }
 }
