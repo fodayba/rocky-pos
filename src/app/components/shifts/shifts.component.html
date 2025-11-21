@@ -1,29 +1,14 @@
-<div class="container py-10">
+<div class="max-w-7xl mx-auto px-6 md:px-8 py-10">
   <!-- Header -->
   <div class="flex items-center justify-between mb-12 flex-wrap gap-6">
-    <h1 style="
-      font-size: var(--text-4xl);
-      font-weight: 700;
-      color: var(--color-text-primary);
-      letter-spacing: var(--tracking-tight);
-    ">
-      Shift Management
-    </h1>
+    <h1 class="text-4xl font-bold text-stone-900 tracking-tight">Shift Management</h1>
     @if (!hasActiveShift()) {
-      <button
-        (click)="openShiftModal()"
-        class="btn btn-success"
-        style="gap: var(--space-2);"
-      >
+      <button (click)="openShiftModal()" class="btn btn-success gap-2">
         <app-icon name="plus" [size]="18"></app-icon>
         <span>Start Shift</span>
       </button>
     } @else {
-      <button
-        (click)="closeShiftModal()"
-        class="btn btn-danger"
-        style="gap: var(--space-2);"
-      >
+      <button (click)="closeShiftModal()" class="btn btn-danger gap-2">
         <app-icon name="x" [size]="18"></app-icon>
         <span>Close Shift</span>
       </button>
@@ -34,210 +19,54 @@
   @if (hasActiveShift() && currentShift(); as shift) {
     <div class="card mb-12 animate-fade-in-up">
       <div class="card-body">
-        <h2 style="
-          font-size: var(--text-2xl);
-          font-weight: 600;
-          margin-bottom: var(--space-10);
-          color: var(--color-text-primary);
-        ">Current Shift</h2>
+        <h2 class="text-2xl font-semibold mb-10 text-stone-900">Current Shift</h2>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
           <div>
             <p class="stat-label">Shift Number</p>
-            <p style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              color: var(--color-text-primary);
-              margin-top: var(--space-2);
-            ">
-              {{ shift.shiftNumber }}
-            </p>
+            <p class="text-xl font-semibold text-stone-900 mt-2">{{ shift.shiftNumber }}</p>
           </div>
           <div>
             <p class="stat-label">Cashier</p>
-            <p style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              color: var(--color-text-primary);
-              margin-top: var(--space-2);
-            ">
-              {{ shift.cashierName }}
-            </p>
+            <p class="text-xl font-semibold text-stone-900 mt-2">{{ shift.cashierName }}</p>
           </div>
           <div>
             <p class="stat-label">Start Time</p>
-            <p style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              color: var(--color-text-primary);
-              margin-top: var(--space-2);
-              font-family: var(--font-mono);
-            ">
-              {{ shift.startTime | date: 'short' }}
-            </p>
+            <p class="text-xl font-semibold text-stone-900 mt-2 font-mono">{{ shift.startTime | date: 'short' }}</p>
           </div>
           <div>
             <p class="stat-label">Opening Balance</p>
-            <p style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              color: var(--color-text-primary);
-              margin-top: var(--space-2);
-              font-family: var(--font-mono);
-            ">
-              ${{ shift.openingBalance.toFixed(2) }}
-            </p>
+            <p class="text-xl font-semibold text-stone-900 mt-2 font-mono">${{ shift.openingBalance.toFixed(2) }}</p>
           </div>
         </div>
 
         @if (summary(); as summaryData) {
-          <div style="
-            border-top: 1px solid var(--color-border-primary);
-            padding-top: var(--space-10);
-          ">
-            <h3 style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              margin-bottom: var(--space-8);
-              color: var(--color-text-primary);
-            ">Shift Summary</h3>
+          <div class="border-t border-stone-200 pt-10">
+            <h3 class="text-xl font-semibold mb-8 text-stone-900">Shift Summary</h3>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Total Transactions</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                ">
-                  {{ summaryData.totalTransactions }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Total Transactions</p>
+                <p class="text-3xl font-bold text-stone-900">{{ summaryData.totalTransactions }}</p>
               </div>
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Total Sales</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                  font-family: var(--font-mono);
-                ">
-                  ${{ summaryData.totalSales.toFixed(2) }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Total Sales</p>
+                <p class="text-3xl font-bold text-stone-900 font-mono">${{ summaryData.totalSales.toFixed(2) }}</p>
               </div>
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Cash Sales</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                  font-family: var(--font-mono);
-                ">
-                  ${{ summaryData.cashSales.toFixed(2) }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Cash Sales</p>
+                <p class="text-3xl font-bold text-stone-900 font-mono">${{ summaryData.cashSales.toFixed(2) }}</p>
               </div>
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Card Sales</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                  font-family: var(--font-mono);
-                ">
-                  ${{ summaryData.cardSales.toFixed(2) }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Card Sales</p>
+                <p class="text-3xl font-bold text-stone-900 font-mono">${{ summaryData.cardSales.toFixed(2) }}</p>
               </div>
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Fuel Sales</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                  font-family: var(--font-mono);
-                ">
-                  ${{ summaryData.fuelSales.toFixed(2) }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Fuel Sales</p>
+                <p class="text-3xl font-bold text-stone-900 font-mono">${{ summaryData.fuelSales.toFixed(2) }}</p>
               </div>
-              <div style="
-                padding: var(--space-6);
-                border-radius: var(--radius-xl);
-                background: var(--color-bg-secondary);
-                border: 1px solid var(--color-border-primary);
-              ">
-                <p style="
-                  font-size: var(--text-xs);
-                  font-weight: 600;
-                  margin-bottom: var(--space-3);
-                  color: var(--color-text-tertiary);
-                  text-transform: uppercase;
-                  letter-spacing: var(--tracking-wider);
-                ">Minimart Sales</p>
-                <p style="
-                  font-size: var(--text-3xl);
-                  font-weight: 700;
-                  color: var(--color-text-primary);
-                  font-family: var(--font-mono);
-                ">
-                  ${{ summaryData.minimartSales.toFixed(2) }}
-                </p>
+              <div class="p-6 rounded-xl bg-stone-50 border border-stone-200">
+                <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Minimart Sales</p>
+                <p class="text-3xl font-bold text-stone-900 font-mono">${{ summaryData.minimartSales.toFixed(2) }}</p>
               </div>
             </div>
           </div>
@@ -247,31 +76,13 @@
   } @else {
     <!-- No Active Shift -->
     <div class="card animate-fade-in-up">
-      <div style="padding: var(--space-20); text-align: center;">
-        <div class="icon-container" style="
-          padding: var(--space-8);
-          display: inline-flex;
-          margin-bottom: var(--space-8);
-          background: var(--color-bg-secondary);
-        ">
+      <div class="p-20 text-center">
+        <div class="icon-container p-8 inline-flex mb-8 bg-stone-100">
           <app-icon name="clock" [size]="56" customClass="text-stone-400"></app-icon>
         </div>
-        <h2 style="
-          font-size: var(--text-2xl);
-          font-weight: 700;
-          margin-bottom: var(--space-3);
-          color: var(--color-text-primary);
-        ">No Active Shift</h2>
-        <p style="
-          font-size: var(--text-base);
-          color: var(--color-text-tertiary);
-          margin-bottom: var(--space-10);
-        ">Start a shift to begin processing transactions</p>
-        <button
-          (click)="openShiftModal()"
-          class="btn btn-success"
-          style="gap: var(--space-2);"
-        >
+        <h2 class="text-2xl font-bold mb-3 text-stone-900">No Active Shift</h2>
+        <p class="text-base text-stone-500 mb-10">Start a shift to begin processing transactions</p>
+        <button (click)="openShiftModal()" class="btn btn-success gap-2">
           <app-icon name="plus" [size]="18"></app-icon>
           <span>Start Shift Now</span>
         </button>
@@ -282,76 +93,33 @@
 
 <!-- Open Shift Modal -->
 @if (showOpenModal()) {
-  <div class="modal-backdrop animate-fade-in" style="
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-4);
-  ">
-    <div class="card animate-scale-in" style="
-      width: 100%;
-      max-width: 28rem;
-      box-shadow: var(--shadow-2xl);
-    ">
-      <div style="padding: var(--space-10);">
-        <h2 style="
-          font-size: var(--text-2xl);
-          font-weight: 700;
-          margin-bottom: var(--space-8);
-          color: var(--color-text-primary);
-        ">Start New Shift</h2>
+  <div class="modal-backdrop animate-fade-in flex items-center justify-center p-4">
+    <div class="card animate-scale-in w-full max-w-md shadow-2xl">
+      <div class="p-10">
+        <h2 class="text-2xl font-bold mb-8 text-stone-900">Start New Shift</h2>
 
-        <div style="margin-bottom: var(--space-8);">
-          <label style="
-            display: block;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            margin-bottom: var(--space-3);
-            color: var(--color-text-secondary);
-          ">Cashier</label>
-          <p style="
-            font-size: var(--text-base);
-            font-weight: 600;
-            color: var(--color-text-primary);
-          ">
+        <div class="mb-8">
+          <label class="block text-sm font-semibold mb-3 text-stone-600">Cashier</label>
+          <p class="text-base font-semibold text-stone-900">
             {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
           </p>
         </div>
 
-        <div style="margin-bottom: var(--space-10);">
-          <label style="
-            display: block;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            margin-bottom: var(--space-4);
-            color: var(--color-text-secondary);
-          ">
-            Opening Cash Balance
-          </label>
+        <div class="mb-10">
+          <label class="block text-sm font-semibold mb-4 text-stone-600">Opening Cash Balance</label>
           <input
             type="number"
             [value]="openingBalance()"
             (input)="openingBalance.set(parseFloat($any($event.target).value) || 0)"
             step="0.01"
-            class="input"
-            style="font-size: var(--text-xl); font-family: var(--font-mono);"
+            class="input text-xl font-mono"
             placeholder="0.00"
           />
         </div>
 
         <div class="flex gap-3">
-          <button
-            (click)="showOpenModal.set(false)"
-            class="btn btn-secondary flex-1"
-          >
-            Cancel
-          </button>
-          <button
-            (click)="startShift()"
-            class="btn btn-success flex-1"
-          >
-            Start Shift
-          </button>
+          <button (click)="showOpenModal.set(false)" class="btn btn-secondary flex-1">Cancel</button>
+          <button (click)="startShift()" class="btn btn-success flex-1">Start Shift</button>
         </div>
       </div>
     </div>
@@ -360,83 +128,34 @@
 
 <!-- Close Shift Modal -->
 @if (showCloseModal() && currentShift(); as shift) {
-  <div class="modal-backdrop animate-fade-in" style="
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--space-4);
-  ">
-    <div class="card animate-scale-in" style="
-      width: 100%;
-      max-width: 28rem;
-      box-shadow: var(--shadow-2xl);
-    ">
-      <div style="padding: var(--space-10);">
-        <h2 style="
-          font-size: var(--text-2xl);
-          font-weight: 700;
-          margin-bottom: var(--space-8);
-          color: var(--color-text-primary);
-        ">Close Shift</h2>
+  <div class="modal-backdrop animate-fade-in flex items-center justify-center p-4">
+    <div class="card animate-scale-in w-full max-w-md shadow-2xl">
+      <div class="p-10">
+        <h2 class="text-2xl font-bold mb-8 text-stone-900">Close Shift</h2>
 
         @if (summary(); as summaryData) {
-          <div style="
-            padding: var(--space-6);
-            border-radius: var(--radius-xl);
-            margin-bottom: var(--space-8);
-            background: var(--color-bg-tertiary);
-            border: 1px solid var(--color-border-primary);
-          ">
-            <p style="
-              font-size: var(--text-xs);
-              font-weight: 600;
-              margin-bottom: var(--space-3);
-              color: var(--color-text-tertiary);
-              text-transform: uppercase;
-              letter-spacing: var(--tracking-wider);
-            ">Expected Cash</p>
-            <p style="
-              font-size: var(--text-3xl);
-              font-weight: 700;
-              color: var(--color-text-primary);
-              font-family: var(--font-mono);
-            ">
+          <div class="p-6 rounded-xl mb-8 bg-stone-100 border border-stone-200">
+            <p class="text-xs font-semibold mb-3 text-stone-500 uppercase tracking-widest">Expected Cash</p>
+            <p class="text-3xl font-bold text-stone-900 font-mono">
               ${{ (shift.openingBalance + summaryData.cashSales).toFixed(2) }}
             </p>
           </div>
         }
 
-        <div style="margin-bottom: var(--space-8);">
-          <label style="
-            display: block;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            margin-bottom: var(--space-4);
-            color: var(--color-text-secondary);
-          ">
-            Actual Cash in Drawer
-          </label>
+        <div class="mb-8">
+          <label class="block text-sm font-semibold mb-4 text-stone-600">Actual Cash in Drawer</label>
           <input
             type="number"
             [value]="actualCash()"
             (input)="actualCash.set(parseFloat($any($event.target).value) || 0)"
             step="0.01"
-            class="input"
-            style="font-size: var(--text-xl); font-family: var(--font-mono);"
+            class="input text-xl font-mono"
             placeholder="0.00"
           />
         </div>
 
-        <div style="margin-bottom: var(--space-10);">
-          <label style="
-            display: block;
-            font-size: var(--text-sm);
-            font-weight: 600;
-            margin-bottom: var(--space-4);
-            color: var(--color-text-secondary);
-          ">
-            Notes (optional)
-          </label>
+        <div class="mb-10">
+          <label class="block text-sm font-semibold mb-4 text-stone-600">Notes (optional)</label>
           <textarea
             [value]="notes()"
             (input)="notes.set($any($event.target).value)"
@@ -447,18 +166,8 @@
         </div>
 
         <div class="flex gap-3">
-          <button
-            (click)="showCloseModal.set(false)"
-            class="btn btn-secondary flex-1"
-          >
-            Cancel
-          </button>
-          <button
-            (click)="endShift()"
-            class="btn btn-danger flex-1"
-          >
-            Close Shift
-          </button>
+          <button (click)="showCloseModal.set(false)" class="btn btn-secondary flex-1">Cancel</button>
+          <button (click)="endShift()" class="btn btn-danger flex-1">Close Shift</button>
         </div>
       </div>
     </div>
