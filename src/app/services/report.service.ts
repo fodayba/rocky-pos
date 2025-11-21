@@ -1,65 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface ReportFilters {
-  startDate?: Date;
-  endDate?: Date;
-  locationId?: string;
-  categoryId?: string;
-  employeeId?: string;
-  [key: string]: any;
-}
-
-export interface SalesReport {
-  totalSales: number;
-  totalTransactions: number;
-  averageTransactionValue: number;
-  paymentMethodBreakdown: Record<string, number>;
-  salesByCategory: Array<{ category: string; amount: number }>;
-  salesByHour: Array<{ hour: number; amount: number }>;
-  topSellingProducts: Array<{ name: string; quantity: number; revenue: number }>;
-}
-
-export interface InventoryReport {
-  totalProducts: number;
-  totalValue: number;
-  lowStockItems: Array<{ name: string; currentStock: number; minLevel: number }>;
-  expiringItems: Array<{ name: string; expirationDate: Date }>;
-  categoryBreakdown: Array<{ category: string; count: number; value: number }>;
-}
-
-export interface EmployeeReport {
-  totalEmployees: number;
-  totalHoursWorked: number;
-  totalLaborCost: number;
-  employeePerformance: Array<{
-    name: string;
-    hoursWorked: number;
-    transactionsProcessed: number;
-    sales: number;
-  }>;
-}
-
-export interface FinancialReport {
-  totalRevenue: number;
-  totalExpenses: number;
-  netProfit: number;
-  grossMargin: number;
-  revenueBySource: Record<string, number>;
-  expensesByCategory: Record<string, number>;
-}
-
-export interface DashboardMetrics {
-  todaySales: number;
-  todayTransactions: number;
-  averageTransactionValue: number;
-  paymentMethodBreakdown: Record<string, number>;
-  topSellingProducts: Array<{ name: string; quantity: number }>;
-  lowStockAlerts: number;
-  openShifts: number;
-}
+import {
+  SalesReportDto,
+  SalesReportData,
+  InventoryReportDto,
+  InventoryReportData,
+  EmployeeReportDto,
+  EmployeeReportData,
+  FinancialReportDto,
+  FinancialReportData,
+  FuelReportData,
+  DashboardMetrics
+} from '../models/report.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,39 +22,35 @@ export class ReportService {
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/reports`;
 
-  async getSalesReport(filters: ReportFilters) {
-    return firstValueFrom(
-      this.http.post<SalesReport>(`${this.apiUrl}/sales`, filters)
-    );
+  getSalesReport(dto: SalesReportDto): Observable<SalesReportData> {
+    return this.http.post<SalesReportData>(`${this.apiUrl}/sales`, dto);
   }
 
-  async getInventoryReport(filters: ReportFilters) {
-    return firstValueFrom(
-      this.http.post<InventoryReport>(`${this.apiUrl}/inventory`, filters)
-    );
+  getInventoryReport(dto: InventoryReportDto): Observable<InventoryReportData> {
+    return this.http.post<InventoryReportData>(`${this.apiUrl}/inventory`, dto);
   }
 
-  async getEmployeeReport(filters: ReportFilters) {
-    return firstValueFrom(
-      this.http.post<EmployeeReport>(`${this.apiUrl}/employee`, filters)
-    );
+  getEmployeeReport(dto: EmployeeReportDto): Observable<EmployeeReportData> {
+    return this.http.post<EmployeeReportData>(`${this.apiUrl}/employee`, dto);
   }
 
-  async getFinancialReport(filters: ReportFilters) {
-    return firstValueFrom(
-      this.http.post<FinancialReport>(`${this.apiUrl}/financial`, filters)
-    );
+  getFinancialReport(dto: FinancialReportDto): Observable<FinancialReportData> {
+    return this.http.post<FinancialReportData>(`${this.apiUrl}/financial`, dto);
   }
 
-  async getFuelReport(filters: ReportFilters) {
-    return firstValueFrom(
-      this.http.get<any>(`${this.apiUrl}/fuel`, { params: filters as any })
-    );
+  getFuelReport(locationId?: string): Observable<FuelReportData> {
+    let params = new HttpParams();
+    if (locationId) {
+      params = params.set('locationId', locationId);
+    }
+    return this.http.get<FuelReportData>(`${this.apiUrl}/fuel`, { params });
   }
 
-  async getDashboardMetrics() {
-    return firstValueFrom(
-      this.http.get<DashboardMetrics>(`${this.apiUrl}/dashboard`)
-    );
+  getDashboardMetrics(locationId?: string): Observable<DashboardMetrics> {
+    let params = new HttpParams();
+    if (locationId) {
+      params = params.set('locationId', locationId);
+    }
+    return this.http.get<DashboardMetrics>(`${this.apiUrl}/dashboard`, { params });
   }
 }
