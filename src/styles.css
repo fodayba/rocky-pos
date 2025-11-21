@@ -37,6 +37,21 @@
   --color-border-primary: var(--color-stone-200);
   --color-border-secondary: var(--color-stone-300);
 
+  /* Legacy neutral aliases (backward compatibility) */
+  --color-neutral-25: var(--color-stone-25);
+  --color-neutral-50: var(--color-stone-50);
+  --color-neutral-100: var(--color-stone-100);
+  --color-neutral-150: var(--color-stone-150);
+  --color-neutral-200: var(--color-stone-200);
+  --color-neutral-300: var(--color-stone-300);
+  --color-neutral-400: var(--color-stone-400);
+  --color-neutral-500: var(--color-stone-500);
+  --color-neutral-600: var(--color-stone-600);
+  --color-neutral-700: var(--color-stone-700);
+  --color-neutral-800: var(--color-stone-800);
+  --color-neutral-900: var(--color-stone-900);
+  --color-neutral-950: var(--color-stone-950);
+
   /* Accent - Minimal sage/green (used sparingly for success states) */
   --color-accent-50: #f0fdf4;
   --color-accent-100: #dcfce7;
