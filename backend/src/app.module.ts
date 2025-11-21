@@ -17,6 +17,12 @@ import { PromotionsModule } from './promotions/promotions.module';
 import { GiftCardsModule } from './gift-cards/gift-cards.module';
 import { AuditModule } from './audit/audit.module';
 import { InventoryTransfersModule } from './inventory-transfers/inventory-transfers.module';
+import { FuelManagementModule } from './fuel-management/fuel-management.module';
+import { InvoicingModule } from './invoicing/invoicing.module';
+import { SchedulingModule } from './scheduling/scheduling.module';
+import { TimeTrackingModule } from './time-tracking/time-tracking.module';
+import { TaxModule } from './tax/tax.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -44,6 +50,12 @@ import { InventoryTransfersModule } from './inventory-transfers/inventory-transf
     GiftCardsModule,
     AuditModule,
     InventoryTransfersModule,
+    FuelManagementModule,
+    InvoicingModule,
+    SchedulingModule,
+    TimeTrackingModule,
+    TaxModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
