@@ -1,31 +1,15 @@
-<div class="min-h-screen flex items-center justify-center px-4" style="background: var(--color-bg-secondary);">
+<div class="min-h-screen flex items-center justify-center px-4 bg-stone-50">
   <div class="w-full max-w-md">
-    <div class="card animate-fade-in-up" style="box-shadow: var(--shadow-xl);">
-      <div style="padding: var(--space-12);">
-        <div class="text-center" style="margin-bottom: var(--space-12);">
-          <h1 style="
-            font-size: var(--text-3xl);
-            font-weight: 700;
-            margin-bottom: var(--space-2);
-            color: var(--color-text-primary);
-            letter-spacing: var(--tracking-tight);
-          ">
-            Rocky POS
-          </h1>
-          <p style="font-size: var(--text-sm); color: var(--color-text-tertiary);">Gas Station & Minimart</p>
+    <div class="card animate-fade-in-up shadow-xl">
+      <div class="p-12">
+        <div class="text-center mb-12">
+          <h1 class="text-3xl font-bold mb-2 text-stone-900 tracking-tight">Rocky POS</h1>
+          <p class="text-sm text-stone-500">Gas Station & Minimart</p>
         </div>
 
         <form (ngSubmit)="onSubmit()" class="space-y-6">
           <div>
-            <label for="email" style="
-              display: block;
-              font-size: var(--text-sm);
-              font-weight: 600;
-              margin-bottom: var(--space-3);
-              color: var(--color-text-secondary);
-            ">
-              Email Address
-            </label>
+            <label for="email" class="block text-sm font-semibold mb-3 text-stone-600">Email Address</label>
             <input
               id="email"
               type="email"
@@ -38,15 +22,7 @@
           </div>
 
           <div>
-            <label for="password" style="
-              display: block;
-              font-size: var(--text-sm);
-              font-weight: 600;
-              margin-bottom: var(--space-3);
-              color: var(--color-text-secondary);
-            ">
-              Password
-            </label>
+            <label for="password" class="block text-sm font-semibold mb-3 text-stone-600">Password</label>
             <input
               id="password"
               type="password"
@@ -59,14 +35,7 @@
           </div>
 
           @if (error()) {
-            <div style="
-              padding: var(--space-4);
-              border: 1px solid var(--color-error);
-              background: var(--color-error-light);
-              color: var(--color-error);
-              border-radius: var(--radius-lg);
-              font-size: var(--text-sm);
-            ">
+            <div class="p-4 border border-red-600 bg-red-50 text-red-600 rounded-lg text-sm">
               {{ error() }}
             </div>
           }
@@ -74,8 +43,7 @@
           <button
             type="submit"
             [disabled]="loading()"
-            class="btn btn-primary"
-            style="width: 100%; padding: var(--space-4); margin-top: var(--space-6);"
+            class="btn btn-primary w-full py-4 mt-6"
           >
             @if (loading()) {
               <span>Signing in...</span>
@@ -85,21 +53,11 @@
           </button>
         </form>
 
-        <div style="margin-top: var(--space-10);">
-          <div class="text-center" style="margin-bottom: var(--space-6);">
-            <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+        <div class="mt-10">
+          <div class="text-center mb-6">
+            <p class="text-sm text-stone-600">
               New business?
-              <a
-                routerLink="/signup"
-                style="
-                  color: var(--color-text-primary);
-                  font-weight: 600;
-                  margin-left: var(--space-1);
-                  transition: opacity var(--transition-base);
-                "
-                onmouseover="this.style.opacity='0.7'"
-                onmouseout="this.style.opacity='1'"
-              >
+              <a routerLink="/signup" class="text-stone-900 font-semibold ml-1 hover:opacity-70 transition-opacity">
                 Create an account
               </a>
             </p>
@@ -108,73 +66,32 @@
           <button
             type="button"
             (click)="toggleCredentials()"
-            class="btn btn-ghost"
-            style="
-              width: 100%;
-              color: var(--color-text-secondary);
-              border: 1px solid var(--color-border-primary);
-            "
+            class="btn btn-ghost w-full text-stone-600 border border-stone-200"
           >
             {{ showCredentials() ? 'Hide' : 'Show' }} Test Credentials
           </button>
 
           @if (showCredentials()) {
-            <div style="
-              padding: var(--space-6);
-              margin-top: var(--space-4);
-              background: var(--color-bg-tertiary);
-              border: 1px solid var(--color-border-primary);
-              border-radius: var(--radius-xl);
-            " class="animate-slide-down">
-              <p style="
-                font-size: var(--text-sm);
-                font-weight: 600;
-                margin-bottom: var(--space-5);
-                color: var(--color-text-secondary);
-                text-transform: uppercase;
-                letter-spacing: var(--tracking-wide);
-              ">Test Accounts</p>
+            <div class="p-6 mt-4 bg-stone-100 border border-stone-200 rounded-xl animate-slide-down">
+              <p class="text-sm font-semibold mb-5 text-stone-600 uppercase tracking-wider">Test Accounts</p>
               <div class="space-y-3">
                 @for (cred of mockCredentials; track cred.email) {
-                  <div class="interactive-card" style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: var(--space-4);
-                    background: var(--color-bg-primary);
-                    border: 1px solid var(--color-border-primary);
-                    border-radius: var(--radius-lg);
-                  ">
+                  <div class="interactive-card flex justify-between items-center p-4 bg-white border border-stone-200 rounded-lg">
                     <div>
-                      <span style="
-                        font-weight: 600;
-                        font-size: var(--text-sm);
-                        color: var(--color-text-primary);
-                      ">{{ cred.email }}</span>
-                      <span style="
-                        font-size: var(--text-xs);
-                        margin-left: var(--space-2);
-                        color: var(--color-text-tertiary);
-                        text-transform: capitalize;
-                      ">({{ cred.role }})</span>
+                      <span class="font-semibold text-sm text-stone-900">{{ cred.email }}</span>
+                      <span class="text-xs ml-2 text-stone-500 capitalize">({{ cred.role }})</span>
                     </div>
                     <button
                       type="button"
                       (click)="fillCredentials(cred.email, cred.password)"
-                      class="btn btn-secondary"
-                      style="padding: var(--space-2) var(--space-4); font-size: var(--text-xs);"
+                      class="btn btn-secondary py-2 px-4 text-xs"
                     >
                       Use
                     </button>
                   </div>
                 }
               </div>
-              <p style="
-                margin-top: var(--space-5);
-                font-size: var(--text-xs);
-                color: var(--color-text-tertiary);
-                font-family: var(--font-mono);
-              ">Password for all: password123</p>
+              <p class="mt-5 text-xs text-stone-500 font-mono">Password for all: password123</p>
             </div>
           }
         </div>

@@ -1,21 +1,11 @@
-<div class="min-h-screen" style="background: var(--color-bg-secondary);">
-  <div class="container py-10">
+<div class="min-h-screen bg-stone-50">
+  <div class="max-w-7xl mx-auto px-6 md:px-8 py-10">
 
     <!-- Header Section -->
     <div class="mb-12">
-      <h1 style="
-        font-size: var(--text-4xl);
-        font-weight: 700;
-        margin-bottom: var(--space-2);
-        color: var(--color-text-primary);
-        letter-spacing: var(--tracking-tight);
-      ">
-        Dashboard
-      </h1>
+      <h1 class="text-4xl font-bold mb-2 text-stone-900 tracking-tight">Dashboard</h1>
       @if (currentUser(); as user) {
-        <p style="font-size: var(--text-md); color: var(--color-text-tertiary);">
-          Welcome back, {{ user.firstName }}
-        </p>
+        <p class="text-base text-stone-500">Welcome back, {{ user.firstName }}</p>
       }
     </div>
 
@@ -54,7 +44,7 @@
             <p class="stat-label">Low Stock</p>
             <p class="stat-value">{{ lowStockProducts().length }}</p>
           </div>
-          <div class="icon-container" style="background: var(--color-warning-light);">
+          <div class="icon-container bg-orange-50">
             <app-icon name="alert" [size]="20" customClass="text-orange-600"></app-icon>
           </div>
         </div>
@@ -79,98 +69,45 @@
       <div class="card mb-12 animate-fade-in-up">
         <div class="card-body">
           <div class="flex items-center gap-3 mb-10">
-            <div class="icon-container" style="background: var(--color-success-light);">
+            <div class="icon-container bg-green-50">
               <app-icon name="check" [size]="20" customClass="text-green-600"></app-icon>
             </div>
-            <h2 style="
-              font-size: var(--text-2xl);
-              font-weight: 600;
-              color: var(--color-text-primary);
-              letter-spacing: var(--tracking-tight);
-            ">Active Shift</h2>
+            <h2 class="text-2xl font-semibold text-stone-900 tracking-tight">Active Shift</h2>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <p class="stat-label" style="margin-bottom: var(--space-2);">
-                Shift Number
-              </p>
-              <p style="
-                font-size: var(--text-lg);
-                font-weight: 600;
-                color: var(--color-text-primary);
-              ">
-                {{ summary.shift.shiftNumber }}
-              </p>
+              <p class="stat-label mb-2">Shift Number</p>
+              <p class="text-lg font-semibold text-stone-900">{{ summary.shift.shiftNumber }}</p>
             </div>
             <div>
-              <p class="stat-label" style="margin-bottom: var(--space-2);">
-                Total Sales
-              </p>
-              <p style="
-                font-size: var(--text-lg);
-                font-weight: 600;
-                color: var(--color-text-primary);
-              ">
-                ${{ summary.totalSales.toFixed(2) }}
-              </p>
+              <p class="stat-label mb-2">Total Sales</p>
+              <p class="text-lg font-semibold text-stone-900">${{ summary.totalSales.toFixed(2) }}</p>
             </div>
             <div>
-              <p class="stat-label" style="margin-bottom: var(--space-2);">
-                Transactions
-              </p>
-              <p style="
-                font-size: var(--text-lg);
-                font-weight: 600;
-                color: var(--color-text-primary);
-              ">
-                {{ summary.totalTransactions }}
-              </p>
+              <p class="stat-label mb-2">Transactions</p>
+              <p class="text-lg font-semibold text-stone-900">{{ summary.totalTransactions }}</p>
             </div>
             <div>
-              <p class="stat-label" style="margin-bottom: var(--space-2);">
-                Cash Sales
-              </p>
-              <p style="
-                font-size: var(--text-lg);
-                font-weight: 600;
-                color: var(--color-text-primary);
-              ">
-                ${{ summary.cashSales.toFixed(2) }}
-              </p>
+              <p class="stat-label mb-2">Cash Sales</p>
+              <p class="text-lg font-semibold text-stone-900">${{ summary.cashSales.toFixed(2) }}</p>
             </div>
           </div>
         </div>
       </div>
     } @else {
-      <div class="card mb-12" style="
-        background: var(--color-warning-light);
-        border-color: var(--color-warning);
-      ">
-        <div style="padding: var(--space-8);">
+      <div class="card mb-12 bg-orange-50 border-orange-500">
+        <div class="p-8">
           <div class="flex items-center justify-between flex-wrap gap-6">
             <div class="flex items-center gap-6">
-              <div class="icon-container" style="
-                background: rgba(234, 88, 12, 0.15);
-                padding: var(--space-4);
-              ">
+              <div class="icon-container bg-orange-100 p-4">
                 <app-icon name="clock" [size]="28" customClass="text-orange-700"></app-icon>
               </div>
               <div>
-                <h2 style="
-                  font-size: var(--text-xl);
-                  font-weight: 600;
-                  margin-bottom: var(--space-1);
-                  color: var(--color-text-primary);
-                ">No Active Shift</h2>
-                <p style="
-                  font-size: var(--text-sm);
-                  color: var(--color-text-secondary);
-                ">Start a shift to begin processing transactions</p>
+                <h2 class="text-xl font-semibold mb-1 text-stone-900">No Active Shift</h2>
+                <p class="text-sm text-stone-600">Start a shift to begin processing transactions</p>
               </div>
             </div>
-            <a routerLink="/shifts" class="btn btn-primary">
-              Start Shift
-            </a>
+            <a routerLink="/shifts" class="btn btn-primary">Start Shift</a>
           </div>
         </div>
       </div>
@@ -182,51 +119,21 @@
       @if (lowStockProducts().length > 0) {
         <div class="card animate-fade-in-up">
           <div class="card-body">
-            <h2 style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              margin-bottom: var(--space-8);
-              color: var(--color-text-primary);
-            ">Low Stock Alerts</h2>
+            <h2 class="text-xl font-semibold mb-8 text-stone-900">Low Stock Alerts</h2>
             <div class="space-y-3">
               @for (product of lowStockProducts().slice(0, 5); track product.id) {
-                <div class="interactive-card" style="
-                  padding: var(--space-4);
-                  border-radius: var(--radius-lg);
-                  background: var(--color-bg-secondary);
-                  border: 1px solid var(--color-border-primary);
-                ">
+                <div class="interactive-card p-4 rounded-xl bg-stone-50 border border-stone-200">
                   <div class="flex items-center justify-between">
                     <div class="flex-1">
-                      <p style="
-                        font-weight: 600;
-                        font-size: var(--text-sm);
-                        color: var(--color-text-primary);
-                        margin-bottom: var(--space-1);
-                      ">{{ product.name }}</p>
-                      <p style="
-                        font-size: var(--text-xs);
-                        color: var(--color-text-tertiary);
-                      ">
-                        {{ product.stockQuantity }} {{ product.unit }} remaining
-                      </p>
+                      <p class="font-semibold text-sm text-stone-900 mb-1">{{ product.name }}</p>
+                      <p class="text-xs text-stone-500">{{ product.stockQuantity }} {{ product.unit }} remaining</p>
                     </div>
-                    <span class="badge badge-error">
-                      Low Stock
-                    </span>
+                    <span class="badge badge-error">Low Stock</span>
                   </div>
                 </div>
               }
               @if (lowStockProducts().length > 5) {
-                <a routerLink="/inventory" style="
-                  display: block;
-                  text-align: center;
-                  padding: var(--space-4);
-                  font-size: var(--text-sm);
-                  font-weight: 500;
-                  color: var(--color-text-secondary);
-                  transition: color var(--transition-base);
-                " class="hover-link">
+                <a routerLink="/inventory" class="block text-center py-4 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">
                   View all {{ lowStockProducts().length }} items
                 </a>
               }
@@ -239,51 +146,16 @@
       @if (lowFuelProducts().length > 0) {
         <div class="card animate-fade-in-up">
           <div class="card-body">
-            <h2 style="
-              font-size: var(--text-xl);
-              font-weight: 600;
-              margin-bottom: var(--space-8);
-              color: var(--color-text-primary);
-            ">Fuel Level Alerts</h2>
+            <h2 class="text-xl font-semibold mb-8 text-stone-900">Fuel Level Alerts</h2>
             <div class="space-y-4">
               @for (fuel of lowFuelProducts(); track fuel.id) {
-                <div style="
-                  padding: var(--space-5);
-                  border-radius: var(--radius-lg);
-                  background: var(--color-bg-secondary);
-                  border: 1px solid var(--color-border-primary);
-                  transition: all var(--transition-base);
-                ">
+                <div class="p-5 rounded-xl bg-stone-50 border border-stone-200 transition-all">
                   <div class="flex items-center justify-between mb-3">
-                    <p style="
-                      font-weight: 600;
-                      font-size: var(--text-sm);
-                      color: var(--color-text-primary);
-                    ">{{ fuel.name }}</p>
-                    <p style="
-                      font-size: var(--text-xs);
-                      color: var(--color-text-tertiary);
-                      font-family: var(--font-mono);
-                    ">
-                      {{ fuel.currentStock }} / {{ fuel.tankCapacity }} gal
-                    </p>
+                    <p class="font-semibold text-sm text-stone-900">{{ fuel.name }}</p>
+                    <p class="text-xs text-stone-500 font-mono">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gal</p>
                   </div>
-                  <div style="
-                    width: 100%;
-                    border-radius: var(--radius-full);
-                    height: 0.375rem;
-                    background: var(--color-stone-200);
-                    overflow: hidden;
-                  ">
-                    <div
-                      style="
-                        height: 100%;
-                        border-radius: var(--radius-full);
-                        background: var(--color-stone-900);
-                        transition: width var(--transition-slow);
-                      "
-                      [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"
-                    ></div>
+                  <div class="w-full rounded-full h-1.5 bg-stone-200 overflow-hidden">
+                    <div class="h-1.5 rounded-full bg-stone-900 transition-all" [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"></div>
                   </div>
                 </div>
               }
@@ -296,99 +168,23 @@
     <!-- Quick Actions -->
     <div class="card animate-fade-in-up">
       <div class="card-body">
-        <h2 style="
-          font-size: var(--text-xl);
-          font-weight: 600;
-          margin-bottom: var(--space-8);
-          color: var(--color-text-primary);
-        ">Quick Actions</h2>
+        <h2 class="text-xl font-semibold mb-8 text-stone-900">Quick Actions</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a
-            routerLink="/pos"
-            class="interactive-card"
-            style="
-              display: flex;
-              align-items: center;
-              gap: var(--space-3);
-              padding: var(--space-6);
-              border: 1px solid var(--color-border-primary);
-              border-radius: var(--radius-xl);
-              background: var(--color-bg-primary);
-              text-decoration: none;
-            "
-          >
+          <a routerLink="/pos" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
             <app-icon name="pos" [size]="22" customClass="text-stone-700"></app-icon>
-            <span style="
-              font-weight: 600;
-              font-size: var(--text-sm);
-              color: var(--color-text-primary);
-            ">New Sale</span>
+            <span class="font-semibold text-sm text-stone-900">New Sale</span>
           </a>
-
-          <a
-            routerLink="/inventory"
-            class="interactive-card"
-            style="
-              display: flex;
-              align-items: center;
-              gap: var(--space-3);
-              padding: var(--space-6);
-              border: 1px solid var(--color-border-primary);
-              border-radius: var(--radius-xl);
-              background: var(--color-bg-primary);
-              text-decoration: none;
-            "
-          >
+          <a routerLink="/inventory" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
             <app-icon name="inventory" [size]="22" customClass="text-stone-700"></app-icon>
-            <span style="
-              font-weight: 600;
-              font-size: var(--text-sm);
-              color: var(--color-text-primary);
-            ">Inventory</span>
+            <span class="font-semibold text-sm text-stone-900">Inventory</span>
           </a>
-
-          <a
-            routerLink="/fuel"
-            class="interactive-card"
-            style="
-              display: flex;
-              align-items: center;
-              gap: var(--space-3);
-              padding: var(--space-6);
-              border: 1px solid var(--color-border-primary);
-              border-radius: var(--radius-xl);
-              background: var(--color-bg-primary);
-              text-decoration: none;
-            "
-          >
+          <a routerLink="/fuel" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
             <app-icon name="fuel" [size]="22" customClass="text-stone-700"></app-icon>
-            <span style="
-              font-weight: 600;
-              font-size: var(--text-sm);
-              color: var(--color-text-primary);
-            ">Fuel</span>
+            <span class="font-semibold text-sm text-stone-900">Fuel</span>
           </a>
-
-          <a
-            routerLink="/reports"
-            class="interactive-card"
-            style="
-              display: flex;
-              align-items: center;
-              gap: var(--space-3);
-              padding: var(--space-6);
-              border: 1px solid var(--color-border-primary);
-              border-radius: var(--radius-xl);
-              background: var(--color-bg-primary);
-              text-decoration: none;
-            "
-          >
+          <a routerLink="/reports" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
             <app-icon name="chart" [size]="22" customClass="text-stone-700"></app-icon>
-            <span style="
-              font-weight: 600;
-              font-size: var(--text-sm);
-              color: var(--color-text-primary);
-            ">Reports</span>
+            <span class="font-semibold text-sm text-stone-900">Reports</span>
           </a>
         </div>
       </div>
