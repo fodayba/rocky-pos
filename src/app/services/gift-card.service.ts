@@ -1,36 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface GiftCardTransaction {
-  timestamp: Date;
-  type: 'issue' | 'reload' | 'purchase' | 'refund' | 'void';
-  amount: number;
-  balanceAfter: number;
-  locationId?: string;
-  transactionId?: string;
-  userId?: string;
-  notes?: string;
-}
-
-export interface GiftCard {
-  _id: string;
-  cardNumber: string;
-  lastFourDigits: string;
-  status: 'active' | 'inactive' | 'suspended' | 'expired';
-  balance: number;
-  initialValue: number;
-  totalLoaded: number;
-  totalSpent: number;
-  issuedLocationId: string;
-  issueDate: Date;
-  expiryDate?: Date;
-  neverExpires: boolean;
-  transactions: GiftCardTransaction[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import {
+  GiftCard,
+  IssueGiftCardDto,
+  RedeemGiftCardDto,
+  ReloadGiftCardDto,
+  GiftCardStatistics
+} from '../models/gift-card.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,55 +20,96 @@ export class GiftCardService {
   private giftCardsSignal = signal<GiftCard[]>([]);
   readonly giftCards = this.giftCardsSignal.asReadonly();
 
-  async loadGiftCards() {
-    const cards = await firstValueFrom(this.http.get<GiftCard[]>(this.apiUrl));
-    this.giftCardsSignal.set(cards);
-    return cards;
-  }
-
-  async getGiftCard(id: string) {
-    return firstValueFrom(this.http.get<GiftCard>(`${this.apiUrl}/${id}`));
-  }
-
-  async getGiftCardByNumber(cardNumber: string) {
-    return firstValueFrom(
-      this.http.get<GiftCard>(`${this.apiUrl}/card/${cardNumber}`)
+  findAll(filters?: any): Observable<GiftCard[]> {
+    return this.http.get<GiftCard[]>(this.apiUrl, { params: filters }).pipe(
+      tap(cards => this.giftCardsSignal.set(cards))
     );
   }
 
-  async checkBalance(cardNumber: string) {
-    return firstValueFrom(
-      this.http.get<{ balance: number }>(`${this.apiUrl}/card/${cardNumber}/balance`)
-    );
+  findOne(id: string): Observable<GiftCard> {
+    return this.http.get<GiftCard>(`${this.apiUrl}/${id}`);
   }
 
-  async createGiftCard(card: Partial<GiftCard>) {
-    const newCard = await firstValueFrom(
-      this.http.post<GiftCard>(this.apiUrl, card)
-    );
-    this.giftCardsSignal.update((cards) => [...cards, newCard]);
-    return newCard;
+  findByCardNumber(cardNumber: string): Observable<GiftCard> {
+    return this.http.get<GiftCard>(`${this.apiUrl}/card-number/${cardNumber}`);
   }
 
-  async reloadGiftCard(cardNumber: string, amount: number) {
-    return firstValueFrom(
-      this.http.post<GiftCard>(`${this.apiUrl}/card/${cardNumber}/reload`, {
-        amount,
+  checkBalance(cardNumber: string, pin: string): Observable<{ balance: number }> {
+    return this.http.post<{ balance: number }>(`${this.apiUrl}/check-balance`, {
+      cardNumber,
+      pin
+    });
+  }
+
+  issue(dto: IssueGiftCardDto): Observable<GiftCard> {
+    return this.http.post<GiftCard>(this.apiUrl, dto).pipe(
+      tap(card => {
+        this.giftCardsSignal.update(cards => [...cards, card]);
       })
     );
   }
 
-  async deactivateGiftCard(cardNumber: string, reason: string) {
-    return firstValueFrom(
-      this.http.patch<GiftCard>(`${this.apiUrl}/card/${cardNumber}/deactivate`, {
-        reason,
+  redeem(id: string, dto: RedeemGiftCardDto): Observable<GiftCard> {
+    return this.http.post<GiftCard>(`${this.apiUrl}/${id}/redeem`, dto).pipe(
+      tap(updated => {
+        this.giftCardsSignal.update(cards =>
+          cards.map(c => c._id === id ? updated : c)
+        );
       })
     );
   }
 
-  async reportLost(cardNumber: string) {
-    return firstValueFrom(
-      this.http.patch<GiftCard>(`${this.apiUrl}/card/${cardNumber}/report-lost`, {})
+  reload(id: string, dto: ReloadGiftCardDto): Observable<GiftCard> {
+    return this.http.post<GiftCard>(`${this.apiUrl}/${id}/reload`, dto).pipe(
+      tap(updated => {
+        this.giftCardsSignal.update(cards =>
+          cards.map(c => c._id === id ? updated : c)
+        );
+      })
     );
+  }
+
+  activate(id: string): Observable<GiftCard> {
+    return this.http.patch<GiftCard>(`${this.apiUrl}/${id}/activate`, {}).pipe(
+      tap(updated => {
+        this.giftCardsSignal.update(cards =>
+          cards.map(c => c._id === id ? updated : c)
+        );
+      })
+    );
+  }
+
+  suspend(id: string, reason: string): Observable<GiftCard> {
+    return this.http.patch<GiftCard>(`${this.apiUrl}/${id}/suspend`, { reason }).pipe(
+      tap(updated => {
+        this.giftCardsSignal.update(cards =>
+          cards.map(c => c._id === id ? updated : c)
+        );
+      })
+    );
+  }
+
+  transfer(id: string, newCustomerId: string): Observable<GiftCard> {
+    return this.http.patch<GiftCard>(`${this.apiUrl}/${id}/transfer`, {
+      newCustomerId
+    }).pipe(
+      tap(updated => {
+        this.giftCardsSignal.update(cards =>
+          cards.map(c => c._id === id ? updated : c)
+        );
+      })
+    );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.giftCardsSignal.update(cards => cards.filter(c => c._id !== id));
+      })
+    );
+  }
+
+  getStatistics(): Observable<GiftCardStatistics> {
+    return this.http.get<GiftCardStatistics>(`${this.apiUrl}/statistics`);
   }
 }
