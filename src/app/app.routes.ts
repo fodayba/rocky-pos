@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './guards/auth.guard';
 import { LoginComponent } from './components/auth/login/login.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PosComponent } from './components/pos/pos.component';
@@ -14,6 +15,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'signup',
+    component: SignupComponent
   },
   {
     path: '',

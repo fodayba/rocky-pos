@@ -41,33 +41,33 @@
         </div>
       </div>
 
-      @if (getShiftSummary(); as summary) {
+      @if (summary(); as summaryData) {
         <div class="border-t pt-6">
           <h3 class="text-xl font-bold text-gray-800 mb-4">Shift Summary</h3>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-blue-50 p-4 rounded-lg">
               <p class="text-sm text-blue-700">Total Transactions</p>
-              <p class="text-2xl font-bold text-blue-900">{{ summary.totalTransactions }}</p>
+              <p class="text-2xl font-bold text-blue-900">{{ summaryData.totalTransactions }}</p>
             </div>
             <div class="bg-green-50 p-4 rounded-lg">
               <p class="text-sm text-green-700">Total Sales</p>
-              <p class="text-2xl font-bold text-green-900">${{ summary.totalSales.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-green-900">${{ summaryData.totalSales.toFixed(2) }}</p>
             </div>
             <div class="bg-purple-50 p-4 rounded-lg">
               <p class="text-sm text-purple-700">Cash Sales</p>
-              <p class="text-2xl font-bold text-purple-900">${{ summary.cashSales.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-purple-900">${{ summaryData.cashSales.toFixed(2) }}</p>
             </div>
             <div class="bg-orange-50 p-4 rounded-lg">
               <p class="text-sm text-orange-700">Card Sales</p>
-              <p class="text-2xl font-bold text-orange-900">${{ summary.cardSales.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-orange-900">${{ summaryData.cardSales.toFixed(2) }}</p>
             </div>
             <div class="bg-yellow-50 p-4 rounded-lg">
               <p class="text-sm text-yellow-700">Fuel Sales</p>
-              <p class="text-2xl font-bold text-yellow-900">${{ summary.fuelSales.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-yellow-900">${{ summaryData.fuelSales.toFixed(2) }}</p>
             </div>
             <div class="bg-pink-50 p-4 rounded-lg">
               <p class="text-sm text-pink-700">Minimart Sales</p>
-              <p class="text-2xl font-bold text-pink-900">${{ summary.minimartSales.toFixed(2) }}</p>
+              <p class="text-2xl font-bold text-pink-900">${{ summaryData.minimartSales.toFixed(2) }}</p>
             </div>
           </div>
         </div>
@@ -139,11 +139,11 @@
     <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md">
       <h2 class="text-2xl font-bold text-gray-800 mb-4">Close Shift</h2>
 
-      @if (getShiftSummary(); as summary) {
+      @if (summary(); as summaryData) {
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
           <p class="text-sm text-gray-600 mb-2">Expected Cash</p>
           <p class="text-2xl font-bold text-gray-900">
-            ${{ (shift.openingBalance + summary.cashSales).toFixed(2) }}
+            ${{ (shift.openingBalance + summaryData.cashSales).toFixed(2) }}
           </p>
         </div>
       }

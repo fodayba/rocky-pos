@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Transaction } from '../models';
@@ -13,6 +13,17 @@ export class TransactionService {
 
   private transactionsSignal = signal<Transaction[]>([]);
   public readonly transactions = this.transactionsSignal.asReadonly();
+
+  getTransactionsByDateRange(startDate: Date, endDate: Date): Transaction[] {
+    return this.transactionsSignal().filter(t => {
+      const transactionDate = new Date(t.createdAt);
+      return transactionDate >= startDate && transactionDate < endDate;
+    });
+  }
+
+  createTransaction(transaction: Omit<Transaction, 'id' | 'transactionNumber' | 'createdAt'>): Observable<Transaction> {
+    return this.create(transaction);
+  }
 
   findAll(): Observable<Transaction[]> {
     return this.http.get<Transaction[]>(this.apiUrl).pipe(

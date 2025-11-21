@@ -225,27 +225,36 @@ export class PosComponent {
         throw new Error('No active shift or user');
       }
 
-      const transaction = this.transactionService.createTransaction(
-        this.cart(),
-        this.paymentMethod(),
-        user.id,
-        shift.id,
-        undefined,
-        this.paymentMethod() === 'cash' ? this.cashReceived() : undefined
-      );
+      const subtotal = this.subtotal();
+      const tax = this.tax();
+      const total = this.total();
 
-      if (transaction) {
-        alert(`Transaction completed!\nTotal: $${transaction.total.toFixed(2)}\n${
-          this.paymentMethod() === 'cash'
-            ? `Change: $${this.changeAmount().toFixed(2)}`
-            : ''
-        }`);
+      this.transactionService.createTransaction({
+        type: 'sale',
+        items: this.cart(),
+        subtotal,
+        tax,
+        total,
+        paymentMethod: this.paymentMethod(),
+        cashReceived: this.paymentMethod() === 'cash' ? this.cashReceived() : undefined,
+        changeGiven: this.paymentMethod() === 'cash' ? this.changeAmount() : undefined,
+        cashierId: user.id,
+        shiftId: shift.id
+      }).subscribe({
+        next: (transaction) => {
+          alert(`Transaction completed!\nTotal: $${transaction.total.toFixed(2)}\n${
+            this.paymentMethod() === 'cash'
+              ? `Change: $${this.changeAmount().toFixed(2)}`
+              : ''
+          }`);
 
-        this.cart.set([]);
-        this.closePaymentModal();
-      } else {
-        throw new Error('Transaction failed');
-      }
+          this.cart.set([]);
+          this.closePaymentModal();
+        },
+        error: (error) => {
+          alert(error.message);
+        }
+      });
     } catch (error) {
       alert('Error processing payment: ' + (error as Error).message);
     } finally {

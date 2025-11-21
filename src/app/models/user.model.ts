@@ -2,15 +2,16 @@ export type UserRole = 'admin' | 'manager' | 'cashier';
 
 export interface User {
   id: string;
-  username: string;
   email: string;
   role: UserRole;
   fullName: string;
+  firstName: string;
+  lastName: string;
   active: boolean;
 }
 
 export interface LoginCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 

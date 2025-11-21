@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, inject } from '@angular/core';
+import { Component, computed, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -6,6 +6,7 @@ import { ShiftService } from '../../services/shift.service';
 import { TransactionService } from '../../services/transaction.service';
 import { ProductService } from '../../services/product.service';
 import { FuelService } from '../../services/fuel.service';
+import { ShiftSummary } from '../../models';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,9 @@ export class DashboardComponent implements OnInit {
   currentUser = this.authService.currentUser;
   currentShift = this.shiftService.currentShift;
   hasActiveShift = this.shiftService.hasActiveShift;
-  shiftSummary = computed(() => this.shiftService.getCurrentShiftSummary());
+
+  private shiftSummarySignal = signal<ShiftSummary | null>(null);
+  shiftSummary = this.shiftSummarySignal.asReadonly();
 
   products = this.productService.products;
   fuelProducts = this.fuelService.fuelProducts;
@@ -40,10 +43,13 @@ export class DashboardComponent implements OnInit {
   });
 
   todayRevenue = computed(() => {
-    return this.todayTransactions().reduce((sum, t) => sum + t.total, 0);
+    return this.todayTransactions().reduce((sum: number, t: any) => sum + t.total, 0);
   });
 
   ngOnInit(): void {
-    // Component initialization
+    // Load shift summary
+    this.shiftService.getCurrentShiftSummary().subscribe(summary => {
+      this.shiftSummarySignal.set(summary);
+    });
   }
 }

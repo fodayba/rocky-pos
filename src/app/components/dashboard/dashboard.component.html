@@ -1,189 +1,222 @@
-<div class="space-y-6">
-  <div class="flex items-center justify-between">
-    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-    @if (currentUser(); as user) {
-      <p class="text-gray-600">Welcome back, {{ user.firstName }}!</p>
-    }
-  </div>
-
-  <!-- Stats Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- Today's Revenue -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Today's Revenue</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">
-            ${{ todayRevenue().toFixed(2) }}
-          </p>
-        </div>
-        <div class="text-4xl">💰</div>
+<div class="min-h-screen bg-stone-50">
+  <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-semibold text-stone-900 tracking-tight">Dashboard</h1>
+        @if (currentUser(); as user) {
+          <p class="mt-1 text-sm text-stone-500">Welcome back, {{ user.firstName }}</p>
+        }
       </div>
     </div>
 
-    <!-- Today's Transactions -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Transactions</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ todayTransactions().length }}</p>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Today's Revenue -->
+      <div class="stat-card group">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="stat-label">Today's Revenue</p>
+            <p class="stat-value">${{ todayRevenue().toFixed(2) }}</p>
+          </div>
+          <div class="p-3 bg-stone-100 rounded-lg group-hover:bg-stone-200 transition-colors">
+            <svg class="w-6 h-6 text-stone-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
         </div>
-        <div class="text-4xl">🧾</div>
+      </div>
+
+      <!-- Today's Transactions -->
+      <div class="stat-card group">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="stat-label">Transactions</p>
+            <p class="stat-value">{{ todayTransactions().length }}</p>
+          </div>
+          <div class="p-3 bg-stone-100 rounded-lg group-hover:bg-stone-200 transition-colors">
+            <svg class="w-6 h-6 text-stone-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock Items -->
+      <div class="stat-card group">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="stat-label">Low Stock Items</p>
+            <p class="stat-value">{{ lowStockProducts().length }}</p>
+          </div>
+          <div class="p-3 bg-amber-50 rounded-lg group-hover:bg-amber-100 transition-colors">
+            <svg class="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fuel Alerts -->
+      <div class="stat-card group">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="stat-label">Fuel Alerts</p>
+            <p class="stat-value">{{ lowFuelProducts().length }}</p>
+          </div>
+          <div class="p-3 bg-stone-100 rounded-lg group-hover:bg-stone-200 transition-colors">
+            <svg class="w-6 h-6 text-stone-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Low Stock Items -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Low Stock Items</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ lowStockProducts().length }}</p>
-        </div>
-        <div class="text-4xl">⚠️</div>
-      </div>
-    </div>
-
-    <!-- Fuel Alerts -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">Fuel Alerts</p>
-          <p class="text-3xl font-bold text-gray-900 mt-2">{{ lowFuelProducts().length }}</p>
-        </div>
-        <div class="text-4xl">⛽</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Current Shift Info -->
-  @if (hasActiveShift() && shiftSummary(); as summary) {
-    <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
-      <h2 class="text-xl font-bold text-green-800 mb-4">Current Shift</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div>
-          <p class="text-sm text-green-700">Shift Number</p>
-          <p class="text-lg font-semibold text-green-900">{{ summary.shift.shiftNumber }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-green-700">Total Sales</p>
-          <p class="text-lg font-semibold text-green-900">${{ summary.totalSales.toFixed(2) }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-green-700">Transactions</p>
-          <p class="text-lg font-semibold text-green-900">{{ summary.totalTransactions }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-green-700">Cash Sales</p>
-          <p class="text-lg font-semibold text-green-900">${{ summary.cashSales.toFixed(2) }}</p>
-        </div>
-      </div>
-    </div>
-  } @else {
-    <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-bold text-yellow-800">No Active Shift</h2>
-          <p class="text-yellow-700 mt-1">Please start a shift to begin processing transactions</p>
-        </div>
-        <a
-          routerLink="/shifts"
-          class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-semibold transition"
-        >
-          Start Shift
-        </a>
-      </div>
-    </div>
-  }
-
-  <!-- Alerts Section -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Low Stock Alerts -->
-    @if (lowStockProducts().length > 0) {
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Low Stock Alerts</h2>
-        <div class="space-y-3">
-          @for (product of lowStockProducts().slice(0, 5); track product.id) {
-            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-              <div>
-                <p class="font-semibold text-gray-900">{{ product.name }}</p>
-                <p class="text-sm text-gray-600">Stock: {{ product.stockQuantity }} {{ product.unit }}</p>
-              </div>
-              <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                Low
-              </span>
+    <!-- Current Shift Info -->
+    @if (hasActiveShift() && shiftSummary(); as summary) {
+      <div class="card">
+        <div class="card-body space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-emerald-50 rounded-lg">
+              <svg class="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
             </div>
-          }
-          @if (lowStockProducts().length > 5) {
-            <a
-              routerLink="/inventory"
-              class="block text-center text-blue-600 hover:text-blue-800 font-semibold"
-            >
-              View all ({{ lowStockProducts().length }})
-            </a>
-          }
+            <h2 class="text-lg font-semibold text-stone-900">Active Shift</h2>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+              <p class="text-xs font-medium text-stone-500 uppercase tracking-wider mb-1">Shift Number</p>
+              <p class="text-base font-semibold text-stone-900">{{ summary.shift.shiftNumber }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-stone-500 uppercase tracking-wider mb-1">Total Sales</p>
+              <p class="text-base font-semibold text-stone-900">${{ summary.totalSales.toFixed(2) }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-stone-500 uppercase tracking-wider mb-1">Transactions</p>
+              <p class="text-base font-semibold text-stone-900">{{ summary.totalTransactions }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-stone-500 uppercase tracking-wider mb-1">Cash Sales</p>
+              <p class="text-base font-semibold text-stone-900">${{ summary.cashSales.toFixed(2) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="p-3 bg-amber-100 rounded-lg">
+              <svg class="w-6 h-6 text-amber-700" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-amber-900">No Active Shift</h2>
+              <p class="text-sm text-amber-700 mt-0.5">Start a shift to begin processing transactions</p>
+            </div>
+          </div>
+          <a routerLink="/shifts" class="btn btn-primary">
+            Start Shift
+          </a>
         </div>
       </div>
     }
 
-    <!-- Fuel Alerts -->
-    @if (lowFuelProducts().length > 0) {
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Fuel Alerts</h2>
-        <div class="space-y-3">
-          @for (fuel of lowFuelProducts(); track fuel.id) {
-            <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-              <div>
-                <p class="font-semibold text-gray-900">{{ fuel.name }}</p>
-                <p class="text-sm text-gray-600">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gallons</p>
-                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div
-                    class="bg-orange-500 h-2 rounded-full"
-                    [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"
-                  ></div>
+    <!-- Alerts & Quick Actions Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Low Stock Alerts -->
+      @if (lowStockProducts().length > 0) {
+        <div class="card">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold text-stone-900 mb-4">Low Stock Alerts</h2>
+            <div class="space-y-2">
+              @for (product of lowStockProducts().slice(0, 5); track product.id) {
+                <div class="flex items-center justify-between p-3 bg-stone-50 rounded-lg hover:bg-stone-100 transition-colors">
+                  <div class="flex-1">
+                    <p class="font-medium text-stone-900">{{ product.name }}</p>
+                    <p class="text-sm text-stone-500 mt-0.5">{{ product.stockQuantity }} {{ product.unit}} remaining</p>
+                  </div>
+                  <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+                    Low Stock
+                  </span>
                 </div>
-              </div>
+              }
+              @if (lowStockProducts().length > 5) {
+                <a routerLink="/inventory" class="block text-center py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">
+                  View all {{ lowStockProducts().length }} items →
+                </a>
+              }
             </div>
-          }
+          </div>
+        </div>
+      }
+
+      <!-- Fuel Alerts -->
+      @if (lowFuelProducts().length > 0) {
+        <div class="card">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold text-stone-900 mb-4">Fuel Level Alerts</h2>
+            <div class="space-y-3">
+              @for (fuel of lowFuelProducts(); track fuel.id) {
+                <div class="p-3 bg-stone-50 rounded-lg hover:bg-stone-100 transition-colors">
+                  <div class="flex items-center justify-between mb-2">
+                    <p class="font-medium text-stone-900">{{ fuel.name }}</p>
+                    <p class="text-sm text-stone-500">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gal</p>
+                  </div>
+                  <div class="w-full bg-stone-200 rounded-full h-1.5">
+                    <div
+                      class="bg-stone-900 h-1.5 rounded-full transition-all"
+                      [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"
+                    ></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="text-lg font-semibold text-stone-900 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <a routerLink="/pos" class="flex items-center gap-3 p-4 bg-stone-50 hover:bg-stone-900 hover:text-white rounded-lg transition-all group">
+            <svg class="w-5 h-5 text-stone-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+            </svg>
+            <span class="font-medium text-stone-900 group-hover:text-white">New Sale</span>
+          </a>
+
+          <a routerLink="/inventory" class="flex items-center gap-3 p-4 bg-stone-50 hover:bg-stone-900 hover:text-white rounded-lg transition-all group">
+            <svg class="w-5 h-5 text-stone-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+            <span class="font-medium text-stone-900 group-hover:text-white">Inventory</span>
+          </a>
+
+          <a routerLink="/fuel" class="flex items-center gap-3 p-4 bg-stone-50 hover:bg-stone-900 hover:text-white rounded-lg transition-all group">
+            <svg class="w-5 h-5 text-stone-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+            </svg>
+            <span class="font-medium text-stone-900 group-hover:text-white">Fuel</span>
+          </a>
+
+          <a routerLink="/reports" class="flex items-center gap-3 p-4 bg-stone-50 hover:bg-stone-900 hover:text-white rounded-lg transition-all group">
+            <svg class="w-5 h-5 text-stone-600 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+            </svg>
+            <span class="font-medium text-stone-900 group-hover:text-white">Reports</span>
+          </a>
         </div>
       </div>
-    }
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <a
-        routerLink="/pos"
-        class="flex flex-col items-center justify-center p-6 bg-blue-50 hover:bg-blue-100 rounded-lg transition border-2 border-blue-200"
-      >
-        <span class="text-4xl mb-2">💳</span>
-        <span class="font-semibold text-blue-900">New Sale</span>
-      </a>
-
-      <a
-        routerLink="/inventory"
-        class="flex flex-col items-center justify-center p-6 bg-purple-50 hover:bg-purple-100 rounded-lg transition border-2 border-purple-200"
-      >
-        <span class="text-4xl mb-2">📦</span>
-        <span class="font-semibold text-purple-900">Inventory</span>
-      </a>
-
-      <a
-        routerLink="/fuel"
-        class="flex flex-col items-center justify-center p-6 bg-green-50 hover:bg-green-100 rounded-lg transition border-2 border-green-200"
-      >
-        <span class="text-4xl mb-2">⛽</span>
-        <span class="font-semibold text-green-900">Fuel</span>
-      </a>
-
-      <a
-        routerLink="/reports"
-        class="flex flex-col items-center justify-center p-6 bg-orange-50 hover:bg-orange-100 rounded-lg transition border-2 border-orange-200"
-      >
-        <span class="text-4xl mb-2">📈</span>
-        <span class="font-semibold text-orange-900">Reports</span>
-      </a>
     </div>
   </div>
 </div>

@@ -2,11 +2,13 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Shift, ShiftStatus } from '../schemas/shift.schema';
+import { Transaction, PaymentMethod } from '../schemas/transaction.schema';
 
 @Injectable()
 export class ShiftsService {
   constructor(
     @InjectModel(Shift.name) private shiftModel: Model<Shift>,
+    @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
   ) {}
 
   async openShift(
@@ -92,5 +94,57 @@ export class ShiftsService {
       throw new NotFoundException(`Shift with ID ${id} not found`);
     }
     return shift;
+  }
+
+  async getCurrentShiftSummary() {
+    const shift = await this.getCurrentShift();
+
+    if (!shift) {
+      return null;
+    }
+
+    // Get all transactions for this shift
+    const transactions = await this.transactionModel
+      .find({ shiftId: shift._id })
+      .exec();
+
+    const totalTransactions = transactions.length;
+    const totalSales = transactions.reduce((sum, t) => sum + t.total, 0);
+    const cashSales = transactions
+      .filter(t => t.paymentMethod === PaymentMethod.CASH)
+      .reduce((sum, t) => sum + t.total, 0);
+    const cardSales = transactions
+      .filter(t => t.paymentMethod === PaymentMethod.CARD)
+      .reduce((sum, t) => sum + t.total, 0);
+    const mobileSales = transactions
+      .filter(t => t.paymentMethod === PaymentMethod.MOBILE)
+      .reduce((sum, t) => sum + t.total, 0);
+
+    // Calculate fuel and minimart sales
+    const fuelSales = transactions.reduce((sum, t) => {
+      const fuelItems = t.items.filter(item => item.isFuel);
+      return sum + fuelItems.reduce((itemSum, item) => itemSum + item.subtotal, 0);
+    }, 0);
+
+    const minimartSales = transactions.reduce((sum, t) => {
+      const minimartItems = t.items.filter(item => !item.isFuel);
+      return sum + minimartItems.reduce((itemSum, item) => itemSum + item.subtotal, 0);
+    }, 0);
+
+    const returns = transactions
+      .filter(t => t.type === 'return')
+      .reduce((sum, t) => sum + t.total, 0);
+
+    return {
+      shift,
+      totalTransactions,
+      totalSales,
+      cashSales,
+      cardSales,
+      mobileSales,
+      fuelSales,
+      minimartSales,
+      returns,
+    };
   }
 }

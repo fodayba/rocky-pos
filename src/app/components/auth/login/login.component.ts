@@ -1,12 +1,12 @@
 import { Component, signal, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -14,7 +14,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  username = signal('');
+  email = signal('');
   password = signal('');
   error = signal<string | null>(null);
   loading = signal(false);
@@ -23,8 +23,8 @@ export class LoginComponent {
   mockCredentials = this.authService.getMockCredentials();
 
   onSubmit(): void {
-    if (!this.username() || !this.password()) {
-      this.error.set('Please enter username and password');
+    if (!this.email() || !this.password()) {
+      this.error.set('Please enter email and password');
       return;
     }
 
@@ -32,14 +32,14 @@ export class LoginComponent {
     this.error.set(null);
 
     this.authService.login({
-      username: this.username(),
+      email: this.email(),
       password: this.password()
     }).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.error.set(err.message || 'Invalid username or password');
+        this.error.set(err.message || 'Invalid email or password');
         this.loading.set(false);
       },
       complete: () => {
@@ -52,8 +52,8 @@ export class LoginComponent {
     this.showCredentials.set(!this.showCredentials());
   }
 
-  fillCredentials(username: string, password: string): void {
-    this.username.set(username);
+  fillCredentials(email: string, password: string): void {
+    this.email.set(email);
     this.password.set(password);
   }
 }

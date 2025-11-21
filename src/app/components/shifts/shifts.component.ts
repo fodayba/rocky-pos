@@ -1,8 +1,9 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ShiftService } from '../../services/shift.service';
 import { AuthService } from '../../services/auth.service';
+import { ShiftSummary } from '../../models';
 
 @Component({
   selector: 'app-shifts',
@@ -10,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './shifts.component.html',
   styleUrl: './shifts.component.css'
 })
-export class ShiftsComponent {
+export class ShiftsComponent implements OnInit {
   private shiftService = inject(ShiftService);
   private authService = inject(AuthService);
 
@@ -20,6 +21,9 @@ export class ShiftsComponent {
   currentShift = this.shiftService.currentShift;
   hasActiveShift = this.shiftService.hasActiveShift;
   currentUser = this.authService.currentUser;
+
+  private summarySignal = signal<ShiftSummary | null>(null);
+  summary = this.summarySignal.asReadonly();
 
   openingBalance = signal(0);
   actualCash = signal(0);
@@ -46,27 +50,27 @@ export class ShiftsComponent {
     const user = this.currentUser();
     if (!user) return;
 
-    try {
-      this.shiftService.openShift(
-        user.id,
-        `${user.firstName} ${user.lastName}`,
-        this.openingBalance()
-      );
-      this.showOpenModal.set(false);
-      alert('Shift started successfully!');
-    } catch (error) {
-      alert((error as Error).message);
-    }
+    this.shiftService.openShift(
+      user.id,
+      `${user.firstName} ${user.lastName}`,
+      this.openingBalance()
+    ).subscribe({
+      next: () => {
+        this.showOpenModal.set(false);
+        alert('Shift started successfully!');
+      },
+      error: (error) => {
+        alert(error.message);
+      }
+    });
   }
 
   endShift(): void {
-    try {
-      const closedShift = this.shiftService.closeShift(
-        this.actualCash(),
-        this.notes() || undefined
-      );
-
-      if (closedShift) {
+    this.shiftService.closeShift(
+      this.actualCash(),
+      this.notes() || undefined
+    ).subscribe({
+      next: (closedShift) => {
         this.showCloseModal.set(false);
         alert(
           `Shift closed successfully!\n\n` +
@@ -74,13 +78,20 @@ export class ShiftsComponent {
           `Actual Cash: $${closedShift.actualCash?.toFixed(2)}\n` +
           `Variance: $${closedShift.variance?.toFixed(2)}`
         );
+      },
+      error: (error) => {
+        alert(error.message);
       }
-    } catch (error) {
-      alert((error as Error).message);
-    }
+    });
   }
 
   getShiftSummary() {
-    return this.shiftService.getCurrentShiftSummary();
+    this.shiftService.getCurrentShiftSummary().subscribe(summary => {
+      this.summarySignal.set(summary);
+    });
+  }
+
+  ngOnInit() {
+    this.getShiftSummary();
   }
 }

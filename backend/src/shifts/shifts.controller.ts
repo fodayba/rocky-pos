@@ -12,13 +12,14 @@ export class ShiftsController {
   @Post('open')
   openShift(
     @CurrentUser() user: User,
+    @Body('cashierId') cashierId: string,
+    @Body('cashierName') cashierName: string,
     @Body('openingCash') openingCash: number,
-    @Body('registerNumber') registerNumber: string,
   ) {
     return this.shiftsService.openShift(
-      user._id.toString(),
+      cashierId || user._id.toString(),
       openingCash,
-      registerNumber,
+      cashierName || 'Register 1',
     );
   }
 
@@ -39,6 +40,11 @@ export class ShiftsController {
   @Get('current')
   getCurrentShift() {
     return this.shiftsService.getCurrentShift();
+  }
+
+  @Get('current/summary')
+  getCurrentShiftSummary() {
+    return this.shiftsService.getCurrentShiftSummary();
   }
 
   @Get(':id')
