@@ -1,0 +1,96 @@
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Shift, ShiftStatus } from '../schemas/shift.schema';
+
+@Injectable()
+export class ShiftsService {
+  constructor(
+    @InjectModel(Shift.name) private shiftModel: Model<Shift>,
+  ) {}
+
+  async openShift(
+    userId: string,
+    openingCash: number,
+    registerNumber: string,
+  ): Promise<Shift> {
+    // Check if there's already an open shift
+    const existingOpenShift = await this.shiftModel.findOne({
+      status: ShiftStatus.OPEN,
+    }).exec();
+
+    if (existingOpenShift) {
+      throw new BadRequestException('There is already an open shift. Please close it first.');
+    }
+
+    // Generate shift number (SHIFT-YYYYMMDD-XXX)
+    const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const todayShifts = await this.shiftModel.countDocuments({
+      createdAt: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+      },
+    });
+    const shiftNumber = `SHIFT-${today}-${String(todayShifts + 1).padStart(3, '0')}`;
+
+    const shift = new this.shiftModel({
+      shiftNumber,
+      user: userId,
+      openingCash,
+      registerNumber,
+      status: ShiftStatus.OPEN,
+      startTime: new Date(),
+    });
+
+    return shift.save();
+  }
+
+  async closeShift(
+    id: string,
+    actualCash: number,
+    notes?: string,
+  ): Promise<Shift> {
+    const shift = await this.shiftModel.findById(id).populate('user').exec();
+
+    if (!shift) {
+      throw new NotFoundException(`Shift with ID ${id} not found`);
+    }
+
+    if (shift.status !== ShiftStatus.OPEN) {
+      throw new BadRequestException('Shift is already closed');
+    }
+
+    shift.status = ShiftStatus.CLOSED;
+    shift.endTime = new Date();
+    shift.closingCash = actualCash;
+    shift.cashVariance = actualCash - (shift.expectedCash || shift.openingCash);
+
+    if (notes) {
+      shift.notes = notes;
+    }
+
+    return shift.save();
+  }
+
+  async findAll(): Promise<Shift[]> {
+    return this.shiftModel
+      .find()
+      .populate('user')
+      .sort({ startTime: -1 })
+      .exec();
+  }
+
+  async getCurrentShift(): Promise<Shift | null> {
+    return this.shiftModel
+      .findOne({ status: ShiftStatus.OPEN })
+      .populate('user')
+      .exec();
+  }
+
+  async findOne(id: string): Promise<Shift> {
+    const shift = await this.shiftModel.findById(id).populate('user').exec();
+    if (!shift) {
+      throw new NotFoundException(`Shift with ID ${id} not found`);
+    }
+    return shift;
+  }
+}
