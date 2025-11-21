@@ -9,6 +9,20 @@ import { FuelModule } from './fuel/fuel.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CustomersModule } from './customers/customers.module';
+import { LocationsModule } from './locations/locations.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { FleetAccountsModule } from './fleet-accounts/fleet-accounts.module';
+import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
+import { PromotionsModule } from './promotions/promotions.module';
+import { GiftCardsModule } from './gift-cards/gift-cards.module';
+import { AuditModule } from './audit/audit.module';
+import { InventoryTransfersModule } from './inventory-transfers/inventory-transfers.module';
+import { FuelManagementModule } from './fuel-management/fuel-management.module';
+import { InvoicingModule } from './invoicing/invoicing.module';
+import { SchedulingModule } from './scheduling/scheduling.module';
+import { TimeTrackingModule } from './time-tracking/time-tracking.module';
+import { TaxModule } from './tax/tax.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -28,6 +42,20 @@ import { CustomersModule } from './customers/customers.module';
     TransactionsModule,
     ShiftsModule,
     CustomersModule,
+    LocationsModule,
+    SuppliersModule,
+    FleetAccountsModule,
+    PurchaseOrdersModule,
+    PromotionsModule,
+    GiftCardsModule,
+    AuditModule,
+    InventoryTransfersModule,
+    FuelManagementModule,
+    InvoicingModule,
+    SchedulingModule,
+    TimeTrackingModule,
+    TaxModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

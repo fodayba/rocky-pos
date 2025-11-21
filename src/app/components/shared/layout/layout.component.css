@@ -100,9 +100,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -210,7 +213,7 @@
   overflow-y: auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 770px) {
   .sidebar {
     position: relative;
   }
