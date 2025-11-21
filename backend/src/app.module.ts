@@ -9,6 +9,7 @@ import { FuelModule } from './fuel/fuel.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CustomersModule } from './customers/customers.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CustomersModule } from './customers/customers.module';
     TransactionsModule,
     ShiftsModule,
     CustomersModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
