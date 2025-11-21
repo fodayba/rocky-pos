@@ -1,3 +1,40 @@
+<div class="max-w-7xl mx-auto space-y-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">Dashboard</h1>
+      @if (currentUser(); as user) {
+        <p class="mt-1" style="color: var(--color-slate-500);">Welcome back, {{ user.firstName }}</p>
+      }
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Today's Revenue -->
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium mb-3" style="color: var(--color-slate-500);">Today's Revenue</p>
+          <p class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">
+            ${{ todayRevenue().toFixed(2) }}
+          </p>
+        </div>
+        <div class="p-3 rounded-lg" style="background: var(--color-slate-100); color: var(--color-slate-600);">
+          <app-icon name="dollar" [size]="24"></app-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Transactions -->
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium mb-3" style="color: var(--color-slate-500);">Transactions</p>
+          <p class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">{{ todayTransactions().length }}</p>
+        </div>
+        <div class="p-3 rounded-lg" style="background: var(--color-slate-100); color: var(--color-slate-600);">
+          <app-icon name="receipt" [size]="24"></app-icon>
 <div class="min-h-screen bg-stone-50">
   <div class="max-w-7xl mx-auto px-6 py-8 space-y-8">
     <!-- Header -->
@@ -27,6 +64,15 @@
         </div>
       </div>
 
+    <!-- Low Stock Items -->
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium mb-3" style="color: var(--color-slate-500);">Low Stock Items</p>
+          <p class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">{{ lowStockProducts().length }}</p>
+        </div>
+        <div class="p-3 rounded-lg" style="background: var(--color-warning-light); color: var(--color-warning);">
+          <app-icon name="alert" [size]="24"></app-icon>
       <!-- Today's Transactions -->
       <div class="stat-card group">
         <div class="flex items-start justify-between">
@@ -42,6 +88,15 @@
         </div>
       </div>
 
+    <!-- Fuel Alerts -->
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium mb-3" style="color: var(--color-slate-500);">Fuel Alerts</p>
+          <p class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">{{ lowFuelProducts().length }}</p>
+        </div>
+        <div class="p-3 rounded-lg" style="background: var(--color-teal-100); color: var(--color-teal-700);">
+          <app-icon name="fuel" [size]="24"></app-icon>
       <!-- Low Stock Items -->
       <div class="stat-card group">
         <div class="flex items-start justify-between">
@@ -57,6 +112,78 @@
         </div>
       </div>
 
+  <!-- Current Shift Info -->
+  @if (hasActiveShift() && shiftSummary(); as summary) {
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-success); background: var(--color-success-light); box-shadow: var(--shadow-sm);">
+      <h2 class="text-lg font-semibold mb-6" style="color: var(--color-success);">Current Shift</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Shift Number</p>
+          <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">{{ summary.shift.shiftNumber }}</p>
+        </div>
+        <div>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Total Sales</p>
+          <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.totalSales.toFixed(2) }}</p>
+        </div>
+        <div>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Transactions</p>
+          <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">{{ summary.totalTransactions }}</p>
+        </div>
+        <div>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Cash Sales</p>
+          <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.cashSales.toFixed(2) }}</p>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-warning); background: var(--color-warning-light); box-shadow: var(--shadow-sm);">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <h2 class="text-lg font-semibold mb-1" style="color: var(--color-warning);">No Active Shift</h2>
+          <p class="text-sm" style="color: var(--color-slate-600);">Please start a shift to begin processing transactions</p>
+        </div>
+        <a
+          routerLink="/shifts"
+          class="px-6 py-2.5 rounded-lg font-medium transition-all"
+          style="background: var(--color-warning); color: white;"
+          onmouseover="this.style.opacity='0.9'"
+          onmouseout="this.style.opacity='1'"
+        >
+          Start Shift
+        </a>
+      </div>
+    </div>
+  }
+
+  <!-- Alerts Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Low Stock Alerts -->
+    @if (lowStockProducts().length > 0) {
+      <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+        <h2 class="text-lg font-semibold mb-4" style="color: var(--color-slate-900);">Low Stock Alerts</h2>
+        <div class="space-y-3">
+          @for (product of lowStockProducts().slice(0, 5); track product.id) {
+            <div class="flex items-center justify-between p-4 rounded-lg border" style="background: var(--color-error-light); border-color: var(--color-error);">
+              <div class="flex-1">
+                <p class="font-medium mb-0.5" style="color: var(--color-slate-900);">{{ product.name }}</p>
+                <p class="text-sm" style="color: var(--color-slate-600);">Stock: {{ product.stockQuantity }} {{ product.unit }}</p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: var(--color-error); color: white;">
+                Low
+              </span>
+            </div>
+          }
+          @if (lowStockProducts().length > 5) {
+            <a
+              routerLink="/inventory"
+              class="block text-center text-sm font-medium pt-2 transition-colors"
+              style="color: var(--color-teal-600);"
+              onmouseover="this.style.color='var(--color-teal-700)'"
+              onmouseout="this.style.color='var(--color-teal-600)'"
+            >
+              View all ({{ lowStockProducts().length }})
+            </a>
+          }
       <!-- Fuel Alerts -->
       <div class="stat-card group">
         <div class="flex items-start justify-between">
@@ -127,6 +254,24 @@
       </div>
     }
 
+    <!-- Fuel Alerts -->
+    @if (lowFuelProducts().length > 0) {
+      <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+        <h2 class="text-lg font-semibold mb-4" style="color: var(--color-slate-900);">Fuel Alerts</h2>
+        <div class="space-y-4">
+          @for (fuel of lowFuelProducts(); track fuel.id) {
+            <div class="p-4 rounded-lg border" style="background: var(--color-warning-light); border-color: var(--color-warning);">
+              <div class="mb-3">
+                <p class="font-medium mb-0.5" style="color: var(--color-slate-900);">{{ fuel.name }}</p>
+                <p class="text-sm" style="color: var(--color-slate-600);">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gallons</p>
+              </div>
+              <div class="w-full rounded-full h-2" style="background: var(--color-slate-200);">
+                <div
+                  class="h-2 rounded-full transition-all"
+                  style="background: var(--color-warning);"
+                  [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"
+                ></div>
+              </div>
     <!-- Alerts & Quick Actions Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Low Stock Alerts -->
@@ -156,6 +301,53 @@
         </div>
       }
 
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+    <h2 class="text-lg font-semibold mb-4" style="color: var(--color-slate-900);">Quick Actions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <a
+        routerLink="/pos"
+        class="quick-action-card flex flex-col items-center justify-center p-6 rounded-lg transition-all border"
+        style="border-color: var(--color-slate-200); background: var(--color-slate-50);"
+      >
+        <div class="mb-3 p-3 rounded-lg" style="background: var(--color-teal-100); color: var(--color-teal-700);">
+          <app-icon name="pos" [size]="24"></app-icon>
+        </div>
+        <span class="font-medium text-sm" style="color: var(--color-slate-900);">New Sale</span>
+      </a>
+
+      <a
+        routerLink="/inventory"
+        class="quick-action-card flex flex-col items-center justify-center p-6 rounded-lg transition-all border"
+        style="border-color: var(--color-slate-200); background: var(--color-slate-50);"
+      >
+        <div class="mb-3 p-3 rounded-lg" style="background: var(--color-slate-200); color: var(--color-slate-700);">
+          <app-icon name="inventory" [size]="24"></app-icon>
+        </div>
+        <span class="font-medium text-sm" style="color: var(--color-slate-900);">Inventory</span>
+      </a>
+
+      <a
+        routerLink="/fuel"
+        class="quick-action-card flex flex-col items-center justify-center p-6 rounded-lg transition-all border"
+        style="border-color: var(--color-slate-200); background: var(--color-slate-50);"
+      >
+        <div class="mb-3 p-3 rounded-lg" style="background: var(--color-slate-200); color: var(--color-slate-700);">
+          <app-icon name="fuel" [size]="24"></app-icon>
+        </div>
+        <span class="font-medium text-sm" style="color: var(--color-slate-900);">Fuel</span>
+      </a>
+
+      <a
+        routerLink="/reports"
+        class="quick-action-card flex flex-col items-center justify-center p-6 rounded-lg transition-all border"
+        style="border-color: var(--color-slate-200); background: var(--color-slate-50);"
+      >
+        <div class="mb-3 p-3 rounded-lg" style="background: var(--color-slate-200); color: var(--color-slate-700);">
+          <app-icon name="chart" [size]="24"></app-icon>
+        </div>
+        <span class="font-medium text-sm" style="color: var(--color-slate-900);">Reports</span>
+      </a>
       <!-- Fuel Alerts -->
       @if (lowFuelProducts().length > 0) {
         <div class="card">

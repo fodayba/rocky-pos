@@ -1,46 +1,83 @@
-<div class="space-y-6">
+<div class="max-w-7xl mx-auto space-y-8">
+  <!-- Header -->
   <div class="flex items-center justify-between">
-    <h1 class="text-3xl font-bold text-gray-800">Shift Management</h1>
+    <h1 class="text-3xl font-semibold tracking-tight" style="color: var(--color-slate-900);">Shift Management</h1>
     @if (!hasActiveShift()) {
       <button
         (click)="openShiftModal()"
-        class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold text-lg"
+        class="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all"
+        style="background: var(--color-success); color: white;"
+        onmouseover="this.style.opacity='0.9'"
+        onmouseout="this.style.opacity='1'"
       >
-        Start Shift
+        <app-icon name="plus" [size]="20"></app-icon>
+        <span>Start Shift</span>
       </button>
     } @else {
       <button
         (click)="closeShiftModal()"
-        class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-bold text-lg"
+        class="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all"
+        style="background: var(--color-error); color: white;"
+        onmouseover="this.style.opacity='0.9'"
+        onmouseout="this.style.opacity='1'"
       >
-        Close Shift
+        <app-icon name="x" [size]="20"></app-icon>
+        <span>Close Shift</span>
       </button>
     }
   </div>
 
+  <!-- Current Shift Display -->
   @if (hasActiveShift() && currentShift(); as shift) {
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Current Shift</h2>
+    <div class="bg-white rounded-xl p-6 border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <h2 class="text-lg font-semibold mb-6" style="color: var(--color-slate-900);">Current Shift</h2>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         <div>
-          <p class="text-sm text-gray-600">Shift Number</p>
-          <p class="text-lg font-bold text-gray-900">{{ shift.shiftNumber }}</p>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-500);">Shift Number</p>
+          <p class="text-xl font-semibold" style="color: var(--color-slate-900);">{{ shift.shiftNumber }}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-600">Cashier</p>
-          <p class="text-lg font-bold text-gray-900">{{ shift.cashierName }}</p>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-500);">Cashier</p>
+          <p class="text-xl font-semibold" style="color: var(--color-slate-900);">{{ shift.cashierName }}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-600">Start Time</p>
-          <p class="text-lg font-bold text-gray-900">{{ shift.startTime | date: 'short' }}</p>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-500);">Start Time</p>
+          <p class="text-xl font-semibold" style="color: var(--color-slate-900);">{{ shift.startTime | date: 'short' }}</p>
         </div>
         <div>
-          <p class="text-sm text-gray-600">Opening Balance</p>
-          <p class="text-lg font-bold text-gray-900">${{ shift.openingBalance.toFixed(2) }}</p>
+          <p class="text-sm font-medium mb-1" style="color: var(--color-slate-500);">Opening Balance</p>
+          <p class="text-xl font-semibold" style="color: var(--color-slate-900);">${{ shift.openingBalance.toFixed(2) }}</p>
         </div>
       </div>
 
+      @if (getShiftSummary(); as summary) {
+        <div class="border-t pt-6" style="border-color: var(--color-slate-200);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--color-slate-900);">Shift Summary</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Total Transactions</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">{{ summary.totalTransactions }}</p>
+            </div>
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Total Sales</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.totalSales.toFixed(2) }}</p>
+            </div>
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Cash Sales</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.cashSales.toFixed(2) }}</p>
+            </div>
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Card Sales</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.cardSales.toFixed(2) }}</p>
+            </div>
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Fuel Sales</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.fuelSales.toFixed(2) }}</p>
+            </div>
+            <div class="p-4 rounded-lg border" style="background: var(--color-slate-50); border-color: var(--color-slate-200);">
+              <p class="text-sm font-medium mb-1" style="color: var(--color-slate-600);">Minimart Sales</p>
+              <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">${{ summary.minimartSales.toFixed(2) }}</p>
       @if (summary(); as summaryData) {
         <div class="border-t pt-6">
           <h3 class="text-xl font-bold text-gray-800 mb-4">Shift Summary</h3>
@@ -74,15 +111,22 @@
       }
     </div>
   } @else {
-    <div class="bg-gray-50 border-2 border-gray-200 rounded-lg p-12 text-center">
-      <div class="text-6xl mb-4">🕐</div>
-      <h2 class="text-2xl font-bold text-gray-800 mb-2">No Active Shift</h2>
-      <p class="text-gray-600 mb-6">Start a shift to begin processing transactions</p>
+    <!-- No Active Shift -->
+    <div class="bg-white rounded-xl p-16 text-center border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
+      <div class="inline-flex p-6 rounded-2xl mb-6" style="background: var(--color-slate-100);">
+        <app-icon name="clock" [size]="48" customClass="text-slate-400"></app-icon>
+      </div>
+      <h2 class="text-2xl font-semibold mb-2" style="color: var(--color-slate-900);">No Active Shift</h2>
+      <p class="mb-6" style="color: var(--color-slate-500);">Start a shift to begin processing transactions</p>
       <button
         (click)="openShiftModal()"
-        class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-bold text-lg"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all"
+        style="background: var(--color-success); color: white;"
+        onmouseover="this.style.opacity='0.9'"
+        onmouseout="this.style.opacity='1'"
       >
-        Start Shift Now
+        <app-icon name="plus" [size]="20"></app-icon>
+        <span>Start Shift Now</span>
       </button>
     </div>
   }
@@ -90,19 +134,19 @@
 
 <!-- Open Shift Modal -->
 @if (showOpenModal()) {
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Start New Shift</h2>
+  <div class="fixed inset-0 flex items-center justify-center z-50" style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);">
+    <div class="bg-white rounded-2xl p-8 w-full max-w-md border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-xl);">
+      <h2 class="text-2xl font-semibold mb-6" style="color: var(--color-slate-900);">Start New Shift</h2>
 
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Cashier</label>
-        <p class="text-lg font-semibold text-gray-900">
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">Cashier</label>
+        <p class="text-lg font-medium" style="color: var(--color-slate-900);">
           {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
         </p>
       </div>
 
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+      <div class="mb-8">
+        <label class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">
           Opening Cash Balance
         </label>
         <input
@@ -110,7 +154,10 @@
           [value]="openingBalance()"
           (input)="openingBalance.set(parseFloat($any($event.target).value) || 0)"
           step="0.01"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+          class="w-full px-4 py-3 rounded-lg outline-none transition-all text-lg"
+          style="border: 1px solid var(--color-slate-300); color: var(--color-slate-900);"
+          onfocus="this.style.borderColor='var(--color-teal-500)'; this.style.boxShadow='0 0 0 3px var(--color-teal-100)'"
+          onblur="this.style.borderColor='var(--color-slate-300)'; this.style.boxShadow='none'"
           placeholder="0.00"
         />
       </div>
@@ -118,13 +165,19 @@
       <div class="flex gap-3">
         <button
           (click)="showOpenModal.set(false)"
-          class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg"
+          class="flex-1 px-4 py-3 rounded-lg font-medium transition-all"
+          style="background: var(--color-slate-100); color: var(--color-slate-700);"
+          onmouseover="this.style.background='var(--color-slate-200)'"
+          onmouseout="this.style.background='var(--color-slate-100)'"
         >
           Cancel
         </button>
         <button
           (click)="startShift()"
-          class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-lg"
+          class="flex-1 px-4 py-3 rounded-lg font-medium transition-all"
+          style="background: var(--color-success); color: white;"
+          onmouseover="this.style.opacity='0.9'"
+          onmouseout="this.style.opacity='1'"
         >
           Start Shift
         </button>
@@ -135,10 +188,15 @@
 
 <!-- Close Shift Modal -->
 @if (showCloseModal() && currentShift(); as shift) {
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Close Shift</h2>
+  <div class="fixed inset-0 flex items-center justify-center z-50" style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);">
+    <div class="bg-white rounded-2xl p-8 w-full max-w-md border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-xl);">
+      <h2 class="text-2xl font-semibold mb-6" style="color: var(--color-slate-900);">Close Shift</h2>
 
+      @if (getShiftSummary(); as summary) {
+        <div class="p-4 rounded-lg mb-6" style="background: var(--color-slate-50); border: 1px solid var(--color-slate-200);">
+          <p class="text-sm font-medium mb-2" style="color: var(--color-slate-600);">Expected Cash</p>
+          <p class="text-2xl font-semibold" style="color: var(--color-slate-900);">
+            ${{ (shift.openingBalance + summary.cashSales).toFixed(2) }}
       @if (summary(); as summaryData) {
         <div class="bg-gray-100 p-4 rounded-lg mb-4">
           <p class="text-sm text-gray-600 mb-2">Expected Cash</p>
@@ -149,7 +207,7 @@
       }
 
       <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">
           Actual Cash in Drawer
         </label>
         <input
@@ -157,18 +215,24 @@
           [value]="actualCash()"
           (input)="actualCash.set(parseFloat($any($event.target).value) || 0)"
           step="0.01"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+          class="w-full px-4 py-3 rounded-lg outline-none transition-all text-lg"
+          style="border: 1px solid var(--color-slate-300); color: var(--color-slate-900);"
+          onfocus="this.style.borderColor='var(--color-teal-500)'; this.style.boxShadow='0 0 0 3px var(--color-teal-100)'"
+          onblur="this.style.borderColor='var(--color-slate-300)'; this.style.boxShadow='none'"
           placeholder="0.00"
         />
       </div>
 
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Notes (optional)</label>
+      <div class="mb-8">
+        <label class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">Notes (optional)</label>
         <textarea
           [value]="notes()"
           (input)="notes.set($any($event.target).value)"
           rows="3"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          class="w-full px-4 py-3 rounded-lg outline-none transition-all"
+          style="border: 1px solid var(--color-slate-300); color: var(--color-slate-900);"
+          onfocus="this.style.borderColor='var(--color-teal-500)'; this.style.boxShadow='0 0 0 3px var(--color-teal-100)'"
+          onblur="this.style.borderColor='var(--color-slate-300)'; this.style.boxShadow='none'"
           placeholder="Any discrepancies or notes..."
         ></textarea>
       </div>
@@ -176,13 +240,19 @@
       <div class="flex gap-3">
         <button
           (click)="showCloseModal.set(false)"
-          class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg"
+          class="flex-1 px-4 py-3 rounded-lg font-medium transition-all"
+          style="background: var(--color-slate-100); color: var(--color-slate-700);"
+          onmouseover="this.style.background='var(--color-slate-200)'"
+          onmouseout="this.style.background='var(--color-slate-100)'"
         >
           Cancel
         </button>
         <button
           (click)="endShift()"
-          class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-lg"
+          class="flex-1 px-4 py-3 rounded-lg font-medium transition-all"
+          style="background: var(--color-error); color: white;"
+          onmouseover="this.style.opacity='0.9'"
+          onmouseout="this.style.opacity='1'"
         >
           Close Shift
         </button>

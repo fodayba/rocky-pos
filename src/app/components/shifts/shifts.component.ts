@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ShiftService } from '../../services/shift.service';
 import { AuthService } from '../../services/auth.service';
+import { IconComponent } from '../shared/icon/icon.component';
 import { ShiftSummary } from '../../models';
 
 @Component({
   selector: 'app-shifts',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent],
   templateUrl: './shifts.component.html',
   styleUrl: './shifts.component.css'
 })
