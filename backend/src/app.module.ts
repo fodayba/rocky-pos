@@ -10,6 +10,8 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CustomersModule } from './customers/customers.module';
 import { LocationsModule } from './locations/locations.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { FleetAccountsModule } from './fleet-accounts/fleet-accounts.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { LocationsModule } from './locations/locations.module';
     ShiftsModule,
     CustomersModule,
     LocationsModule,
+    SuppliersModule,
+    FleetAccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
