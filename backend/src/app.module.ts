@@ -16,6 +16,7 @@ import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { GiftCardsModule } from './gift-cards/gift-cards.module';
 import { AuditModule } from './audit/audit.module';
+import { InventoryTransfersModule } from './inventory-transfers/inventory-transfers.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { AuditModule } from './audit/audit.module';
     PromotionsModule,
     GiftCardsModule,
     AuditModule,
+    InventoryTransfersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
