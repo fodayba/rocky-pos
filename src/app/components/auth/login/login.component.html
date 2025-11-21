@@ -1,112 +1,116 @@
-<div class="min-h-screen flex items-center justify-center" style="background: var(--color-slate-100);">
-  <div class="bg-white rounded-2xl p-10 w-full max-w-md border" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-xl);">
-    <div class="text-center mb-10">
-      <h1 class="text-3xl font-semibold tracking-tight mb-2" style="color: var(--color-slate-900);">Rocky POS</h1>
-      <p class="text-sm" style="color: var(--color-slate-500);">Gas Station & Minimart</p>
-    </div>
-
-    <form (ngSubmit)="onSubmit()" class="space-y-5">
-      <div>
-        <label for="email" class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">
-          Email Address
-        </label>
-        <input
-          id="email"
-          type="email"
-          [value]="email()"
-          (input)="email.set($any($event.target).value)"
-          class="w-full px-4 py-3 rounded-lg outline-none transition-all"
-          style="border: 1px solid var(--color-slate-300); color: var(--color-slate-900);"
-          onfocus="this.style.borderColor='var(--color-teal-500)'; this.style.boxShadow='0 0 0 3px var(--color-teal-100)'"
-          onblur="this.style.borderColor='var(--color-slate-300)'; this.style.boxShadow='none'"
-          placeholder="Enter email"
-          required
-        />
+<div class="min-h-screen flex items-center justify-center px-4" style="background: var(--color-neutral-50);">
+  <div class="w-full max-w-md">
+    <div class="bg-white border border-neutral-200 p-12" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);">
+      <div class="text-center mb-10">
+        <h1 class="text-2xl font-semibold mb-2" style="color: var(--color-neutral-900); letter-spacing: -0.02em;">
+          Rocky POS
+        </h1>
+        <p class="text-sm" style="color: var(--color-neutral-500);">Gas Station & Minimart</p>
       </div>
 
-      <div>
-        <label for="password" class="block text-sm font-medium mb-2" style="color: var(--color-slate-700);">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          [value]="password()"
-          (input)="password.set($any($event.target).value)"
-          class="w-full px-4 py-3 rounded-lg outline-none transition-all"
-          style="border: 1px solid var(--color-slate-300); color: var(--color-slate-900);"
-          onfocus="this.style.borderColor='var(--color-teal-500)'; this.style.boxShadow='0 0 0 3px var(--color-teal-100)'"
-          onblur="this.style.borderColor='var(--color-slate-300)'; this.style.boxShadow='none'"
-          placeholder="Enter password"
-          required
-        />
-      </div>
-
-      @if (error()) {
-        <div class="px-4 py-3 rounded-lg border" style="background: var(--color-error-light); border-color: var(--color-error); color: var(--color-error);">
-          {{ error() }}
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            class="input"
+            placeholder="you@example.com"
+            required
+          />
         </div>
-      }
 
-      <button
-        type="submit"
-        [disabled]="loading()"
-        class="w-full font-medium py-3 rounded-lg transition-all disabled:opacity-50"
-        style="background: var(--color-slate-900); color: white;"
-        onmouseover="if(!this.disabled) this.style.background='var(--color-slate-800)'"
-        onmouseout="if(!this.disabled) this.style.background='var(--color-slate-900)'"
-      >
-        @if (loading()) {
-          <span>Logging in...</span>
-        } @else {
-          <span>Login</span>
+        <div>
+          <label for="password" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        @if (error()) {
+          <div class="px-4 py-3 border" style="background: var(--color-error-light); border-color: var(--color-error); color: var(--color-error); border-radius: var(--radius-md); font-size: 0.875rem;">
+            {{ error() }}
+          </div>
         }
-      </button>
-    </form>
 
-    <div class="mt-8 space-y-4">
-      <div class="text-center">
-        <p class="text-sm" style="color: var(--color-slate-600);">
-          New business?
-          <a routerLink="/signup" class="font-medium transition-colors" style="color: var(--color-teal-600);" onmouseover="this.style.color='var(--color-teal-700)'" onmouseout="this.style.color='var(--color-teal-600)'">Create an account</a>
-        </p>
-      </div>
-
-      <button
-        type="button"
-        (click)="toggleCredentials()"
-        class="w-full text-sm font-medium transition-colors"
-        style="color: var(--color-slate-600);"
-        onmouseover="this.style.color='var(--color-slate-900)'"
-        onmouseout="this.style.color='var(--color-slate-600)'"
-      >
-        {{ showCredentials() ? 'Hide' : 'Show' }} Test Credentials
-      </button>
-
-      @if (showCredentials()) {
-        <div class="mt-4 p-4 rounded-lg space-y-2" style="background: var(--color-slate-50); border: 1px solid var(--color-slate-200);">
-          <p class="text-sm font-medium mb-3" style="color: var(--color-slate-700);">Test Accounts:</p>
-          @for (cred of mockCredentials; track cred.email) {
-            <div class="flex justify-between items-center p-3 bg-white rounded-lg border" style="border-color: var(--color-slate-200);">
-              <div>
-                <span class="font-medium text-sm" style="color: var(--color-slate-900);">{{ cred.email }}</span>
-                <span class="text-xs ml-2 capitalize" style="color: var(--color-slate-500);">({{ cred.role }})</span>
-              </div>
-              <button
-                type="button"
-                (click)="fillCredentials(cred.email, cred.password)"
-                class="text-xs font-medium px-3 py-1.5 rounded-md transition-colors"
-                style="background: var(--color-teal-100); color: var(--color-teal-700);"
-                onmouseover="this.style.background='var(--color-teal-200)'"
-                onmouseout="this.style.background='var(--color-teal-100)'"
-              >
-                Use
-              </button>
-            </div>
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="btn btn-primary w-full"
+          style="padding: 0.875rem 1.5rem; margin-top: 1.5rem;"
+        >
+          @if (loading()) {
+            <span>Signing in...</span>
+          } @else {
+            <span>Sign In</span>
           }
-          <p class="text-xs mt-3" style="color: var(--color-slate-500);">Password for all: password123</p>
+        </button>
+      </form>
+
+      <div class="mt-8 space-y-6">
+        <div class="text-center">
+          <p class="text-sm" style="color: var(--color-neutral-600);">
+            New business?
+            <a
+              routerLink="/signup"
+              class="font-medium"
+              style="color: var(--color-neutral-900); text-decoration: none; transition: opacity var(--transition-base);"
+              onmouseover="this.style.opacity='0.7'"
+              onmouseout="this.style.opacity='1'"
+            >
+              Create an account
+            </a>
+          </p>
         </div>
-      }
+
+        <button
+          type="button"
+          (click)="toggleCredentials()"
+          class="w-full text-sm font-medium transition-colors"
+          style="color: var(--color-neutral-600); padding: 0.5rem;"
+          onmouseover="this.style.color='var(--color-neutral-900)'"
+          onmouseout="this.style.color='var(--color-neutral-600)'"
+        >
+          {{ showCredentials() ? 'Hide' : 'Show' }} Test Credentials
+        </button>
+
+        @if (showCredentials()) {
+          <div class="p-5 space-y-3" style="background: var(--color-neutral-50); border: 1px solid var(--color-neutral-200); border-radius: var(--radius-md);">
+            <p class="text-sm font-medium mb-4" style="color: var(--color-neutral-700);">Test Accounts</p>
+            @for (cred of mockCredentials; track cred.email) {
+              <div class="flex justify-between items-center p-4 bg-white border" style="border-color: var(--color-neutral-200); border-radius: var(--radius-md);">
+                <div>
+                  <span class="font-medium text-sm" style="color: var(--color-neutral-900);">{{ cred.email }}</span>
+                  <span class="text-xs ml-2 capitalize" style="color: var(--color-neutral-500);">({{ cred.role }})</span>
+                </div>
+                <button
+                  type="button"
+                  (click)="fillCredentials(cred.email, cred.password)"
+                  class="text-xs font-medium px-3 py-1.5 transition-all"
+                  style="background: var(--color-neutral-100); color: var(--color-neutral-900); border-radius: var(--radius-sm);"
+                  onmouseover="this.style.background='var(--color-neutral-200)'"
+                  onmouseout="this.style.background='var(--color-neutral-100)'"
+                >
+                  Use
+                </button>
+              </div>
+            }
+            <p class="text-xs mt-4" style="color: var(--color-neutral-500);">Password for all: password123</p>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>

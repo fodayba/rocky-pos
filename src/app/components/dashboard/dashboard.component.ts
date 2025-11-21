@@ -7,10 +7,11 @@ import { TransactionService } from '../../services/transaction.service';
 import { ProductService } from '../../services/product.service';
 import { FuelService } from '../../services/fuel.service';
 import { ShiftSummary } from '../../models';
+import { IconComponent } from '../shared/icon/icon.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, IconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

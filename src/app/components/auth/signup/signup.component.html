@@ -1,129 +1,142 @@
-<div class="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-4">
-  <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-8 w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-semibold text-stone-900 tracking-tight mb-2">Create Account</h1>
-      <p class="text-sm text-stone-600">Start your business journey</p>
-    </div>
+<div class="min-h-screen flex items-center justify-center px-4 py-12" style="background: var(--color-neutral-50);">
+  <div class="w-full max-w-md">
+    <div class="bg-white border p-10" style="border-color: var(--color-neutral-200); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-semibold mb-2" style="color: var(--color-neutral-900); letter-spacing: -0.02em;">
+          Create Account
+        </h1>
+        <p class="text-sm" style="color: var(--color-neutral-600);">Start your business journey</p>
+      </div>
 
-    <form (ngSubmit)="onSubmit()" class="space-y-4">
-      <div class="grid grid-cols-2 gap-4">
+      <form (ngSubmit)="onSubmit()" class="space-y-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="firstName" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+              First Name
+            </label>
+            <input
+              id="firstName"
+              type="text"
+              [value]="firstName()"
+              (input)="firstName.set($any($event.target).value)"
+              class="input"
+              placeholder="John"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="lastName" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              [value]="lastName()"
+              (input)="lastName.set($any($event.target).value)"
+              class="input"
+              placeholder="Doe"
+              required
+            />
+          </div>
+        </div>
+
         <div>
-          <label for="firstName" class="block text-sm font-medium text-stone-700 mb-1.5">
-            First Name
+          <label for="businessName" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Business Name
           </label>
           <input
-            id="firstName"
+            id="businessName"
             type="text"
-            [value]="firstName()"
-            (input)="firstName.set($any($event.target).value)"
+            [value]="businessName()"
+            (input)="businessName.set($any($event.target).value)"
             class="input"
-            placeholder="John"
+            placeholder="Rocky's Gas & Minimart"
             required
           />
         </div>
 
         <div>
-          <label for="lastName" class="block text-sm font-medium text-stone-700 mb-1.5">
-            Last Name
+          <label for="email" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Email Address
           </label>
           <input
-            id="lastName"
-            type="text"
-            [value]="lastName()"
-            (input)="lastName.set($any($event.target).value)"
+            id="email"
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
             class="input"
-            placeholder="Doe"
+            placeholder="john@example.com"
+            required
+          />
+          <p class="text-xs mt-1.5" style="color: var(--color-neutral-500);">This will be your login email</p>
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
+            required
+          />
+          <p class="text-xs mt-1.5" style="color: var(--color-neutral-500);">Minimum 6 characters</p>
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium mb-2" style="color: var(--color-neutral-700);">
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
             required
           />
         </div>
-      </div>
 
-      <div>
-        <label for="businessName" class="block text-sm font-medium text-stone-700 mb-1.5">
-          Business Name
-        </label>
-        <input
-          id="businessName"
-          type="text"
-          [value]="businessName()"
-          (input)="businessName.set($any($event.target).value)"
-          class="input"
-          placeholder="Rocky's Gas & Minimart"
-          required
-        />
-      </div>
-
-      <div>
-        <label for="email" class="block text-sm font-medium text-stone-700 mb-1.5">
-          Email Address
-        </label>
-        <input
-          id="email"
-          type="email"
-          [value]="email()"
-          (input)="email.set($any($event.target).value)"
-          class="input"
-          placeholder="john@example.com"
-          required
-        />
-        <p class="text-xs text-stone-500 mt-1">This will be your login email</p>
-      </div>
-
-      <div>
-        <label for="password" class="block text-sm font-medium text-stone-700 mb-1.5">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          [value]="password()"
-          (input)="password.set($any($event.target).value)"
-          class="input"
-          placeholder="••••••••"
-          required
-        />
-        <p class="text-xs text-stone-500 mt-1">Minimum 6 characters</p>
-      </div>
-
-      <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-stone-700 mb-1.5">
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          [value]="confirmPassword()"
-          (input)="confirmPassword.set($any($event.target).value)"
-          class="input"
-          placeholder="••••••••"
-          required
-        />
-      </div>
-
-      @if (error()) {
-        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          {{ error() }}
-        </div>
-      }
-
-      <button
-        type="submit"
-        [disabled]="loading()"
-        class="btn btn-primary w-full"
-      >
-        @if (loading()) {
-          <span>Creating account...</span>
-        } @else {
-          <span>Create Account</span>
+        @if (error()) {
+          <div class="px-4 py-3 border text-sm" style="background: var(--color-error-light); border-color: var(--color-error); color: var(--color-error); border-radius: var(--radius-md);">
+            {{ error() }}
+          </div>
         }
-      </button>
-    </form>
 
-    <div class="mt-6 text-center">
-      <p class="text-sm text-stone-600">
-        Already have an account?
-        <a routerLink="/login" class="text-stone-900 font-medium hover:underline">Sign in</a>
-      </p>
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="btn btn-primary w-full"
+          style="padding: 0.875rem 1.5rem; margin-top: 1.5rem;"
+        >
+          @if (loading()) {
+            <span>Creating account...</span>
+          } @else {
+            <span>Create Account</span>
+          }
+        </button>
+      </form>
+
+      <div class="mt-8 text-center">
+        <p class="text-sm" style="color: var(--color-neutral-600);">
+          Already have an account?
+          <a
+            routerLink="/login"
+            class="font-medium"
+            style="color: var(--color-neutral-900); text-decoration: none; transition: opacity var(--transition-base);"
+            onmouseover="this.style.opacity='0.7'"
+            onmouseout="this.style.opacity='1'"
+          >
+            Sign in
+          </a>
+        </p>
+      </div>
     </div>
   </div>
 </div>

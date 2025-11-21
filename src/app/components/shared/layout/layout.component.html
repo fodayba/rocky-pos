@@ -1,49 +1,37 @@
-<div class="min-h-screen" style="background: var(--color-slate-50);">
+<div class="min-h-screen bg-stone-50">
   <!-- Top Navigation -->
-  <nav class="bg-white border-b" style="border-color: var(--color-slate-200); box-shadow: var(--shadow-sm);">
-    <div class="px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-6">
-          <button
-            (click)="toggleSidebar()"
-            class="p-2 rounded-lg transition-colors"
-            style="color: var(--color-slate-600);"
-            onmouseover="this.style.backgroundColor='var(--color-slate-100)'"
-            onmouseout="this.style.backgroundColor='transparent'"
-          >
+  <nav class="nav-header">
+    <div class="nav-container">
+      <div class="nav-content">
+        <div class="nav-left">
+          <button (click)="toggleSidebar()" class="nav-toggle" aria-label="Toggle sidebar">
             <app-icon name="menu" [size]="20"></app-icon>
           </button>
-          <h1 class="text-xl font-semibold tracking-tight" style="color: var(--color-slate-900);">Rocky POS</h1>
+          <h1 class="nav-title">Rocky POS</h1>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="nav-right">
           @if (hasActiveShift()) {
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: var(--color-success-light); color: var(--color-success);">
-              <div class="w-2 h-2 rounded-full" style="background: var(--color-success);"></div>
-              <span class="text-sm font-medium">Shift Active</span>
+            <div class="shift-indicator shift-active">
+              <div class="shift-dot"></div>
+              <span class="shift-text">Shift Active</span>
             </div>
           } @else {
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: var(--color-error-light); color: var(--color-error);">
-              <div class="w-2 h-2 rounded-full" style="background: var(--color-error);"></div>
-              <span class="text-sm font-medium">No Active Shift</span>
+            <div class="shift-indicator shift-inactive">
+              <div class="shift-dot"></div>
+              <span class="shift-text">No Active Shift</span>
             </div>
           }
 
           @if (currentUser(); as user) {
-            <div class="flex items-center gap-4">
-              <div class="text-right">
-                <p class="text-sm font-medium" style="color: var(--color-slate-900);">{{ user.firstName }} {{ user.lastName }}</p>
-                <p class="text-xs capitalize" style="color: var(--color-slate-500);">{{ user.role }}</p>
+            <div class="user-info-wrapper">
+              <div class="user-info">
+                <p class="user-name">{{ user.firstName }} {{ user.lastName }}</p>
+                <p class="user-role">{{ user.role }}</p>
               </div>
-              <button
-                (click)="logout()"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
-                style="color: var(--color-slate-700); border: 1px solid var(--color-slate-300);"
-                onmouseover="this.style.backgroundColor='var(--color-slate-100)'"
-                onmouseout="this.style.backgroundColor='transparent'"
-              >
+              <button (click)="logout()" class="btn-logout" title="Logout">
                 <app-icon name="log-out" [size]="16"></app-icon>
-                <span>Logout</span>
+                <span class="btn-logout-text">Logout</span>
               </button>
             </div>
           }
@@ -55,9 +43,9 @@
   <div class="flex">
     <!-- Sidebar -->
     @if (sidebarOpen()) {
-      <aside class="bg-white border-r" style="width: 16rem; border-color: var(--color-slate-200); min-height: calc(100vh - 73px);">
-        <nav class="p-4">
-          <ul class="space-y-1">
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <ul class="nav-list">
             @for (item of navItems; track item.path) {
               @if (canAccessRoute(item.roles)) {
                 <li>
@@ -65,10 +53,9 @@
                     [routerLink]="item.path"
                     routerLinkActive="nav-active"
                     [routerLinkActiveOptions]="{ exact: false }"
-                    class="nav-item flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all"
-                    style="color: var(--color-slate-700);"
+                    class="nav-item"
                   >
-                    <app-icon [name]="item.icon" [size]="20"></app-icon>
+                    <app-icon [name]="item.icon" [size]="18"></app-icon>
                     <span>{{ item.label }}</span>
                   </a>
                 </li>
@@ -80,7 +67,7 @@
     }
 
     <!-- Main Content -->
-    <main class="flex-1 p-8" style="background: var(--color-slate-50);">
+    <main class="main-content">
       <router-outlet />
     </main>
   </div>

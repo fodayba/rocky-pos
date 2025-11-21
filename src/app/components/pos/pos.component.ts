@@ -9,6 +9,7 @@ import { ShiftService } from '../../services/shift.service';
 import { AuthService } from '../../services/auth.service';
 import { CustomerService } from '../../services/customer.service';
 import { Product, FuelProduct, TransactionItem, PaymentMethod } from '../../models';
+import { IconComponent } from '../shared/icon/icon.component';
 
 interface CartItem extends TransactionItem {
   product?: Product;
@@ -17,7 +18,7 @@ interface CartItem extends TransactionItem {
 
 @Component({
   selector: 'app-pos',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, IconComponent],
   templateUrl: './pos.component.html',
   styleUrl: './pos.component.css'
 })
