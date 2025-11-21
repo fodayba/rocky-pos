@@ -232,7 +232,14 @@ export class FuelTanksService {
   async getAlertsForLocation(locationId: string): Promise<any> {
     const tanks = await this.tankModel.find({ locationId }).exec();
 
-    const alerts = {
+    const alerts: {
+      lowLevel: FuelTank[];
+      highTemperature: FuelTank[];
+      waterDetected: FuelTank[];
+      leaksDetected: FuelTank[];
+      inspectionDue: FuelTank[];
+      leakTestDue: FuelTank[];
+    } = {
       lowLevel: [],
       highTemperature: [],
       waterDetected: [],

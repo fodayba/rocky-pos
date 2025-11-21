@@ -243,7 +243,7 @@ export class SchedulingService {
       const hours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
 
       if (hoursMap.has(employeeId)) {
-        const existing = hoursMap.get(employeeId);
+        const existing = hoursMap.get(employeeId)!;
         existing.totalHours += hours;
         existing.shifts += 1;
       } else {

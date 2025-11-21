@@ -126,7 +126,19 @@ export class TaxService {
       }
     }
 
-    const taxBreakdown = {
+    const taxBreakdown: {
+      subtotal: number;
+      taxDetails: Array<{
+        jurisdiction: string;
+        jurisdictionType: string;
+        taxType: string;
+        rate: number;
+        applicableAmount: number;
+        taxAmount: number;
+      }>;
+      totalTax: number;
+      grandTotal: number;
+    } = {
       subtotal: 0,
       taxDetails: [],
       totalTax: 0,

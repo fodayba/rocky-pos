@@ -18,6 +18,7 @@ import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../schemas/user.schema';
 
 @Controller('suppliers')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,61 +26,61 @@ export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   create(@Body() createSupplierDto: CreateSupplierDto, @Request() req) {
     return this.suppliersService.create(createSupplierDto, req.user.userId);
   }
 
   @Get()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findAll(@Query() filters: any) {
     return this.suppliersService.findAll(filters);
   }
 
   @Get('statistics')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   getStatistics() {
     return this.suppliersService.getStatistics();
   }
 
   @Get('active')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findActive() {
     return this.suppliersService.findActive();
   }
 
   @Get('preferred')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findPreferred() {
     return this.suppliersService.findPreferred();
   }
 
   @Get('search')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   search(@Query('q') searchTerm: string) {
     return this.suppliersService.search(searchTerm);
   }
 
   @Get('type/:type')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findByType(@Param('type') type: string) {
     return this.suppliersService.findByType(type);
   }
 
   @Get('code/:supplierCode')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findByCode(@Param('supplierCode') supplierCode: string) {
     return this.suppliersService.findByCode(supplierCode);
   }
 
   @Get(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findById(@Param('id') id: string) {
     return this.suppliersService.findById(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   update(
     @Param('id') id: string,
     @Body() updateSupplierDto: UpdateSupplierDto,
@@ -89,13 +90,13 @@ export class SuppliersController {
   }
 
   @Patch(':id/balance')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateBalance(@Param('id') id: string, @Body() body: { amount: number }) {
     return this.suppliersService.updateBalance(id, body.amount);
   }
 
   @Patch(':id/performance')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updatePerformance(
     @Param('id') id: string,
     @Body() body: { onTimeRate: number; qualityRating: number },
@@ -108,7 +109,7 @@ export class SuppliersController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.suppliersService.remove(id);

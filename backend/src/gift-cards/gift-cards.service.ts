@@ -170,7 +170,7 @@ export class GiftCardsService {
   }
 
   private async generateCardNumber(): Promise<string> {
-    let cardNumber: string;
+    let cardNumber: string = '';
     let exists = true;
 
     while (exists) {

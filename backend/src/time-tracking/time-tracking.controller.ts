@@ -7,6 +7,7 @@ import { CreateTimeEntryDto } from './dto/create-time-entry.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../schemas/user.schema';
 
 @Controller('time-tracking')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -39,19 +40,19 @@ export class TimeTrackingController {
   }
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   create(@Body() createDto: CreateTimeEntryDto, @Request() req) {
     return this.service.create(createDto, req.user.userId);
   }
 
   @Get()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findAll(@Query() filters: any) {
     return this.service.findAll(filters);
   }
 
   @Get('employee/:employeeId')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   getByEmployee(
     @Param('employeeId') employeeId: string,
     @Query('startDate') startDate?: string,
@@ -78,7 +79,7 @@ export class TimeTrackingController {
   }
 
   @Get('summary/:employeeId')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   getHoursSummary(
     @Param('employeeId') employeeId: string,
     @Query('startDate') startDate: string,
@@ -97,13 +98,13 @@ export class TimeTrackingController {
   }
 
   @Get(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id/adjust')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   adjust(
     @Param('id') id: string,
     @Body() adjustDto: AdjustTimeDto,
@@ -113,7 +114,7 @@ export class TimeTrackingController {
   }
 
   @Post(':id/approve')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   approve(@Param('id') id: string, @Request() req) {
     return this.service.approve(id, req.user.userId);
   }
@@ -124,7 +125,7 @@ export class TimeTrackingController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   delete(@Param('id') id: string) {
     return this.service.delete(id);
   }
