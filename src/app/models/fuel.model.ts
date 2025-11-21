@@ -1,33 +1,29 @@
-export type FuelType = 'regular' | 'premium' | 'diesel';
-
 export interface FuelProduct {
-  id: string;
+  _id: string;
+  id?: string; // Backwards compatibility
+  locationId?: string;
   name: string;
-  type: FuelType;
+  type: 'regular' | 'midgrade' | 'premium' | 'diesel' | 'e85' | 'kerosene' | 'def';
   pricePerGallon: number;
+  cashPricePerGallon?: number;
+  cost?: number;
   currentStock: number;
   tankCapacity: number;
   minLevel: number;
+  reorderLevel?: number;
+  tankNumber: string;
+  tankId?: string;
   lastDelivery?: Date;
   lastDeliveryAmount?: number;
-}
-
-export interface FuelDelivery {
-  id: string;
-  fuelProductId: string;
-  amount: number;
-  costPerGallon: number;
-  totalCost: number;
-  deliveryDate: Date;
-  invoiceNumber: string;
-  supplier: string;
-}
-
-export interface TankReading {
-  id: string;
-  fuelProductId: string;
-  reading: number;
-  readingDate: Date;
-  recordedBy: string;
-  notes?: string;
+  nextScheduledDelivery?: Date;
+  supplier?: string;
+  todayGallonsSold?: number;
+  weekGallonsSold?: number;
+  monthGallonsSold?: number;
+  lastSalesUpdate?: Date;
+  active: boolean;
+  outOfStock?: boolean;
+  outOfStockSince?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

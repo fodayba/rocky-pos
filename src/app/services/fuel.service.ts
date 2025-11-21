@@ -4,6 +4,8 @@ import { Observable, tap } from 'rxjs';
 import { FuelProduct } from '../models';
 import { environment } from '../../environments/environment';
 
+export type { FuelProduct } from '../models';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,6 +30,10 @@ export class FuelService {
     );
   }
 
+  loadFuelProducts(): Observable<FuelProduct[]> {
+    return this.findAll();
+  }
+
   findOne(id: string): Observable<FuelProduct> {
     return this.http.get<FuelProduct>(`${this.apiUrl}/${id}`);
   }
@@ -36,14 +42,25 @@ export class FuelService {
     return this.http.get<FuelProduct[]>(`${this.apiUrl}/low-level`);
   }
 
-  updatePrice(id: string, price: number): Observable<FuelProduct> {
-    return this.http.patch<FuelProduct>(`${this.apiUrl}/${id}/price`, { price }).pipe(
+  getLowLevelProducts(): Observable<FuelProduct[]> {
+    return this.findLowLevel();
+  }
+
+  updatePrice(id: string, pricePerGallon: number, cashPricePerGallon?: number): Observable<FuelProduct> {
+    return this.http.patch<FuelProduct>(`${this.apiUrl}/${id}/price`, {
+      pricePerGallon,
+      cashPricePerGallon
+    }).pipe(
       tap(() => this.findAll().subscribe())
     );
   }
 
-  recordDelivery(id: string, amount: number): Observable<FuelProduct> {
-    return this.http.post<FuelProduct>(`${this.apiUrl}/${id}/delivery`, { amount }).pipe(
+  recordDelivery(id: string, delivery: {
+    amount: number;
+    cost?: number;
+    notes?: string;
+  }): Observable<FuelProduct> {
+    return this.http.post<FuelProduct>(`${this.apiUrl}/${id}/delivery`, delivery).pipe(
       tap(() => this.findAll().subscribe())
     );
   }

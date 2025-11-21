@@ -23,13 +23,17 @@ export type IconName =
   | 'circle'
   | 'chevron-down'
   | 'chevron-up'
+  | 'chevron-left'
+  | 'chevron-right'
   | 'plus'
   | 'minus'
   | 'trash'
   | 'edit'
   | 'search'
   | 'barcode'
-  | 'log-out';
+  | 'log-out'
+  | 'info'
+  | 'inbox';
 
 @Component({
   selector: 'app-icon',
@@ -225,6 +229,29 @@ export type IconName =
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
           <line x1="21" y1="12" x2="9" y2="12"></line>
+        </g>
+
+        <!-- Chevron Left -->
+        <g *ngSwitchCase="'chevron-left'">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </g>
+
+        <!-- Chevron Right -->
+        <g *ngSwitchCase="'chevron-right'">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </g>
+
+        <!-- Info -->
+        <g *ngSwitchCase="'info'">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </g>
+
+        <!-- Inbox -->
+        <g *ngSwitchCase="'inbox'">
+          <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+          <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
         </g>
       </ng-container>
     </svg>

@@ -1,24 +1,26 @@
 import { Routes } from '@angular/router';
-import { authGuard, roleGuard } from './guards/auth.guard';
 import { LoginComponent } from './components/auth/login/login.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
-import { LayoutComponent } from './components/shared/layout/layout.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PosComponent } from './components/pos/pos.component';
 import { InventoryComponent } from './components/inventory/inventory.component';
-import { FuelComponent } from './components/inventory/fuel.component';
+import { FuelComponent } from './components/fuel/fuel.component';
 import { CustomersComponent } from './components/customers/customers.component';
+import { CustomerFormComponent } from './components/customers/customer-form/customer-form.component';
+import { CustomerDetailsComponent } from './components/customers/customer-details/customer-details.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { LayoutComponent } from './components/shared/layout/layout.component';
+import { authGuard, roleGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
   },
   {
     path: '',
@@ -28,43 +30,62 @@ export const routes: Routes = [
       {
         path: '',
         redirectTo: 'dashboard',
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
       },
       {
         path: 'pos',
-        component: PosComponent
+        component: PosComponent,
       },
       {
         path: 'inventory',
         component: InventoryComponent,
-        canActivate: [roleGuard(['admin', 'manager'])]
+        canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
         path: 'fuel',
         component: FuelComponent,
-        canActivate: [roleGuard(['admin', 'manager'])]
+        canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
         path: 'customers',
-        component: CustomersComponent
+        children: [
+          {
+            path: '',
+            component: CustomersComponent,
+          },
+          {
+            path: 'add',
+            component: CustomerFormComponent,
+          },
+          {
+            path: 'edit/:id',
+            component: CustomerFormComponent,
+            data: { prerender: false },
+          },
+          {
+            path: ':id',
+            component: CustomerDetailsComponent,
+            data: { prerender: false },
+          },
+        ],
       },
       {
         path: 'shifts',
-        component: ShiftsComponent
+        component: ShiftsComponent,
       },
       {
         path: 'reports',
         component: ReportsComponent,
-        canActivate: [roleGuard(['admin', 'manager'])]
-      }
-    ]
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+    ],
   },
   {
     path: '**',
-    redirectTo: 'dashboard'
-  }
+    redirectTo: 'dashboard',
+  },
 ];
