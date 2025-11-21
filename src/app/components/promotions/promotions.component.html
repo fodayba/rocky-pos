@@ -1,0 +1,74 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Promotions
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Manage discounts, offers, and promotional campaigns
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="addPromotion()">
+      <app-icon name="plus" [size]="20" />
+      Add Promotion
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by name, description, code..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Type</label>
+          <select
+            [value]="selectedType()"
+            (change)="updateTypeFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All Types</option>
+            <option value="percentage_discount">Percentage Off</option>
+            <option value="fixed_amount_discount">Amount Off</option>
+            <option value="buy_x_get_y">Buy X Get Y</option>
+            <option value="bundle">Bundle</option>
+            <option value="loyalty_points_multiplier">Points Multiplier</option>
+            <option value="free_item">Free Item</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="draft">Draft</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredPromotions()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>

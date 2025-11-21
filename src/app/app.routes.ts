@@ -9,6 +9,7 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerFormComponent } from './components/customers/customer-form/customer-form.component';
 import { CustomerDetailsComponent } from './components/customers/customer-details/customer-details.component';
 import { SuppliersComponent } from './components/suppliers/suppliers.component';
+import { PromotionsComponent } from './components/promotions/promotions.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -77,6 +78,11 @@ export const routes: Routes = [
       {
         path: 'suppliers',
         component: SuppliersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'promotions',
+        component: PromotionsComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
       },
       {

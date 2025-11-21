@@ -1,27 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface Promotion {
-  _id: string;
-  name: string;
-  description: string;
-  type: 'percentage_discount' | 'fixed_discount' | 'buy_x_get_y' | 'bundle' | 'loyalty_multiplier' | 'free_item';
-  status: 'active' | 'paused' | 'scheduled' | 'expired';
-  discountPercent?: number;
-  discountAmount?: number;
-  startDate: Date;
-  endDate?: Date;
-  applicableProducts: string[];
-  applicableCategories: string[];
-  couponCode?: string;
-  requiresCoupon: boolean;
-  usageLimit?: number;
-  usageCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import {
+  Promotion,
+  CreatePromotionDto,
+  UpdatePromotionDto,
+  PromotionStatus
+} from '../models/promotion.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,54 +19,77 @@ export class PromotionService {
   private promotionsSignal = signal<Promotion[]>([]);
   readonly promotions = this.promotionsSignal.asReadonly();
 
-  async loadPromotions() {
-    const promotions = await firstValueFrom(this.http.get<Promotion[]>(this.apiUrl));
-    this.promotionsSignal.set(promotions);
-    return promotions;
-  }
-
-  async getPromotion(id: string) {
-    return firstValueFrom(this.http.get<Promotion>(`${this.apiUrl}/${id}`));
-  }
-
-  async createPromotion(promotion: Partial<Promotion>) {
-    const newPromotion = await firstValueFrom(
-      this.http.post<Promotion>(this.apiUrl, promotion)
-    );
-    this.promotionsSignal.update((promotions) => [...promotions, newPromotion]);
-    return newPromotion;
-  }
-
-  async updatePromotion(id: string, updates: Partial<Promotion>) {
-    const updated = await firstValueFrom(
-      this.http.patch<Promotion>(`${this.apiUrl}/${id}`, updates)
-    );
-    this.promotionsSignal.update((promotions) =>
-      promotions.map((p) => (p._id === id ? updated : p))
-    );
-    return updated;
-  }
-
-  async activatePromotion(id: string) {
-    return firstValueFrom(
-      this.http.patch<Promotion>(`${this.apiUrl}/${id}/activate`, {})
+  findAll(filters?: any): Observable<Promotion[]> {
+    let params = new HttpParams();
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== null && filters[key] !== undefined) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+    return this.http.get<Promotion[]>(this.apiUrl, { params }).pipe(
+      tap(promotions => this.promotionsSignal.set(promotions))
     );
   }
 
-  async pausePromotion(id: string) {
-    return firstValueFrom(
-      this.http.patch<Promotion>(`${this.apiUrl}/${id}/pause`, {})
+  findOne(id: string): Observable<Promotion> {
+    return this.http.get<Promotion>(`${this.apiUrl}/${id}`);
+  }
+
+  findActive(): Observable<Promotion[]> {
+    return this.http.get<Promotion[]>(`${this.apiUrl}/active`);
+  }
+
+  findByStatus(status: PromotionStatus): Observable<Promotion[]> {
+    return this.http.get<Promotion[]>(`${this.apiUrl}/status/${status}`);
+  }
+
+  create(dto: CreatePromotionDto): Observable<Promotion> {
+    return this.http.post<Promotion>(this.apiUrl, dto).pipe(
+      tap(promotion => {
+        this.promotionsSignal.update(promotions => [...promotions, promotion]);
+      })
     );
   }
 
-  async deletePromotion(id: string) {
-    await firstValueFrom(this.http.delete(`${this.apiUrl}/${id}`));
-    this.promotionsSignal.update((promotions) =>
-      promotions.filter((p) => p._id !== id)
+  update(id: string, dto: UpdatePromotionDto): Observable<Promotion> {
+    return this.http.patch<Promotion>(`${this.apiUrl}/${id}`, dto).pipe(
+      tap(updated => {
+        this.promotionsSignal.update(promotions =>
+          promotions.map(p => p._id === id ? updated : p)
+        );
+      })
     );
   }
 
-  async getActivePromotions() {
-    return firstValueFrom(this.http.get<Promotion[]>(`${this.apiUrl}/active`));
+  activate(id: string): Observable<Promotion> {
+    return this.http.patch<Promotion>(`${this.apiUrl}/${id}/activate`, {}).pipe(
+      tap(updated => {
+        this.promotionsSignal.update(promotions =>
+          promotions.map(p => p._id === id ? updated : p)
+        );
+      })
+    );
+  }
+
+  pause(id: string): Observable<Promotion> {
+    return this.http.patch<Promotion>(`${this.apiUrl}/${id}/pause`, {}).pipe(
+      tap(updated => {
+        this.promotionsSignal.update(promotions =>
+          promotions.map(p => p._id === id ? updated : p)
+        );
+      })
+    );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.promotionsSignal.update(promotions =>
+          promotions.filter(p => p._id !== id)
+        );
+      })
+    );
   }
 }
