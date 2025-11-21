@@ -3,17 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ShiftService } from '../../../services/shift.service';
+import { IconComponent, IconName } from '../icon/icon.component';
 
 interface NavItem {
   label: string;
   path: string;
-  icon: string;
+  icon: IconName;
   roles: string[];
 }
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, IconComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
@@ -31,43 +32,43 @@ export class LayoutComponent {
     {
       label: 'Dashboard',
       path: '/dashboard',
-      icon: '📊',
+      icon: 'dashboard',
       roles: ['admin', 'manager', 'cashier']
     },
     {
       label: 'POS Terminal',
       path: '/pos',
-      icon: '💳',
+      icon: 'pos',
       roles: ['admin', 'manager', 'cashier']
     },
     {
       label: 'Inventory',
       path: '/inventory',
-      icon: '📦',
+      icon: 'inventory',
       roles: ['admin', 'manager']
     },
     {
       label: 'Fuel Management',
       path: '/fuel',
-      icon: '⛽',
+      icon: 'fuel',
       roles: ['admin', 'manager']
     },
     {
       label: 'Customers',
       path: '/customers',
-      icon: '👥',
+      icon: 'users',
       roles: ['admin', 'manager', 'cashier']
     },
     {
       label: 'Shifts',
       path: '/shifts',
-      icon: '🕐',
+      icon: 'clock',
       roles: ['admin', 'manager', 'cashier']
     },
     {
       label: 'Reports',
       path: '/reports',
-      icon: '📈',
+      icon: 'chart',
       roles: ['admin', 'manager']
     }
   ];
