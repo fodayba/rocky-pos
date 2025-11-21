@@ -1,65 +1,73 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { StorageService } from './storage.service';
-import { User, LoginCredentials, AuthToken, UserRole } from '../models';
+import { Observable, tap, catchError, throwError, map } from 'rxjs';
+import { User, LoginCredentials, UserRole } from '../models';
+import { environment } from '../../environments/environment';
+
+interface LoginResponse {
+  access_token: string;
+  user: User;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly AUTH_TOKEN_KEY = 'auth_token';
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
   private readonly currentUserSignal = signal<User | null>(null);
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   public readonly currentUser = this.currentUserSignal.asReadonly();
   public readonly isAuthenticated = computed(() => this.currentUser() !== null);
   public readonly userRole = computed(() => this.currentUser()?.role ?? null);
 
-  constructor(
-    private storage: StorageService,
-    private router: Router
-  ) {
+  constructor() {
     this.loadStoredAuth();
   }
 
   private loadStoredAuth(): void {
-    const authToken = this.storage.getItem<AuthToken>(this.AUTH_TOKEN_KEY);
-    if (authToken && new Date(authToken.expiresAt) > new Date()) {
-      this.currentUserSignal.set(authToken.user);
-    } else {
-      this.storage.removeItem(this.AUTH_TOKEN_KEY);
+    try {
+      const token = localStorage.getItem('token');
+      const userJson = localStorage.getItem('currentUser');
+
+      if (token && userJson) {
+        const user = JSON.parse(userJson) as User;
+        this.currentUserSignal.set(user);
+      }
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+      this.clearAuth();
     }
   }
 
-  login(credentials: LoginCredentials): Promise<User> {
-    return new Promise((resolve, reject) => {
-      // For MVP, we'll use mock authentication
-      // TODO: Replace with actual API call
-      const mockUsers = this.getMockUsers();
-      const user = mockUsers.find(u =>
-        u.username === credentials.username &&
-        credentials.password === 'password123' // Mock password
-      );
-
-      if (user) {
-        const authToken: AuthToken = {
-          token: this.generateMockToken(),
-          expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
-          user
-        };
-
-        this.storage.setItem(this.AUTH_TOKEN_KEY, authToken);
-        this.currentUserSignal.set(user);
-        resolve(user);
-      } else {
-        reject(new Error('Invalid credentials'));
-      }
-    });
+  login(credentials: LoginCredentials): Observable<User> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(response => {
+        // Store token and user
+        localStorage.setItem('token', response.access_token);
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+        this.currentUserSignal.set(response.user);
+      }),
+      map(response => response.user),
+      catchError(error => {
+        console.error('Login error:', error);
+        return throwError(() => new Error(error.error?.message || 'Login failed'));
+      })
+    );
   }
 
   logout(): void {
-    this.storage.removeItem(this.AUTH_TOKEN_KEY);
-    this.currentUserSignal.set(null);
+    this.clearAuth();
     this.router.navigate(['/login']);
+  }
+
+  private clearAuth(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    this.currentUserSignal.set(null);
   }
 
   hasRole(role: UserRole): boolean {
@@ -71,50 +79,7 @@ export class AuthService {
     return userRole ? roles.includes(userRole) : false;
   }
 
-  private generateMockToken(): string {
-    return 'mock_token_' + Math.random().toString(36).substring(2);
-  }
-
-  private getMockUsers(): User[] {
-    // Mock users for development
-    return [
-      {
-        id: '1',
-        username: 'admin',
-        email: 'admin@rocky-pos.com',
-        role: 'admin',
-        firstName: 'Admin',
-        lastName: 'User',
-        active: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: '2',
-        username: 'manager',
-        email: 'manager@rocky-pos.com',
-        role: 'manager',
-        firstName: 'Manager',
-        lastName: 'User',
-        active: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: '3',
-        username: 'cashier',
-        email: 'cashier@rocky-pos.com',
-        role: 'cashier',
-        firstName: 'Cashier',
-        lastName: 'User',
-        active: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ];
-  }
-
-  // For development: Get available mock users
+  // For development: Get available mock credentials
   getMockCredentials(): { username: string; password: string; role: UserRole }[] {
     return [
       { username: 'admin', password: 'password123', role: 'admin' },

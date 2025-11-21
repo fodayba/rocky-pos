@@ -22,7 +22,7 @@ export class LoginComponent {
 
   mockCredentials = this.authService.getMockCredentials();
 
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
     if (!this.username() || !this.password()) {
       this.error.set('Please enter username and password');
       return;
@@ -31,18 +31,21 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set(null);
 
-    try {
-      await this.authService.login({
-        username: this.username(),
-        password: this.password()
-      });
-
-      this.router.navigate(['/dashboard']);
-    } catch (err) {
-      this.error.set('Invalid username or password');
-    } finally {
-      this.loading.set(false);
-    }
+    this.authService.login({
+      username: this.username(),
+      password: this.password()
+    }).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.error.set(err.message || 'Invalid username or password');
+        this.loading.set(false);
+      },
+      complete: () => {
+        this.loading.set(false);
+      }
+    });
   }
 
   toggleCredentials(): void {
