@@ -12,6 +12,10 @@ import { CustomersModule } from './customers/customers.module';
 import { LocationsModule } from './locations/locations.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { FleetAccountsModule } from './fleet-accounts/fleet-accounts.module';
+import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
+import { PromotionsModule } from './promotions/promotions.module';
+import { GiftCardsModule } from './gift-cards/gift-cards.module';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { FleetAccountsModule } from './fleet-accounts/fleet-accounts.module';
     LocationsModule,
     SuppliersModule,
     FleetAccountsModule,
+    PurchaseOrdersModule,
+    PromotionsModule,
+    GiftCardsModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],
