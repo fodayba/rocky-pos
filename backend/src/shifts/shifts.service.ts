@@ -114,7 +114,7 @@ export class ShiftsService {
       .filter(t => t.paymentMethod === PaymentMethod.CASH)
       .reduce((sum, t) => sum + t.total, 0);
     const cardSales = transactions
-      .filter(t => t.paymentMethod === PaymentMethod.CARD)
+      .filter(t => t.paymentMethod === PaymentMethod.DEBIT_CARD || t.paymentMethod === PaymentMethod.CREDIT_CARD)
       .reduce((sum, t) => sum + t.total, 0);
     const mobileSales = transactions
       .filter(t => t.paymentMethod === PaymentMethod.MOBILE)

@@ -58,7 +58,7 @@ export class FuelPump extends Document {
   manufacturer: string;
 
   @Prop()
-  model: string;
+  pumpModel: string;
 
   @Prop()
   serialNumber: string;

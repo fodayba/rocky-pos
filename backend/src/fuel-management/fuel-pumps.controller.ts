@@ -6,6 +6,7 @@ import { AuthorizePumpDto } from './dto/authorize-pump.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../schemas/user.schema';
 import { PumpStatus } from '../schemas/fuel-pump.schema';
 
 @Controller('fuel-pumps')
@@ -14,55 +15,55 @@ export class FuelPumpsController {
   constructor(private readonly service: FuelPumpsService) {}
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   create(@Body() createDto: CreatePumpDto, @Request() req) {
     return this.service.create(createDto, req.user.userId);
   }
 
   @Get()
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findAll(@Query() filters: any) {
     return this.service.findAll(filters);
   }
 
   @Get('available/:locationId')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   getAvailable(@Param('locationId') locationId: string) {
     return this.service.getAvailablePumps(locationId);
   }
 
   @Get('location/:locationId')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findByLocation(@Param('locationId') locationId: string) {
     return this.service.findByLocation(locationId);
   }
 
   @Get(':id')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   update(@Param('id') id: string, @Body() updateDto: UpdatePumpDto, @Request() req) {
     return this.service.update(id, updateDto, req.user.userId);
   }
 
   @Patch(':id/status/:status')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateStatus(@Param('id') id: string, @Param('status') status: PumpStatus, @Request() req) {
     return this.service.updateStatus(id, status, req.user.userId);
   }
 
   @Post(':id/authorize')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   authorize(@Param('id') id: string, @Body() authorizeDto: AuthorizePumpDto, @Request() req) {
     return this.service.authorize(id, authorizeDto, req.user.userId);
   }
 
   @Post(':id/start')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   startTransaction(
     @Param('id') id: string,
     @Body() body: { transactionId: string },
@@ -72,7 +73,7 @@ export class FuelPumpsController {
   }
 
   @Post(':id/end')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   endTransaction(
     @Param('id') id: string,
     @Body() body: { gallons: number; amount: number },
@@ -82,19 +83,19 @@ export class FuelPumpsController {
   }
 
   @Post(':id/cancel-authorization')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   cancelAuthorization(@Param('id') id: string, @Request() req) {
     return this.service.cancelAuthorization(id, req.user.userId);
   }
 
   @Post('reset-daily-metrics')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   resetDailyMetrics(@Query('locationId') locationId?: string) {
     return this.service.resetDailyMetrics(locationId);
   }
 
   @Patch(':id/maintenance/schedule')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   scheduleMaintenance(
     @Param('id') id: string,
     @Body() body: { maintenanceDate: Date },
@@ -104,13 +105,13 @@ export class FuelPumpsController {
   }
 
   @Post(':id/maintenance/record')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   recordMaintenance(@Param('id') id: string, @Request() req) {
     return this.service.recordMaintenance(id, req.user.userId);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   delete(@Param('id') id: string) {
     return this.service.delete(id);
   }

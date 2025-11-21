@@ -90,9 +90,9 @@ export class FuelPumpsService {
 
     // Clear authorization if setting to available or out of service
     if (status === PumpStatus.AVAILABLE || status === PumpStatus.OUT_OF_SERVICE) {
-      pump.authorizedAmount = undefined;
-      pump.authorizationTime = undefined;
-      pump.currentTransactionId = undefined;
+      pump.authorizedAmount = null as any;
+      pump.authorizationTime = null as any;
+      pump.currentTransactionId = null as any;
     }
 
     return pump.save();
@@ -148,9 +148,9 @@ export class FuelPumpsService {
 
     // Reset status
     pump.status = PumpStatus.AVAILABLE;
-    pump.currentTransactionId = undefined;
-    pump.authorizedAmount = undefined;
-    pump.authorizationTime = undefined;
+    pump.currentTransactionId = null as any;
+    pump.authorizedAmount = null as any;
+    pump.authorizationTime = null as any;
     pump.updatedBy = userId as any;
 
     return pump.save();
@@ -165,9 +165,9 @@ export class FuelPumpsService {
     }
 
     pump.status = PumpStatus.AVAILABLE;
-    pump.authorizedAmount = undefined;
-    pump.authorizationTime = undefined;
-    pump.currentTransactionId = undefined;
+    pump.authorizedAmount = null as any;
+    pump.authorizationTime = null as any;
+    pump.currentTransactionId = null as any;
     pump.updatedBy = userId as any;
 
     return pump.save();

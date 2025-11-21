@@ -21,6 +21,7 @@ import { AddCardDto } from './dto/add-card.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../schemas/user.schema';
 
 @Controller('fleet-accounts')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -28,98 +29,98 @@ export class FleetAccountsController {
   constructor(private readonly fleetAccountsService: FleetAccountsService) {}
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   create(@Body() createDto: CreateFleetAccountDto, @Request() req) {
     return this.fleetAccountsService.create(createDto, req.user.userId);
   }
 
   @Get()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findAll(@Query() filters: any) {
     return this.fleetAccountsService.findAll(filters);
   }
 
   @Get('statistics')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   getStatistics() {
     return this.fleetAccountsService.getStatistics();
   }
 
   @Get('active')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findActive() {
     return this.fleetAccountsService.findActive();
   }
 
   @Get('pending-approval')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findPendingApproval() {
     return this.fleetAccountsService.findPendingApproval();
   }
 
   @Get('overdue')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findOverdue() {
     return this.fleetAccountsService.findOverdue();
   }
 
   @Get('search')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   search(@Query('q') searchTerm: string) {
     return this.fleetAccountsService.search(searchTerm);
   }
 
   @Get('account-number/:accountNumber')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findByAccountNumber(@Param('accountNumber') accountNumber: string) {
     return this.fleetAccountsService.findByAccountNumber(accountNumber);
   }
 
   @Get('card/:cardNumber')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findByCardNumber(@Param('cardNumber') cardNumber: string) {
     return this.fleetAccountsService.findByCardNumber(cardNumber);
   }
 
   @Get(':id')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findById(@Param('id') id: string) {
     return this.fleetAccountsService.findById(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   update(@Param('id') id: string, @Body() updateDto: UpdateFleetAccountDto, @Request() req) {
     return this.fleetAccountsService.update(id, updateDto, req.user.userId);
   }
 
   @Patch(':id/approve')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   approveAccount(@Param('id') id: string, @Request() req) {
     return this.fleetAccountsService.approveAccount(id, req.user.userId);
   }
 
   @Patch(':id/suspend')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   suspendAccount(@Param('id') id: string, @Body() body: { reason: string }) {
     return this.fleetAccountsService.suspendAccount(id, body.reason);
   }
 
   @Patch(':id/close')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   closeAccount(@Param('id') id: string, @Body() body: { reason: string }) {
     return this.fleetAccountsService.closeAccount(id, body.reason);
   }
 
   // Vehicle endpoints
   @Post(':id/vehicles')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   addVehicle(@Param('id') id: string, @Body() vehicleDto: AddVehicleDto) {
     return this.fleetAccountsService.addVehicle(id, vehicleDto);
   }
 
   @Patch(':id/vehicles/:vehicleNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateVehicle(
     @Param('id') id: string,
     @Param('vehicleNumber') vehicleNumber: string,
@@ -129,7 +130,7 @@ export class FleetAccountsController {
   }
 
   @Delete(':id/vehicles/:vehicleNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
   removeVehicle(@Param('id') id: string, @Param('vehicleNumber') vehicleNumber: string) {
     return this.fleetAccountsService.removeVehicle(id, vehicleNumber);
@@ -137,13 +138,13 @@ export class FleetAccountsController {
 
   // Driver endpoints
   @Post(':id/drivers')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   addDriver(@Param('id') id: string, @Body() driverDto: AddDriverDto) {
     return this.fleetAccountsService.addDriver(id, driverDto);
   }
 
   @Patch(':id/drivers/:driverNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateDriver(
     @Param('id') id: string,
     @Param('driverNumber') driverNumber: string,
@@ -153,7 +154,7 @@ export class FleetAccountsController {
   }
 
   @Delete(':id/drivers/:driverNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
   removeDriver(@Param('id') id: string, @Param('driverNumber') driverNumber: string) {
     return this.fleetAccountsService.removeDriver(id, driverNumber);
@@ -161,13 +162,13 @@ export class FleetAccountsController {
 
   // Card endpoints
   @Post(':id/cards')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   addCard(@Param('id') id: string, @Body() cardDto: AddCardDto) {
     return this.fleetAccountsService.addCard(id, cardDto);
   }
 
   @Patch(':id/cards/:cardNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateCard(
     @Param('id') id: string,
     @Param('cardNumber') cardNumber: string,
@@ -177,13 +178,13 @@ export class FleetAccountsController {
   }
 
   @Patch(':id/cards/:cardNumber/deactivate')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   deactivateCard(@Param('id') id: string, @Param('cardNumber') cardNumber: string) {
     return this.fleetAccountsService.deactivateCard(id, cardNumber);
   }
 
   @Delete(':id/cards/:cardNumber')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
   removeCard(@Param('id') id: string, @Param('cardNumber') cardNumber: string) {
     return this.fleetAccountsService.removeCard(id, cardNumber);
@@ -191,25 +192,25 @@ export class FleetAccountsController {
 
   // Financial endpoints
   @Patch(':id/balance')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateBalance(@Param('id') id: string, @Body() body: { amount: number }) {
     return this.fleetAccountsService.updateBalance(id, body.amount);
   }
 
   @Post(':id/payment')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   recordPayment(@Param('id') id: string, @Body() body: { amount: number }) {
     return this.fleetAccountsService.recordPayment(id, body.amount);
   }
 
   @Get(':id/check-credit')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   checkCredit(@Param('id') id: string, @Query('amount') amount: string) {
     return this.fleetAccountsService.checkCreditAvailable(id, parseFloat(amount));
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.fleetAccountsService.remove(id);

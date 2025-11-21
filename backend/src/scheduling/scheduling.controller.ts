@@ -6,6 +6,7 @@ import { AddShiftDto } from './dto/add-shift.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../schemas/user.schema';
 
 @Controller('schedules')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -13,19 +14,19 @@ export class SchedulingController {
   constructor(private readonly service: SchedulingService) {}
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   create(@Body() createDto: CreateScheduleDto, @Request() req) {
     return this.service.create(createDto, req.user.userId);
   }
 
   @Get()
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   findAll(@Query() filters: any) {
     return this.service.findAll(filters);
   }
 
   @Get('location/:locationId')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findByLocation(
     @Param('locationId') locationId: string,
     @Query('startDate') startDate?: string,
@@ -52,7 +53,7 @@ export class SchedulingController {
   }
 
   @Get('week/:locationId/:weekStartDate')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findForWeek(
     @Param('locationId') locationId: string,
     @Param('weekStartDate') weekStartDate: string,
@@ -61,31 +62,31 @@ export class SchedulingController {
   }
 
   @Get(':id')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
   @Get(':id/hours')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   getEmployeeHours(@Param('id') id: string) {
     return this.service.getEmployeeHours(id);
   }
 
   @Patch(':id')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   update(@Param('id') id: string, @Body() updateDto: UpdateScheduleDto, @Request() req) {
     return this.service.update(id, updateDto, req.user.userId);
   }
 
   @Post(':id/shifts')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   addShift(@Param('id') id: string, @Body() shiftDto: AddShiftDto, @Request() req) {
     return this.service.addShift(id, shiftDto, req.user.userId);
   }
 
   @Patch(':id/shifts/:shiftIndex')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   updateShift(
     @Param('id') id: string,
     @Param('shiftIndex') shiftIndex: number,
@@ -96,7 +97,7 @@ export class SchedulingController {
   }
 
   @Delete(':id/shifts/:shiftIndex')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   removeShift(
     @Param('id') id: string,
     @Param('shiftIndex') shiftIndex: number,
@@ -106,7 +107,7 @@ export class SchedulingController {
   }
 
   @Post(':id/shifts/:shiftIndex/call-off')
-  @Roles('admin', 'manager', 'cashier')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER)
   markCallOff(
     @Param('id') id: string,
     @Param('shiftIndex') shiftIndex: number,
@@ -117,7 +118,7 @@ export class SchedulingController {
   }
 
   @Post(':id/shifts/:shiftIndex/replacement')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   assignReplacement(
     @Param('id') id: string,
     @Param('shiftIndex') shiftIndex: number,
@@ -128,19 +129,19 @@ export class SchedulingController {
   }
 
   @Post(':id/publish')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   publish(@Param('id') id: string, @Request() req) {
     return this.service.publish(id, req.user.userId);
   }
 
   @Post(':id/finalize')
-  @Roles('admin', 'manager')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   finalize(@Param('id') id: string, @Request() req) {
     return this.service.finalize(id, req.user.userId);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   delete(@Param('id') id: string) {
     return this.service.delete(id);
   }
