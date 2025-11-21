@@ -5,11 +5,8 @@ export interface User {
   username: string;
   email: string;
   role: UserRole;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   active: boolean;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface LoginCredentials {
