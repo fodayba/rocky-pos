@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ShiftService } from '../../services/shift.service';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 import { IconComponent } from '../shared/icon/icon.component';
 import { ShiftSummary } from '../../models';
 
@@ -15,6 +16,7 @@ import { ShiftSummary } from '../../models';
 export class ShiftsComponent implements OnInit {
   private shiftService = inject(ShiftService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   // Make global functions available to template
   parseFloat = parseFloat;
@@ -58,10 +60,10 @@ export class ShiftsComponent implements OnInit {
     ).subscribe({
       next: () => {
         this.showOpenModal.set(false);
-        alert('Shift started successfully!');
+        this.toastService.success('Shift started successfully!');
       },
       error: (error) => {
-        alert(error.message);
+        this.toastService.error(error.message);
       }
     });
   }
@@ -73,15 +75,11 @@ export class ShiftsComponent implements OnInit {
     ).subscribe({
       next: (closedShift) => {
         this.showCloseModal.set(false);
-        alert(
-          `Shift closed successfully!\n\n` +
-          `Expected Cash: $${closedShift.expectedCash?.toFixed(2)}\n` +
-          `Actual Cash: $${closedShift.actualCash?.toFixed(2)}\n` +
-          `Variance: $${closedShift.variance?.toFixed(2)}`
-        );
+        const message = `Shift closed! Expected: $${closedShift.expectedCash?.toFixed(2)}, Actual: $${closedShift.actualCash?.toFixed(2)}, Variance: $${closedShift.variance?.toFixed(2)}`;
+        this.toastService.success(message);
       },
       error: (error) => {
-        alert(error.message);
+        this.toastService.error(error.message);
       }
     });
   }

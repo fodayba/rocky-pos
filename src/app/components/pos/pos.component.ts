@@ -8,6 +8,7 @@ import { TransactionService } from '../../services/transaction.service';
 import { ShiftService } from '../../services/shift.service';
 import { AuthService } from '../../services/auth.service';
 import { CustomerService } from '../../services/customer.service';
+import { ToastService } from '../../services/toast.service';
 import { Product, FuelProduct, TransactionItem, PaymentMethod } from '../../models';
 import { IconComponent } from '../shared/icon/icon.component';
 
@@ -28,6 +29,7 @@ export class PosComponent {
   private transactionService = inject(TransactionService);
   private shiftService = inject(ShiftService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private customerService = inject(CustomerService);
   private router = inject(Router);
 
@@ -103,7 +105,7 @@ export class PosComponent {
       this.addProductToCart(product);
       this.barcodeInput.set('');
     } else {
-      alert('Product not found');
+      this.toastService.error('Product not found');
     }
   }
 
@@ -132,7 +134,7 @@ export class PosComponent {
     const gallons = parseFloat(this.fuelGallonsInput());
 
     if (!fuelId || !gallons || gallons <= 0) {
-      alert('Please select fuel type and enter gallons');
+      this.toastService.warning('Please select fuel type and enter gallons');
       return;
     }
 
@@ -140,7 +142,7 @@ export class PosComponent {
     if (!fuelProduct) return;
 
     if (gallons > fuelProduct.currentStock) {
-      alert('Insufficient fuel in tank');
+      this.toastService.error('Insufficient fuel in tank');
       return;
     }
 
@@ -192,13 +194,13 @@ export class PosComponent {
 
   openPaymentModal(): void {
     if (!this.hasActiveShift()) {
-      alert('Please start a shift before processing transactions');
+      this.toastService.warning('Please start a shift before processing transactions');
       this.router.navigate(['/shifts']);
       return;
     }
 
     if (this.cart().length === 0) {
-      alert('Cart is empty');
+      this.toastService.warning('Cart is empty');
       return;
     }
 
@@ -243,21 +245,20 @@ export class PosComponent {
         shiftId: shift.id
       }).subscribe({
         next: (transaction) => {
-          alert(`Transaction completed!\nTotal: $${transaction.total.toFixed(2)}\n${
-            this.paymentMethod() === 'cash'
-              ? `Change: $${this.changeAmount().toFixed(2)}`
-              : ''
-          }`);
+          const message = this.paymentMethod() === 'cash'
+            ? `Transaction completed! Total: $${transaction.total.toFixed(2)} - Change: $${this.changeAmount().toFixed(2)}`
+            : `Transaction completed! Total: $${transaction.total.toFixed(2)}`;
+          this.toastService.success(message);
 
           this.cart.set([]);
           this.closePaymentModal();
         },
         error: (error) => {
-          alert(error.message);
+          this.toastService.error(error.message || 'Failed to process transaction');
         }
       });
     } catch (error) {
-      alert('Error processing payment: ' + (error as Error).message);
+      this.toastService.error('Error processing payment: ' + (error as Error).message);
     } finally {
       this.processingPayment.set(false);
     }
