@@ -6,12 +6,11 @@ import { ShiftService } from '../../services/shift.service';
 import { TransactionService } from '../../services/transaction.service';
 import { ProductService } from '../../services/product.service';
 import { FuelService } from '../../services/fuel.service';
-import { IconComponent } from '../shared/icon/icon.component';
 import { ShiftSummary } from '../../models';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, IconComponent],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

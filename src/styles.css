@@ -113,6 +113,8 @@ h6 { font-size: 1rem; }
 :focus-visible {
   outline: 2px solid var(--color-teal-500);
   outline-offset: 2px;
+}
+
 @layer base {
   :root {
     /* Premium Color Palette - Swiss Spa Inspired */
