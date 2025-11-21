@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Top Navigation -->
+  <nav class="bg-white shadow-lg">
+    <div class="px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <button
+            (click)="toggleSidebar()"
+            class="text-gray-600 hover:text-gray-800 focus:outline-none"
+          >
+            <span class="text-2xl">☰</span>
+          </button>
+          <h1 class="text-xl font-bold text-gray-800">Rocky POS</h1>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          @if (hasActiveShift()) {
+            <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+              🟢 Shift Active
+            </div>
+          } @else {
+            <div class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+              🔴 No Active Shift
+            </div>
+          }
+
+          @if (currentUser(); as user) {
+            <div class="flex items-center space-x-3">
+              <div class="text-right">
+                <p class="text-sm font-semibold text-gray-800">{{ user.firstName }} {{ user.lastName }}</p>
+                <p class="text-xs text-gray-600">{{ user.role }}</p>
+              </div>
+              <button
+                (click)="logout()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+              >
+                Logout
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    @if (sidebarOpen()) {
+      <aside class="w-64 bg-white shadow-lg min-h-screen">
+        <nav class="p-4">
+          <ul class="space-y-2">
+            @for (item of navItems; track item.path) {
+              @if (canAccessRoute(item.roles)) {
+                <li>
+                  <a
+                    [routerLink]="item.path"
+                    routerLinkActive="bg-blue-500 text-white"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition duration-200 group"
+                  >
+                    <span class="text-2xl">{{ item.icon }}</span>
+                    <span class="font-medium">{{ item.label }}</span>
+                  </a>
+                </li>
+              }
+            }
+          </ul>
+        </nav>
+      </aside>
+    }
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <router-outlet />
+    </main>
+  </div>
+</div>

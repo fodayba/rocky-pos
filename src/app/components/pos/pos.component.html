@@ -1,0 +1,284 @@
+<div class="h-full">
+  @if (!hasActiveShift()) {
+    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+      <h2 class="text-xl font-bold text-red-800">No Active Shift</h2>
+      <p class="text-red-700 mt-2">You must start a shift before processing transactions</p>
+      <a
+        routerLink="/shifts"
+        class="inline-block mt-4 bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold"
+      >
+        Start Shift
+      </a>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+      <!-- Product Selection Area -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Barcode Scanner -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <form (submit)="onBarcodeSubmit(); $event.preventDefault()" class="flex gap-2">
+            <input
+              type="text"
+              [value]="barcodeInput()"
+              (input)="barcodeInput.set($any($event.target).value)"
+              placeholder="Scan or enter barcode..."
+              class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              autofocus
+            />
+            <button
+              type="submit"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold"
+            >
+              Add
+            </button>
+          </form>
+        </div>
+
+        <!-- Fuel Sale -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h3 class="font-bold text-gray-800 mb-3">Fuel Sale</h3>
+          <div class="grid grid-cols-3 gap-2">
+            <select
+              [value]="selectedFuel()"
+              (change)="selectedFuel.set($any($event.target).value)"
+              class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="">Select Fuel</option>
+              @for (fuel of fuelProducts(); track fuel.id) {
+                <option [value]="fuel.id">{{ fuel.name }} - ${{ fuel.pricePerGallon }}/gal</option>
+              }
+            </select>
+            <input
+              type="number"
+              [value]="fuelGallonsInput()"
+              (input)="fuelGallonsInput.set($any($event.target).value)"
+              placeholder="Gallons"
+              step="0.01"
+              class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button
+              (click)="addFuelToCart()"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold"
+            >
+              Add Fuel
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Search -->
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <input
+            type="text"
+            [value]="searchQuery()"
+            (input)="searchQuery.set($any($event.target).value)"
+            placeholder="Search products..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none mb-4"
+          />
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
+            @for (product of filteredProducts(); track product.id) {
+              <button
+                (click)="addProductToCart(product)"
+                class="p-3 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition text-left"
+              >
+                <p class="font-semibold text-sm text-gray-900 truncate">{{ product.name }}</p>
+                <p class="text-lg font-bold text-blue-600 mt-1">${{ product.price.toFixed(2) }}</p>
+                <p class="text-xs text-gray-500">Stock: {{ product.stockQuantity }}</p>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Area -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-4 sticky top-4">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Cart</h2>
+            @if (cart().length > 0) {
+              <button
+                (click)="clearCart()"
+                class="text-red-600 hover:text-red-800 text-sm font-semibold"
+              >
+                Clear
+              </button>
+            }
+          </div>
+
+          <!-- Cart Items -->
+          <div class="space-y-2 max-h-64 overflow-y-auto mb-4">
+            @if (cart().length === 0) {
+              <p class="text-gray-500 text-center py-8">Cart is empty</p>
+            }
+            @for (item of cart(); track item.id) {
+              <div class="border border-gray-200 rounded-lg p-3">
+                <div class="flex justify-between items-start mb-2">
+                  <p class="font-semibold text-sm flex-1">{{ item.productName }}</p>
+                  <button
+                    (click)="removeFromCart(item.id)"
+                    class="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                @if (item.isFuel) {
+                  <p class="text-xs text-gray-600">{{ item.fuelGallons }} gal × ${{ item.unitPrice.toFixed(2) }}</p>
+                } @else {
+                  <div class="flex items-center gap-2">
+                    <button
+                      (click)="updateCartItemQuantity(item.id, item.quantity - 1)"
+                      class="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded"
+                    >
+                      -
+                    </button>
+                    <span class="text-sm font-medium">{{ item.quantity }}</span>
+                    <button
+                      (click)="updateCartItemQuantity(item.id, item.quantity + 1)"
+                      class="w-6 h-6 bg-gray-200 hover:bg-gray-300 rounded"
+                    >
+                      +
+                    </button>
+                    <span class="text-xs text-gray-600 ml-auto">× ${{ item.unitPrice.toFixed(2) }}</span>
+                  </div>
+                }
+
+                <p class="text-right font-bold text-blue-600 mt-1">${{ item.subtotal.toFixed(2) }}</p>
+              </div>
+            }
+          </div>
+
+          <!-- Totals -->
+          <div class="border-t pt-4 space-y-2">
+            <div class="flex justify-between text-gray-700">
+              <span>Subtotal:</span>
+              <span>${{ subtotal().toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between text-gray-700">
+              <span>Tax:</span>
+              <span>${{ tax().toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between text-xl font-bold text-gray-900">
+              <span>Total:</span>
+              <span>${{ total().toFixed(2) }}</span>
+            </div>
+          </div>
+
+          <!-- Checkout Button -->
+          <button
+            (click)="openPaymentModal()"
+            [disabled]="cart().length === 0"
+            class="w-full mt-4 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-3 rounded-lg transition"
+          >
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    @if (showPaymentModal()) {
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Payment</h2>
+
+          <div class="bg-gray-100 p-4 rounded-lg mb-4">
+            <p class="text-3xl font-bold text-center text-gray-900">
+              ${{ total().toFixed(2) }}
+            </p>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                (click)="paymentMethod.set('cash'); cashReceived.set(total())"
+                [class.bg-blue-500]="paymentMethod() === 'cash'"
+                [class.text-white]="paymentMethod() === 'cash'"
+                [class.bg-gray-200]="paymentMethod() !== 'cash'"
+                class="py-2 rounded-lg font-semibold transition"
+              >
+                Cash
+              </button>
+              <button
+                (click)="paymentMethod.set('card')"
+                [class.bg-blue-500]="paymentMethod() === 'card'"
+                [class.text-white]="paymentMethod() === 'card'"
+                [class.bg-gray-200]="paymentMethod() !== 'card'"
+                class="py-2 rounded-lg font-semibold transition"
+              >
+                Card
+              </button>
+              <button
+                (click)="paymentMethod.set('mobile')"
+                [class.bg-blue-500]="paymentMethod() === 'mobile'"
+                [class.text-white]="paymentMethod() === 'mobile'"
+                [class.bg-gray-200]="paymentMethod() !== 'mobile'"
+                class="py-2 rounded-lg font-semibold transition"
+              >
+                Mobile
+              </button>
+            </div>
+          </div>
+
+          <!-- Cash Payment Details -->
+          @if (paymentMethod() === 'cash') {
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Cash Received</label>
+              <input
+                type="number"
+                [value]="cashReceived()"
+                (input)="cashReceived.set(parseFloat($any($event.target).value) || 0)"
+                step="0.01"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-lg"
+              />
+
+              <div class="grid grid-cols-4 gap-2 mt-2">
+                @for (amount of [20, 50, 100, total()]; track amount) {
+                  <button
+                    (click)="setQuickCash(amount)"
+                    class="bg-gray-200 hover:bg-gray-300 py-2 rounded-lg text-sm font-semibold"
+                  >
+                    ${{ amount === total() ? 'Exact' : amount }}
+                  </button>
+                }
+              </div>
+
+              @if (cashReceived() >= total()) {
+                <div class="mt-4 bg-green-100 p-3 rounded-lg">
+                  <p class="text-sm text-green-800">Change:</p>
+                  <p class="text-2xl font-bold text-green-900">
+                    ${{ changeAmount().toFixed(2) }}
+                  </p>
+                </div>
+              } @else {
+                <p class="mt-2 text-red-600 text-sm">
+                  Insufficient amount (need ${{ (total() - cashReceived()).toFixed(2) }} more)
+                </p>
+              }
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3">
+            <button
+              (click)="closePaymentModal()"
+              [disabled]="processingPayment()"
+              class="flex-1 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-800 font-semibold py-2 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              (click)="processPayment()"
+              [disabled]="!canProcessPayment() || processingPayment()"
+              class="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-2 rounded-lg"
+            >
+              {{ processingPayment() ? 'Processing...' : 'Complete Sale' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>
