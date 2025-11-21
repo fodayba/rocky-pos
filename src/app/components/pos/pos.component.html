@@ -1,37 +1,56 @@
-<div class="h-full" style="background: var(--color-neutral-50);">
+<div class="h-full" style="background: var(--color-bg-secondary);">
   @if (!hasActiveShift()) {
-    <div class="max-w-2xl mx-auto px-8 py-20">
-      <div class="p-10 border text-center" style="background: var(--color-error-light); border-color: var(--color-error); border-radius: var(--radius-lg);">
-        <div class="inline-flex p-4 rounded-full mb-6" style="background: rgba(220, 38, 38, 0.15);">
-          <app-icon name="alert" [size]="32" [customClass]="'text-red-600'"></app-icon>
+    <div class="max-w-2xl mx-auto px-6 py-20">
+      <div class="card" style="background: var(--color-error-light); border-color: var(--color-error);">
+        <div style="padding: var(--space-12); text-align: center;">
+          <div class="icon-container" style="
+            background: rgba(220, 38, 38, 0.15);
+            padding: var(--space-5);
+            display: inline-flex;
+            margin-bottom: var(--space-8);
+          ">
+            <app-icon name="alert" [size]="36" customClass="text-red-600"></app-icon>
+          </div>
+          <h2 style="
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-3);
+            color: var(--color-text-primary);
+          ">No Active Shift</h2>
+          <p style="
+            font-size: var(--text-base);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-10);
+          ">You must start a shift before processing transactions</p>
+          <a routerLink="/shifts" class="btn btn-danger">
+            Start Shift Now
+          </a>
         </div>
-        <h2 class="text-xl font-semibold mb-2" style="color: var(--color-neutral-900);">No Active Shift</h2>
-        <p class="mb-8" style="color: var(--color-neutral-700);">You must start a shift before processing transactions</p>
-        <a routerLink="/shifts" class="btn btn-danger">
-          Start Shift
-        </a>
       </div>
     </div>
   } @else {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 h-full">
       <!-- Product Selection Area -->
-      <div class="lg:col-span-2 space-y-5">
+      <div class="lg:col-span-2 space-y-6">
         <!-- Barcode Scanner -->
         <div class="card">
-          <div class="p-5">
+          <div style="padding: var(--space-6);">
             <form (submit)="onBarcodeSubmit(); $event.preventDefault()" class="flex gap-3">
               <div class="flex-1 relative">
-                <app-icon name="barcode" [size]="18" customClass="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></app-icon>
+                <div style="position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%);">
+                  <app-icon name="barcode" [size]="20" customClass="text-stone-400"></app-icon>
+                </div>
                 <input
                   type="text"
                   [value]="barcodeInput()"
                   (input)="barcodeInput.set($any($event.target).value)"
                   placeholder="Scan or enter barcode..."
-                  class="input pl-11"
+                  class="input"
+                  style="padding-left: var(--space-12);"
                   autofocus
                 />
               </div>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" style="padding: var(--space-3) var(--space-6);">
                 Add
               </button>
             </form>
@@ -40,15 +59,22 @@
 
         <!-- Fuel Sale -->
         <div class="card">
-          <div class="p-5">
-            <h3 class="font-semibold mb-4 text-sm" style="color: var(--color-neutral-900);">Fuel Sale</h3>
-            <div class="grid grid-cols-3 gap-3">
+          <div style="padding: var(--space-6);">
+            <h3 style="
+              font-size: var(--text-md);
+              font-weight: 600;
+              margin-bottom: var(--space-5);
+              color: var(--color-text-primary);
+              letter-spacing: var(--tracking-wide);
+              text-transform: uppercase;
+            ">Fuel Sale</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <select
                 [value]="selectedFuel()"
                 (change)="selectedFuel.set($any($event.target).value)"
                 class="input"
               >
-                <option value="">Select Fuel</option>
+                <option value="">Select Fuel Type</option>
                 @for (fuel of fuelProducts(); track fuel.id) {
                   <option [value]="fuel.id">{{ fuel.name }} - ${{ fuel.pricePerGallon }}/gal</option>
                 }
@@ -64,6 +90,7 @@
               <button
                 (click)="addFuelToCart()"
                 class="btn btn-success"
+                style="width: 100%;"
               >
                 Add Fuel
               </button>
@@ -71,17 +98,20 @@
           </div>
         </div>
 
-        <!-- Product Search -->
-        <div class="card">
-          <div class="p-5">
-            <div class="relative mb-5">
-              <app-icon name="search" [size]="18" customClass="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></app-icon>
+        <!-- Product Search & Grid -->
+        <div class="card" style="flex: 1;">
+          <div style="padding: var(--space-6);">
+            <div class="relative mb-6">
+              <div style="position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%);">
+                <app-icon name="search" [size]="20" customClass="text-stone-400"></app-icon>
+              </div>
               <input
                 type="text"
                 [value]="searchQuery()"
                 (input)="searchQuery.set($any($event.target).value)"
                 placeholder="Search products..."
-                class="input pl-11"
+                class="input"
+                style="padding-left: var(--space-12);"
               />
             </div>
 
@@ -89,14 +119,36 @@
               @for (product of filteredProducts(); track product.id) {
                 <button
                   (click)="addProductToCart(product)"
-                  class="p-4 border rounded-lg text-left transition-all"
-                  style="background: white; border-color: var(--color-neutral-200);"
-                  onmouseover="this.style.borderColor='var(--color-neutral-900)'; this.style.background='var(--color-neutral-50)'; this.style.transform='translateY(-2px)'"
-                  onmouseout="this.style.borderColor='var(--color-neutral-200)'; this.style.background='white'; this.style.transform='translateY(0)'"
+                  class="interactive-card"
+                  style="
+                    padding: var(--space-5);
+                    border: 1px solid var(--color-border-primary);
+                    border-radius: var(--radius-xl);
+                    background: var(--color-bg-primary);
+                    text-align: left;
+                    cursor: pointer;
+                  "
                 >
-                  <p class="font-semibold text-sm truncate" style="color: var(--color-neutral-900);">{{ product.name }}</p>
-                  <p class="text-lg font-bold mt-2" style="color: var(--color-neutral-900);">${{ product.price.toFixed(2) }}</p>
-                  <p class="text-xs mt-1" style="color: var(--color-neutral-500);">Stock: {{ product.stockQuantity }}</p>
+                  <p style="
+                    font-weight: 600;
+                    font-size: var(--text-sm);
+                    color: var(--color-text-primary);
+                    margin-bottom: var(--space-3);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                  ">{{ product.name }}</p>
+                  <p style="
+                    font-size: var(--text-xl);
+                    font-weight: 700;
+                    color: var(--color-text-primary);
+                    margin-bottom: var(--space-2);
+                  ">${{ product.price.toFixed(2) }}</p>
+                  <p style="
+                    font-size: var(--text-xs);
+                    color: var(--color-text-tertiary);
+                    font-family: var(--font-mono);
+                  ">Stock: {{ product.stockQuantity }}</p>
                 </button>
               }
             </div>
@@ -106,91 +158,175 @@
 
       <!-- Cart Area -->
       <div class="lg:col-span-1">
-        <div class="card sticky top-6">
-          <div class="p-5">
-            <div class="flex items-center justify-between mb-5">
-              <h2 class="text-lg font-semibold" style="color: var(--color-neutral-900);">Cart</h2>
+        <div class="card sticky" style="top: var(--space-6);">
+          <div style="padding: var(--space-6);">
+            <div class="flex items-center justify-between mb-6">
+              <h2 style="
+                font-size: var(--text-xl);
+                font-weight: 700;
+                color: var(--color-text-primary);
+              ">Cart</h2>
               @if (cart().length > 0) {
                 <button
                   (click)="clearCart()"
-                  class="text-sm font-medium transition-colors"
-                  style="color: var(--color-error);"
+                  style="
+                    font-size: var(--text-sm);
+                    font-weight: 600;
+                    color: var(--color-error);
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    padding: var(--space-2);
+                    transition: opacity var(--transition-base);
+                  "
                   onmouseover="this.style.opacity='0.7'"
                   onmouseout="this.style.opacity='1'"
                 >
-                  Clear
+                  Clear All
                 </button>
               }
             </div>
 
             <!-- Cart Items -->
-            <div class="space-y-3 max-h-64 overflow-y-auto mb-5">
+            <div class="space-y-3 max-h-64 overflow-y-auto mb-6">
               @if (cart().length === 0) {
-                <div class="text-center py-12">
-                  <app-icon name="shopping-cart" [size]="48" customClass="text-neutral-300 mx-auto mb-3"></app-icon>
-                  <p class="text-sm" style="color: var(--color-neutral-500);">Cart is empty</p>
+                <div style="text-align: center; padding: var(--space-16) 0;">
+                  <div style="margin-bottom: var(--space-4);">
+                    <app-icon name="shopping-cart" [size]="56" customClass="text-stone-300"></app-icon>
+                  </div>
+                  <p style="font-size: var(--text-sm); color: var(--color-text-tertiary);">Cart is empty</p>
                 </div>
               }
               @for (item of cart(); track item.id) {
-                <div class="border p-4 rounded-lg" style="border-color: var(--color-neutral-200);">
+                <div style="
+                  border: 1px solid var(--color-border-primary);
+                  padding: var(--space-4);
+                  border-radius: var(--radius-lg);
+                  background: var(--color-bg-secondary);
+                ">
                   <div class="flex justify-between items-start mb-3">
-                    <p class="font-semibold text-sm flex-1" style="color: var(--color-neutral-900);">{{ item.productName }}</p>
+                    <p style="
+                      font-weight: 600;
+                      font-size: var(--text-sm);
+                      color: var(--color-text-primary);
+                      flex: 1;
+                    ">{{ item.productName }}</p>
                     <button
                       (click)="removeFromCart(item.id)"
-                      class="transition-colors ml-2"
-                      style="color: var(--color-error);"
+                      style="
+                        background: transparent;
+                        border: none;
+                        color: var(--color-error);
+                        cursor: pointer;
+                        padding: var(--space-1);
+                        margin-left: var(--space-2);
+                        transition: opacity var(--transition-base);
+                      "
                       onmouseover="this.style.opacity='0.7'"
                       onmouseout="this.style.opacity='1'"
                     >
-                      <app-icon name="x" [size]="16"></app-icon>
+                      <app-icon name="x" [size]="18"></app-icon>
                     </button>
                   </div>
 
                   @if (item.isFuel) {
-                    <p class="text-xs" style="color: var(--color-neutral-600);">{{ item.fuelGallons }} gal × ${{ item.unitPrice.toFixed(2) }}</p>
+                    <p style="
+                      font-size: var(--text-xs);
+                      color: var(--color-text-secondary);
+                      font-family: var(--font-mono);
+                    ">{{ item.fuelGallons }} gal × ${{ item.unitPrice.toFixed(2) }}</p>
                   } @else {
                     <div class="flex items-center gap-3">
                       <button
                         (click)="updateCartItemQuantity(item.id, item.quantity - 1)"
-                        class="w-7 h-7 rounded transition-colors flex items-center justify-center"
-                        style="background: var(--color-neutral-100);"
-                        onmouseover="this.style.background='var(--color-neutral-200)'"
-                        onmouseout="this.style.background='var(--color-neutral-100)'"
+                        class="btn-ghost"
+                        style="
+                          width: 2rem;
+                          height: 2rem;
+                          padding: 0;
+                          border-radius: var(--radius-md);
+                          background: var(--color-bg-tertiary);
+                          border: 1px solid var(--color-border-primary);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          cursor: pointer;
+                          transition: all var(--transition-base);
+                        "
+                        onmouseover="this.style.background='var(--color-stone-200)'"
+                        onmouseout="this.style.background='var(--color-bg-tertiary)'"
                       >
                         <app-icon name="minus" [size]="14"></app-icon>
                       </button>
-                      <span class="text-sm font-medium min-w-[2rem] text-center" style="color: var(--color-neutral-900);">{{ item.quantity }}</span>
+                      <span style="
+                        font-size: var(--text-sm);
+                        font-weight: 600;
+                        min-width: 2rem;
+                        text-align: center;
+                        color: var(--color-text-primary);
+                      ">{{ item.quantity }}</span>
                       <button
                         (click)="updateCartItemQuantity(item.id, item.quantity + 1)"
-                        class="w-7 h-7 rounded transition-colors flex items-center justify-center"
-                        style="background: var(--color-neutral-100);"
-                        onmouseover="this.style.background='var(--color-neutral-200)'"
-                        onmouseout="this.style.background='var(--color-neutral-100)'"
+                        class="btn-ghost"
+                        style="
+                          width: 2rem;
+                          height: 2rem;
+                          padding: 0;
+                          border-radius: var(--radius-md);
+                          background: var(--color-bg-tertiary);
+                          border: 1px solid var(--color-border-primary);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          cursor: pointer;
+                          transition: all var(--transition-base);
+                        "
+                        onmouseover="this.style.background='var(--color-stone-200)'"
+                        onmouseout="this.style.background='var(--color-bg-tertiary)'"
                       >
                         <app-icon name="plus" [size]="14"></app-icon>
                       </button>
-                      <span class="text-xs ml-auto" style="color: var(--color-neutral-600);">× ${{ item.unitPrice.toFixed(2) }}</span>
+                      <span style="
+                        font-size: var(--text-xs);
+                        color: var(--color-text-secondary);
+                        margin-left: auto;
+                        font-family: var(--font-mono);
+                      ">× ${{ item.unitPrice.toFixed(2) }}</span>
                     </div>
                   }
 
-                  <p class="text-right font-bold mt-2" style="color: var(--color-neutral-900);">${{ item.subtotal.toFixed(2) }}</p>
+                  <p style="
+                    text-align: right;
+                    font-weight: 700;
+                    margin-top: var(--space-3);
+                    color: var(--color-text-primary);
+                    font-size: var(--text-base);
+                  ">${{ item.subtotal.toFixed(2) }}</p>
                 </div>
               }
             </div>
 
             <!-- Totals -->
-            <div class="border-t pt-5 space-y-3" style="border-color: var(--color-neutral-200);">
-              <div class="flex justify-between text-sm" style="color: var(--color-neutral-700);">
+            <div style="
+              border-top: 1px solid var(--color-border-primary);
+              padding-top: var(--space-6);
+              margin-bottom: var(--space-6);
+            ">
+              <div class="flex justify-between mb-3" style="font-size: var(--text-sm); color: var(--color-text-secondary);">
                 <span>Subtotal</span>
-                <span>${{ subtotal().toFixed(2) }}</span>
+                <span style="font-family: var(--font-mono);">${{ subtotal().toFixed(2) }}</span>
               </div>
-              <div class="flex justify-between text-sm" style="color: var(--color-neutral-700);">
+              <div class="flex justify-between mb-4" style="font-size: var(--text-sm); color: var(--color-text-secondary);">
                 <span>Tax</span>
-                <span>${{ tax().toFixed(2) }}</span>
+                <span style="font-family: var(--font-mono);">${{ tax().toFixed(2) }}</span>
               </div>
-              <div class="flex justify-between text-xl font-bold" style="color: var(--color-neutral-900);">
+              <div class="flex justify-between" style="
+                font-size: var(--text-2xl);
+                font-weight: 700;
+                color: var(--color-text-primary);
+              ">
                 <span>Total</span>
-                <span>${{ total().toFixed(2) }}</span>
+                <span style="font-family: var(--font-mono);">${{ total().toFixed(2) }}</span>
               </div>
             </div>
 
@@ -198,8 +334,8 @@
             <button
               (click)="openPaymentModal()"
               [disabled]="cart().length === 0"
-              class="btn btn-success w-full mt-6"
-              style="padding: 0.875rem 1.5rem;"
+              class="btn btn-success"
+              style="width: 100%; padding: var(--space-4);"
             >
               Checkout
             </button>
@@ -210,20 +346,54 @@
 
     <!-- Payment Modal -->
     @if (showPaymentModal()) {
-      <div class="fixed inset-0 flex items-center justify-center z-50 px-4" style="background: rgba(28, 25, 23, 0.6); backdrop-filter: blur(8px);">
-        <div class="bg-white w-full max-w-md" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
-          <div class="p-8">
-            <h2 class="text-xl font-semibold mb-6" style="color: var(--color-neutral-900);">Payment</h2>
+      <div class="modal-backdrop animate-fade-in" style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-4);
+      ">
+        <div class="card animate-scale-in" style="
+          width: 100%;
+          max-width: 28rem;
+          box-shadow: var(--shadow-2xl);
+        ">
+          <div style="padding: var(--space-10);">
+            <h2 style="
+              font-size: var(--text-2xl);
+              font-weight: 700;
+              margin-bottom: var(--space-8);
+              color: var(--color-text-primary);
+            ">Payment</h2>
 
-            <div class="p-6 rounded-lg mb-6 text-center" style="background: var(--color-neutral-50);">
-              <p class="text-3xl font-bold" style="color: var(--color-neutral-900);">
+            <div style="
+              padding: var(--space-8);
+              border-radius: var(--radius-xl);
+              margin-bottom: var(--space-8);
+              text-align: center;
+              background: var(--color-bg-secondary);
+              border: 1px solid var(--color-border-primary);
+            ">
+              <p style="
+                font-size: var(--text-4xl);
+                font-weight: 700;
+                color: var(--color-text-primary);
+                font-family: var(--font-mono);
+              ">
                 ${{ total().toFixed(2) }}
               </p>
             </div>
 
             <!-- Payment Method -->
-            <div class="mb-6">
-              <label class="block text-sm font-medium mb-3" style="color: var(--color-neutral-700);">Payment Method</label>
+            <div style="margin-bottom: var(--space-8);">
+              <label style="
+                display: block;
+                font-size: var(--text-sm);
+                font-weight: 600;
+                margin-bottom: var(--space-4);
+                color: var(--color-text-secondary);
+                letter-spacing: var(--tracking-wide);
+                text-transform: uppercase;
+              ">Payment Method</label>
               <div class="grid grid-cols-3 gap-3">
                 <button
                   (click)="paymentMethod.set('cash'); cashReceived.set(total())"
@@ -251,21 +421,31 @@
 
             <!-- Cash Payment Details -->
             @if (paymentMethod() === 'cash') {
-              <div class="mb-6">
-                <label class="block text-sm font-medium mb-3" style="color: var(--color-neutral-700);">Cash Received</label>
+              <div style="margin-bottom: var(--space-8);">
+                <label style="
+                  display: block;
+                  font-size: var(--text-sm);
+                  font-weight: 600;
+                  margin-bottom: var(--space-4);
+                  color: var(--color-text-secondary);
+                  letter-spacing: var(--tracking-wide);
+                  text-transform: uppercase;
+                ">Cash Received</label>
                 <input
                   type="number"
                   [value]="cashReceived()"
                   (input)="cashReceived.set(parseFloat($any($event.target).value) || 0)"
                   step="0.01"
-                  class="input text-lg"
+                  class="input"
+                  style="font-size: var(--text-xl); font-family: var(--font-mono);"
                 />
 
-                <div class="grid grid-cols-4 gap-2 mt-3">
+                <div class="grid grid-cols-4 gap-2" style="margin-top: var(--space-4);">
                   @for (amount of [20, 50, 100, total()]; track amount) {
                     <button
                       (click)="setQuickCash(amount)"
-                      class="btn-secondary py-2 text-sm"
+                      class="btn btn-secondary"
+                      style="padding: var(--space-3); font-size: var(--text-sm);"
                     >
                       ${{ amount === total() ? 'Exact' : amount }}
                     </button>
@@ -273,14 +453,36 @@
                 </div>
 
                 @if (cashReceived() >= total()) {
-                  <div class="mt-5 p-4 rounded-lg" style="background: var(--color-success-light);">
-                    <p class="text-xs font-medium mb-1" style="color: var(--color-success);">Change</p>
-                    <p class="text-2xl font-bold" style="color: var(--color-success);">
+                  <div style="
+                    margin-top: var(--space-6);
+                    padding: var(--space-6);
+                    border-radius: var(--radius-lg);
+                    background: var(--color-success-light);
+                    border: 1px solid var(--color-success);
+                  ">
+                    <p style="
+                      font-size: var(--text-xs);
+                      font-weight: 600;
+                      margin-bottom: var(--space-2);
+                      color: var(--color-success);
+                      text-transform: uppercase;
+                      letter-spacing: var(--tracking-wider);
+                    ">Change</p>
+                    <p style="
+                      font-size: var(--text-3xl);
+                      font-weight: 700;
+                      color: var(--color-success);
+                      font-family: var(--font-mono);
+                    ">
                       ${{ changeAmount().toFixed(2) }}
                     </p>
                   </div>
                 } @else {
-                  <p class="mt-3 text-sm" style="color: var(--color-error);">
+                  <p style="
+                    margin-top: var(--space-4);
+                    font-size: var(--text-sm);
+                    color: var(--color-error);
+                  ">
                     Insufficient amount (need ${{ (total() - cashReceived()).toFixed(2) }} more)
                   </p>
                 }
