@@ -13,6 +13,7 @@ import { PromotionsComponent } from './components/promotions/promotions.componen
 import { TimeTrackingComponent } from './components/time-tracking/time-tracking.component';
 import { GiftCardsComponent } from './components/gift-cards/gift-cards.component';
 import { PurchaseOrdersComponent } from './components/purchase-orders/purchase-orders.component';
+import { FleetAccountsComponent } from './components/fleet-accounts/fleet-accounts.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -101,6 +102,11 @@ export const routes: Routes = [
       {
         path: 'purchase-orders',
         component: PurchaseOrdersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'fleet-accounts',
+        component: FleetAccountsComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
