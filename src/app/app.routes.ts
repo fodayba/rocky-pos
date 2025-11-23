@@ -16,6 +16,7 @@ import { PurchaseOrdersComponent } from './components/purchase-orders/purchase-o
 import { FleetAccountsComponent } from './components/fleet-accounts/fleet-accounts.component';
 import { AuditLogsComponent } from './components/audit-logs/audit-logs.component';
 import { LocationsComponent } from './components/locations/locations.component';
+import { SchedulingComponent } from './components/scheduling/scheduling.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -119,6 +120,11 @@ export const routes: Routes = [
       {
         path: 'locations',
         component: LocationsComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'scheduling',
+        component: SchedulingComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
