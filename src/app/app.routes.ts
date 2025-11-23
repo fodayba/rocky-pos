@@ -14,6 +14,7 @@ import { TimeTrackingComponent } from './components/time-tracking/time-tracking.
 import { GiftCardsComponent } from './components/gift-cards/gift-cards.component';
 import { PurchaseOrdersComponent } from './components/purchase-orders/purchase-orders.component';
 import { FleetAccountsComponent } from './components/fleet-accounts/fleet-accounts.component';
+import { AuditLogsComponent } from './components/audit-logs/audit-logs.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -108,6 +109,11 @@ export const routes: Routes = [
         path: 'fleet-accounts',
         component: FleetAccountsComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'audit-logs',
+        component: AuditLogsComponent,
+        canActivate: [roleGuard(['admin'])],
       },
       {
         path: 'shifts',

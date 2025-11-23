@@ -1,23 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface AuditLog {
-  _id: string;
-  userId: string;
-  userName: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  details?: any;
-  ipAddress?: string;
-  userAgent?: string;
-  timestamp: Date;
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  flagged: boolean;
-  flagReason?: string;
-}
+import {
+  AuditLog,
+  AuditLogFilters,
+  AuditLogStatistics
+} from '../models/audit-log.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,44 +18,31 @@ export class AuditService {
   private logsSignal = signal<AuditLog[]>([]);
   readonly logs = this.logsSignal.asReadonly();
 
-  async loadLogs(filters?: {
-    startDate?: Date;
-    endDate?: Date;
-    userId?: string;
-    resource?: string;
-    severity?: string;
-  }) {
-    const params: any = {};
-    if (filters?.startDate) params.startDate = filters.startDate.toISOString();
-    if (filters?.endDate) params.endDate = filters.endDate.toISOString();
-    if (filters?.userId) params.userId = filters.userId;
-    if (filters?.resource) params.resource = filters.resource;
-    if (filters?.severity) params.severity = filters.severity;
-
-    const logs = await firstValueFrom(
-      this.http.get<AuditLog[]>(this.apiUrl, { params })
-    );
-    this.logsSignal.set(logs);
-    return logs;
-  }
-
-  async getUserLogs(userId: string) {
-    return firstValueFrom(this.http.get<AuditLog[]>(`${this.apiUrl}/user/${userId}`));
-  }
-
-  async getResourceLogs(resource: string, resourceId: string) {
-    return firstValueFrom(
-      this.http.get<AuditLog[]>(`${this.apiUrl}/resource/${resource}/${resourceId}`)
+  findAll(filters?: AuditLogFilters): Observable<AuditLog[]> {
+    return this.http.get<AuditLog[]>(this.apiUrl, { params: filters as any }).pipe(
+      tap(logs => this.logsSignal.set(logs))
     );
   }
 
-  async getSecurityEvents() {
-    return firstValueFrom(
-      this.http.get<AuditLog[]>(`${this.apiUrl}/security-events`)
-    );
+  findOne(id: string): Observable<AuditLog> {
+    return this.http.get<AuditLog>(`${this.apiUrl}/${id}`);
   }
 
-  async getFlaggedLogs() {
-    return firstValueFrom(this.http.get<AuditLog[]>(`${this.apiUrl}/flagged`));
+  findByUser(userId: string): Observable<AuditLog[]> {
+    return this.http.get<AuditLog[]>(`${this.apiUrl}/user/${userId}`);
+  }
+
+  findByEntity(entity: string, entityId: string): Observable<AuditLog[]> {
+    return this.http.get<AuditLog[]>(`${this.apiUrl}/entity/${entity}/${entityId}`);
+  }
+
+  getStatistics(): Observable<AuditLogStatistics> {
+    return this.http.get<AuditLogStatistics>(`${this.apiUrl}/statistics`);
+  }
+
+  exportLogs(filters?: AuditLogFilters): Observable<Blob> {
+    return this.http.post(`${this.apiUrl}/export`, filters, {
+      responseType: 'blob'
+    });
   }
 }

@@ -1,0 +1,128 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Audit Logs
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Track system activity and security events
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="exportLogs()">
+      <app-icon name="inbox" [size]="20" />
+      Export Logs
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  @if (statistics()) {
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Logs</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-stone-900);">
+            {{ statistics()!.totalLogs }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Today</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-blue-600);">
+            {{ statistics()!.todayLogs }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">This Week</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-green-600);">
+            {{ statistics()!.weekLogs }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">This Month</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-purple-600);">
+            {{ statistics()!.monthLogs }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by user, entity, action..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Entity</label>
+          <select
+            [value]="selectedEntity()"
+            (change)="updateEntityFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="user">User</option>
+            <option value="customer">Customer</option>
+            <option value="product">Product</option>
+            <option value="transaction">Transaction</option>
+            <option value="purchase_order">Purchase Order</option>
+            <option value="fleet_account">Fleet Account</option>
+            <option value="gift_card">Gift Card</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Action</label>
+          <select
+            [value]="selectedAction()"
+            (change)="updateActionFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="create">Create</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+            <option value="login">Login</option>
+            <option value="logout">Logout</option>
+            <option value="approve">Approve</option>
+            <option value="payment">Payment</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Severity</label>
+          <select
+            [value]="selectedSeverity()"
+            (change)="updateSeverityFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredAuditLogs()"
+    [columns]="columns"
+    [pageSize]="50"
+  />
+</div>
