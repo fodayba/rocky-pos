@@ -1,33 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface ScheduleShift {
-  employeeId: string;
-  employeeName: string;
-  startTime: string;
-  endTime: string;
-  position: string;
-  isCallOff: boolean;
-  callOffReason?: string;
-  replacementEmployeeId?: string;
-}
-
-export interface Schedule {
-  _id: string;
-  locationId: string;
-  weekStartDate: Date;
-  weekEndDate: Date;
-  status: 'draft' | 'published' | 'finalized';
-  shifts: ScheduleShift[];
-  totalScheduledHours: number;
-  notes?: string;
-  createdBy: string;
-  publishedDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import {
+  Shift,
+  CreateShiftDto,
+  UpdateShiftDto,
+  ScheduleStatistics
+} from '../models/schedule.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,68 +16,76 @@ export class SchedulingService {
   private http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/schedules`;
 
-  private schedulesSignal = signal<Schedule[]>([]);
-  readonly schedules = this.schedulesSignal.asReadonly();
+  private shiftsSignal = signal<Shift[]>([]);
+  readonly shifts = this.shiftsSignal.asReadonly();
 
-  async loadSchedules() {
-    const schedules = await firstValueFrom(this.http.get<Schedule[]>(this.apiUrl));
-    this.schedulesSignal.set(schedules);
-    return schedules;
-  }
-
-  async getSchedule(id: string) {
-    return firstValueFrom(this.http.get<Schedule>(`${this.apiUrl}/${id}`));
-  }
-
-  async getWeekSchedule(locationId: string, weekStartDate: Date) {
-    return firstValueFrom(
-      this.http.get<Schedule>(
-        `${this.apiUrl}/week/${locationId}/${weekStartDate.toISOString()}`
-      )
+  findAll(filters?: any): Observable<Shift[]> {
+    return this.http.get<Shift[]>(this.apiUrl, { params: filters }).pipe(
+      tap(shifts => this.shiftsSignal.set(shifts))
     );
   }
 
-  async createSchedule(schedule: Partial<Schedule>) {
-    const newSchedule = await firstValueFrom(
-      this.http.post<Schedule>(this.apiUrl, schedule)
-    );
-    this.schedulesSignal.update((schedules) => [...schedules, newSchedule]);
-    return newSchedule;
+  findOne(id: string): Observable<Shift> {
+    return this.http.get<Shift>(`${this.apiUrl}/${id}`);
   }
 
-  async updateSchedule(id: string, updates: Partial<Schedule>) {
-    const updated = await firstValueFrom(
-      this.http.patch<Schedule>(`${this.apiUrl}/${id}`, updates)
-    );
-    this.schedulesSignal.update((schedules) =>
-      schedules.map((s) => (s._id === id ? updated : s))
-    );
-    return updated;
-  }
-
-  async addShift(id: string, shift: ScheduleShift) {
-    return firstValueFrom(
-      this.http.post<Schedule>(`${this.apiUrl}/${id}/shifts`, shift)
-    );
-  }
-
-  async updateShift(id: string, shiftIndex: number, shift: Partial<ScheduleShift>) {
-    return firstValueFrom(
-      this.http.patch<Schedule>(`${this.apiUrl}/${id}/shifts/${shiftIndex}`, shift)
-    );
-  }
-
-  async recordCallOff(id: string, shiftIndex: number, reason: string) {
-    return firstValueFrom(
-      this.http.post<Schedule>(`${this.apiUrl}/${id}/shifts/${shiftIndex}/call-off`, {
-        reason,
+  create(dto: CreateShiftDto): Observable<Shift> {
+    return this.http.post<Shift>(this.apiUrl, dto).pipe(
+      tap(shift => {
+        this.shiftsSignal.update(shifts => [...shifts, shift]);
       })
     );
   }
 
-  async publishSchedule(id: string) {
-    return firstValueFrom(
-      this.http.post<Schedule>(`${this.apiUrl}/${id}/publish`, {})
+  update(id: string, dto: UpdateShiftDto): Observable<Shift> {
+    return this.http.patch<Shift>(`${this.apiUrl}/${id}`, dto).pipe(
+      tap(updated => {
+        this.shiftsSignal.update(shifts =>
+          shifts.map(s => s._id === id ? updated : s)
+        );
+      })
     );
+  }
+
+  cancel(id: string, reason: string): Observable<Shift> {
+    return this.http.patch<Shift>(`${this.apiUrl}/${id}/cancel`, { reason }).pipe(
+      tap(updated => {
+        this.shiftsSignal.update(shifts =>
+          shifts.map(s => s._id === id ? updated : s)
+        );
+      })
+    );
+  }
+
+  markNoShow(id: string): Observable<Shift> {
+    return this.http.patch<Shift>(`${this.apiUrl}/${id}/no-show`, {}).pipe(
+      tap(updated => {
+        this.shiftsSignal.update(shifts =>
+          shifts.map(s => s._id === id ? updated : s)
+        );
+      })
+    );
+  }
+
+  requestSwap(id: string, requestedById: string): Observable<Shift> {
+    return this.http.post<Shift>(`${this.apiUrl}/${id}/swap-request`, { requestedById }).pipe(
+      tap(updated => {
+        this.shiftsSignal.update(shifts =>
+          shifts.map(s => s._id === id ? updated : s)
+        );
+      })
+    );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.shiftsSignal.update(shifts => shifts.filter(s => s._id !== id));
+      })
+    );
+  }
+
+  getStatistics(): Observable<ScheduleStatistics> {
+    return this.http.get<ScheduleStatistics>(`${this.apiUrl}/statistics`);
   }
 }

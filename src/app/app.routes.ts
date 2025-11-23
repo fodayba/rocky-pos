@@ -8,6 +8,18 @@ import { FuelComponent } from './components/fuel/fuel.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerFormComponent } from './components/customers/customer-form/customer-form.component';
 import { CustomerDetailsComponent } from './components/customers/customer-details/customer-details.component';
+import { SuppliersComponent } from './components/suppliers/suppliers.component';
+import { PromotionsComponent } from './components/promotions/promotions.component';
+import { TimeTrackingComponent } from './components/time-tracking/time-tracking.component';
+import { GiftCardsComponent } from './components/gift-cards/gift-cards.component';
+import { PurchaseOrdersComponent } from './components/purchase-orders/purchase-orders.component';
+import { FleetAccountsComponent } from './components/fleet-accounts/fleet-accounts.component';
+import { AuditLogsComponent } from './components/audit-logs/audit-logs.component';
+import { LocationsComponent } from './components/locations/locations.component';
+import { SchedulingComponent } from './components/scheduling/scheduling.component';
+import { TaxManagementComponent } from './components/tax-management/tax-management.component';
+import { InventoryTransfersComponent } from './components/inventory-transfers/inventory-transfers.component';
+import { InvoicingComponent } from './components/invoicing/invoicing.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -72,6 +84,66 @@ export const routes: Routes = [
             data: { prerender: false },
           },
         ],
+      },
+      {
+        path: 'suppliers',
+        component: SuppliersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'promotions',
+        component: PromotionsComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'time-tracking',
+        component: TimeTrackingComponent,
+        canActivate: [roleGuard(['admin', 'manager', 'cashier'])],
+      },
+      {
+        path: 'gift-cards',
+        component: GiftCardsComponent,
+        canActivate: [roleGuard(['admin', 'manager', 'cashier'])],
+      },
+      {
+        path: 'purchase-orders',
+        component: PurchaseOrdersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'fleet-accounts',
+        component: FleetAccountsComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'audit-logs',
+        component: AuditLogsComponent,
+        canActivate: [roleGuard(['admin'])],
+      },
+      {
+        path: 'locations',
+        component: LocationsComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'scheduling',
+        component: SchedulingComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'tax-management',
+        component: TaxManagementComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'inventory-transfers',
+        component: InventoryTransfersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'invoicing',
+        component: InvoicingComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
         path: 'shifts',

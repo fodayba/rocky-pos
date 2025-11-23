@@ -1,34 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface TransferItem {
-  productId: string;
-  productName: string;
-  quantity: number;
-  unitCost: number;
-}
-
-export interface InventoryTransfer {
-  _id: string;
-  transferNumber: string;
-  fromLocationId: string;
-  toLocationId: string;
-  status: 'pending' | 'approved' | 'in_transit' | 'received' | 'rejected';
-  items: TransferItem[];
-  totalValue: number;
-  requestedBy: string;
-  requestedDate: Date;
-  approvedBy?: string;
-  approvedDate?: Date;
-  shippedDate?: Date;
-  receivedDate?: Date;
-  rejectionReason?: string;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { InventoryTransfer, CreateTransferDto, TransferStatistics } from '../models/inventory-transfer.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,65 +14,73 @@ export class InventoryTransferService {
   private transfersSignal = signal<InventoryTransfer[]>([]);
   readonly transfers = this.transfersSignal.asReadonly();
 
-  async loadTransfers() {
-    const transfers = await firstValueFrom(
-      this.http.get<InventoryTransfer[]>(this.apiUrl)
+  findAll(filters?: any): Observable<InventoryTransfer[]> {
+    return this.http.get<InventoryTransfer[]>(this.apiUrl, { params: filters }).pipe(
+      tap(transfers => this.transfersSignal.set(transfers))
     );
-    this.transfersSignal.set(transfers);
-    return transfers;
   }
 
-  async getTransfer(id: string) {
-    return firstValueFrom(this.http.get<InventoryTransfer>(`${this.apiUrl}/${id}`));
+  findOne(id: string): Observable<InventoryTransfer> {
+    return this.http.get<InventoryTransfer>(`${this.apiUrl}/${id}`);
   }
 
-  async createTransfer(transfer: Partial<InventoryTransfer>) {
-    const newTransfer = await firstValueFrom(
-      this.http.post<InventoryTransfer>(this.apiUrl, transfer)
-    );
-    this.transfersSignal.update((transfers) => [...transfers, newTransfer]);
-    return newTransfer;
-  }
-
-  async approveTransfer(id: string) {
-    const updated = await firstValueFrom(
-      this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/approve`, {})
-    );
-    this.transfersSignal.update((transfers) =>
-      transfers.map((t) => (t._id === id ? updated : t))
-    );
-    return updated;
-  }
-
-  async shipTransfer(id: string) {
-    const updated = await firstValueFrom(
-      this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/ship`, {})
-    );
-    this.transfersSignal.update((transfers) =>
-      transfers.map((t) => (t._id === id ? updated : t))
-    );
-    return updated;
-  }
-
-  async receiveTransfer(id: string, receivedItems: any[]) {
-    const updated = await firstValueFrom(
-      this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/receive`, {
-        receivedItems,
+  create(dto: CreateTransferDto): Observable<InventoryTransfer> {
+    return this.http.post<InventoryTransfer>(this.apiUrl, dto).pipe(
+      tap(transfer => {
+        this.transfersSignal.update(transfers => [...transfers, transfer]);
       })
     );
-    this.transfersSignal.update((transfers) =>
-      transfers.map((t) => (t._id === id ? updated : t))
-    );
-    return updated;
   }
 
-  async rejectTransfer(id: string, reason: string) {
-    const updated = await firstValueFrom(
-      this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/reject`, { reason })
+  approve(id: string): Observable<InventoryTransfer> {
+    return this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/approve`, {}).pipe(
+      tap(updated => {
+        this.transfersSignal.update(transfers =>
+          transfers.map(t => t._id === id ? updated : t)
+        );
+      })
     );
-    this.transfersSignal.update((transfers) =>
-      transfers.map((t) => (t._id === id ? updated : t))
+  }
+
+  ship(id: string): Observable<InventoryTransfer> {
+    return this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/ship`, {}).pipe(
+      tap(updated => {
+        this.transfersSignal.update(transfers =>
+          transfers.map(t => t._id === id ? updated : t)
+        );
+      })
     );
-    return updated;
+  }
+
+  receive(id: string, items: any[]): Observable<InventoryTransfer> {
+    return this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/receive`, { items }).pipe(
+      tap(updated => {
+        this.transfersSignal.update(transfers =>
+          transfers.map(t => t._id === id ? updated : t)
+        );
+      })
+    );
+  }
+
+  cancel(id: string): Observable<InventoryTransfer> {
+    return this.http.patch<InventoryTransfer>(`${this.apiUrl}/${id}/cancel`, {}).pipe(
+      tap(updated => {
+        this.transfersSignal.update(transfers =>
+          transfers.map(t => t._id === id ? updated : t)
+        );
+      })
+    );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.transfersSignal.update(transfers => transfers.filter(t => t._id !== id));
+      })
+    );
+  }
+
+  getStatistics(): Observable<TransferStatistics> {
+    return this.http.get<TransferStatistics>(`${this.apiUrl}/statistics`);
   }
 }

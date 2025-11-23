@@ -1,36 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-export interface InvoicePayment {
-  paymentDate: Date;
-  amount: number;
-  paymentMethod: string;
-  referenceNumber?: string;
-  notes?: string;
-}
-
-export interface Invoice {
-  _id: string;
-  invoiceNumber: string;
-  fleetAccountId: string;
-  billingPeriodStart: Date;
-  billingPeriodEnd: Date;
-  status: 'draft' | 'sent' | 'viewed' | 'partial' | 'paid' | 'overdue' | 'cancelled';
-  dueDate: Date;
-  subtotal: number;
-  tax: number;
-  lateFees: number;
-  total: number;
-  amountPaid: number;
-  amountDue: number;
-  payments: InvoicePayment[];
-  sentDate?: Date;
-  paidDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Invoice, CreateInvoiceDto, UpdateInvoiceDto, InvoiceStatistics, RecordPaymentDto } from '../models/invoice.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,55 +14,77 @@ export class InvoiceService {
   private invoicesSignal = signal<Invoice[]>([]);
   readonly invoices = this.invoicesSignal.asReadonly();
 
-  async loadInvoices() {
-    const invoices = await firstValueFrom(this.http.get<Invoice[]>(this.apiUrl));
-    this.invoicesSignal.set(invoices);
-    return invoices;
-  }
-
-  async getInvoice(id: string) {
-    return firstValueFrom(this.http.get<Invoice>(`${this.apiUrl}/${id}`));
-  }
-
-  async createInvoice(invoice: Partial<Invoice>) {
-    const newInvoice = await firstValueFrom(
-      this.http.post<Invoice>(this.apiUrl, invoice)
+  findAll(filters?: any): Observable<Invoice[]> {
+    return this.http.get<Invoice[]>(this.apiUrl, { params: filters }).pipe(
+      tap(invoices => this.invoicesSignal.set(invoices))
     );
-    this.invoicesSignal.update((invoices) => [...invoices, newInvoice]);
-    return newInvoice;
   }
 
-  async generateInvoice(fleetAccountId: string, startDate: Date, endDate: Date) {
-    const invoice = await firstValueFrom(
-      this.http.post<Invoice>(`${this.apiUrl}/generate`, {
-        fleetAccountId,
-        startDate,
-        endDate,
+  findOne(id: string): Observable<Invoice> {
+    return this.http.get<Invoice>(`${this.apiUrl}/${id}`);
+  }
+
+  create(dto: CreateInvoiceDto): Observable<Invoice> {
+    return this.http.post<Invoice>(this.apiUrl, dto).pipe(
+      tap(invoice => {
+        this.invoicesSignal.update(invoices => [...invoices, invoice]);
       })
     );
-    this.invoicesSignal.update((invoices) => [...invoices, invoice]);
-    return invoice;
   }
 
-  async sendInvoice(id: string) {
-    return firstValueFrom(
-      this.http.post<Invoice>(`${this.apiUrl}/${id}/send`, {})
+  update(id: string, dto: UpdateInvoiceDto): Observable<Invoice> {
+    return this.http.patch<Invoice>(`${this.apiUrl}/${id}`, dto).pipe(
+      tap(updated => {
+        this.invoicesSignal.update(invoices =>
+          invoices.map(i => i._id === id ? updated : i)
+        );
+      })
     );
   }
 
-  async recordPayment(id: string, payment: Partial<InvoicePayment>) {
-    return firstValueFrom(
-      this.http.post<Invoice>(`${this.apiUrl}/${id}/payment`, payment)
+  send(id: string): Observable<Invoice> {
+    return this.http.patch<Invoice>(`${this.apiUrl}/${id}/send`, {}).pipe(
+      tap(updated => {
+        this.invoicesSignal.update(invoices =>
+          invoices.map(i => i._id === id ? updated : i)
+        );
+      })
     );
   }
 
-  async applyLateFee(id: string, amount: number, reason: string) {
-    return firstValueFrom(
-      this.http.post<Invoice>(`${this.apiUrl}/${id}/late-fee`, { amount, reason })
+  recordPayment(id: string, dto: RecordPaymentDto): Observable<Invoice> {
+    return this.http.post<Invoice>(`${this.apiUrl}/${id}/payment`, dto).pipe(
+      tap(updated => {
+        this.invoicesSignal.update(invoices =>
+          invoices.map(i => i._id === id ? updated : i)
+        );
+      })
     );
   }
 
-  async getOverdueInvoices() {
-    return firstValueFrom(this.http.get<Invoice[]>(`${this.apiUrl}/overdue`));
+  cancel(id: string): Observable<Invoice> {
+    return this.http.patch<Invoice>(`${this.apiUrl}/${id}/cancel`, {}).pipe(
+      tap(updated => {
+        this.invoicesSignal.update(invoices =>
+          invoices.map(i => i._id === id ? updated : i)
+        );
+      })
+    );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        this.invoicesSignal.update(invoices => invoices.filter(i => i._id !== id));
+      })
+    );
+  }
+
+  getStatistics(): Observable<InvoiceStatistics> {
+    return this.http.get<InvoiceStatistics>(`${this.apiUrl}/statistics`);
+  }
+
+  getOverdue(): Observable<Invoice[]> {
+    return this.http.get<Invoice[]>(`${this.apiUrl}/overdue`);
   }
 }

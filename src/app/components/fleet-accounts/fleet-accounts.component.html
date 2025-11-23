@@ -1,0 +1,95 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Fleet Accounts
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Manage commercial fleet customer accounts
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createFleetAccount()">
+      <app-icon name="plus" [size]="20" />
+      Create Fleet Account
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  @if (statistics()) {
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Active Accounts</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-stone-900);">
+            {{ statistics()!.totalActive }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Cards</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-blue-600);">
+            {{ statistics()!.totalActiveCards }} / {{ statistics()!.totalCards }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Outstanding Balance</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-red-600);">
+            ${{ statistics()!.totalOutstandingBalance.toFixed(2) }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Monthly Spend</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-green-600);">
+            ${{ statistics()!.totalMonthlySpend.toFixed(2) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by account #, company, contact..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredFleetAccounts()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>

@@ -1,0 +1,91 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Time Tracking
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Track employee time and manage timesheets
+      </p>
+    </div>
+  </div>
+
+  <!-- Clock In/Out Card -->
+  <div class="card">
+    <div class="card-body">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-semibold mb-1" style="color: var(--color-stone-900);">
+            {{ activeEntry() ? 'Currently Clocked In' : 'Not Clocked In' }}
+          </h3>
+          @if (activeEntry()) {
+            <p class="text-sm" style="color: var(--color-stone-600);">
+              Clock In Time: {{ activeEntry()!.clockIn | date:'short' }}
+            </p>
+            <p class="text-2xl font-bold mt-2" style="color: var(--color-blue-600);">
+              {{ currentDuration() }}
+            </p>
+          } @else {
+            <p class="text-sm" style="color: var(--color-stone-500);">
+              Click the button to start tracking your time
+            </p>
+          }
+        </div>
+        <div>
+          @if (activeEntry()) {
+            <button class="btn btn-danger" (click)="clockOut()">
+              <app-icon name="clock" [size]="20" />
+              Clock Out
+            </button>
+          } @else {
+            <button class="btn btn-primary" (click)="clockIn()">
+              <app-icon name="clock" [size]="20" />
+              Clock In
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by employee name or status..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="approved">Approved</option>
+            <option value="disputed">Disputed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredEntries()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>
