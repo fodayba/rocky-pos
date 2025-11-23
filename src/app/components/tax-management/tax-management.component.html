@@ -1,0 +1,107 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Tax Management
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Manage tax rates and configurations
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createTaxRate()">
+      <app-icon name="plus" [size]="20" />
+      Create Tax Rate
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  @if (statistics()) {
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Rates</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-stone-900);">
+            {{ statistics()!.totalRates }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Active Rates</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-green-600);">
+            {{ statistics()!.activeRates }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Default Rates</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-blue-600);">
+            {{ statistics()!.defaultRates }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Average Rate</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-purple-600);">
+            {{ (statistics()!.averageRate * 100).toFixed(2) }}%
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by name, location, description..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Type</label>
+          <select
+            [value]="selectedType()"
+            (change)="updateTypeFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All Types</option>
+            <option value="sales_tax">Sales Tax</option>
+            <option value="fuel_tax">Fuel Tax</option>
+            <option value="excise_tax">Excise Tax</option>
+            <option value="vat">VAT</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredTaxRates()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>

@@ -1,0 +1,97 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Invoicing
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Manage customer invoices and payments
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createInvoice()">
+      <app-icon name="plus" [size]="20" />
+      Create Invoice
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  @if (statistics()) {
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Invoices</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-stone-900);">
+            {{ statistics()!.totalInvoices }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Paid</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-green-600);">
+            {{ statistics()!.paidInvoices }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Overdue</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-red-600);">
+            {{ statistics()!.overdueInvoices }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Outstanding</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-orange-600);">
+            ${{ statistics()!.totalOutstanding.toLocaleString() }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by invoice #, customer..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="paid">Paid</option>
+            <option value="overdue">Overdue</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="partial">Partial</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredInvoices()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>

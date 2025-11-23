@@ -1,0 +1,104 @@
+<div class="max-w-7xl mx-auto p-6 space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-semibold" style="color: var(--color-stone-900);">
+        Inventory Transfers
+      </h1>
+      <p class="text-sm mt-1" style="color: var(--color-stone-500);">
+        Manage inventory transfers between locations
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="createTransfer()">
+      <app-icon name="plus" [size]="20" />
+      Create Transfer
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  @if (statistics()) {
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Total Transfers</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-stone-900);">
+            {{ statistics()!.totalTransfers }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Pending</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-yellow-600);">
+            {{ statistics()!.pendingTransfers }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">In Transit</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-blue-600);">
+            {{ statistics()!.inTransitTransfers }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Received</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-green-600);">
+            {{ statistics()!.receivedTransfers }}
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="text-sm" style="color: var(--color-stone-500);">Cancelled</p>
+          <p class="text-2xl font-bold mt-1" style="color: var(--color-red-600);">
+            {{ statistics()!.cancelledTransfers }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Search</label>
+          <input
+            type="text"
+            placeholder="Search by transfer #, location, requester..."
+            [value]="searchQuery()"
+            (input)="updateSearch($any($event.target).value)"
+            class="input w-full"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1" style="color: var(--color-stone-700);">Status</label>
+          <select
+            [value]="selectedStatus()"
+            (change)="updateStatusFilter($any($event.target).value)"
+            class="input w-full"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="in_transit">In Transit</option>
+            <option value="received">Received</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="partial">Partial</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [data]="filteredTransfers()"
+    [columns]="columns"
+    [actions]="actions"
+    [pageSize]="20"
+  />
+</div>

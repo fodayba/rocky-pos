@@ -17,6 +17,9 @@ import { FleetAccountsComponent } from './components/fleet-accounts/fleet-accoun
 import { AuditLogsComponent } from './components/audit-logs/audit-logs.component';
 import { LocationsComponent } from './components/locations/locations.component';
 import { SchedulingComponent } from './components/scheduling/scheduling.component';
+import { TaxManagementComponent } from './components/tax-management/tax-management.component';
+import { InventoryTransfersComponent } from './components/inventory-transfers/inventory-transfers.component';
+import { InvoicingComponent } from './components/invoicing/invoicing.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
@@ -125,6 +128,21 @@ export const routes: Routes = [
       {
         path: 'scheduling',
         component: SchedulingComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'tax-management',
+        component: TaxManagementComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'inventory-transfers',
+        component: InventoryTransfersComponent,
+        canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'invoicing',
+        component: InvoicingComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
       },
       {
