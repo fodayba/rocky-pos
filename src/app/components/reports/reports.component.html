@@ -146,31 +146,31 @@
               <div class="text-center p-4 rounded-lg" style="background: var(--color-stone-50);">
                 <p class="text-sm" style="color: var(--color-stone-500);">Cash</p>
                 <p class="text-xl font-semibold mt-1" style="color: var(--color-green-600);">
-                  {{ formatCurrency(salesData()!.salesByPaymentMethod.cash) }}
+                  {{ formatCurrency(salesData()?.salesByPaymentMethod?.cash || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-stone-50);">
                 <p class="text-sm" style="color: var(--color-stone-500);">Credit</p>
                 <p class="text-xl font-semibold mt-1" style="color: var(--color-blue-600);">
-                  {{ formatCurrency(salesData()!.salesByPaymentMethod.credit) }}
+                  {{ formatCurrency(salesData()?.salesByPaymentMethod?.credit || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-stone-50);">
                 <p class="text-sm" style="color: var(--color-stone-500);">Debit</p>
                 <p class="text-xl font-semibold mt-1" style="color: var(--color-purple-600);">
-                  {{ formatCurrency(salesData()!.salesByPaymentMethod.debit) }}
+                  {{ formatCurrency(salesData()?.salesByPaymentMethod?.debit || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-stone-50);">
                 <p class="text-sm" style="color: var(--color-stone-500);">Check</p>
                 <p class="text-xl font-semibold mt-1" style="color: var(--color-orange-600);">
-                  {{ formatCurrency(salesData()!.salesByPaymentMethod.check) }}
+                  {{ formatCurrency(salesData()?.salesByPaymentMethod?.check || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-stone-50);">
                 <p class="text-sm" style="color: var(--color-stone-500);">Gift Card</p>
                 <p class="text-xl font-semibold mt-1" style="color: var(--color-pink-600);">
-                  {{ formatCurrency(salesData()!.salesByPaymentMethod.giftCard) }}
+                  {{ formatCurrency(salesData()?.salesByPaymentMethod?.giftCard || 0) }}
                 </p>
               </div>
             </div>
@@ -178,7 +178,7 @@
         </div>
 
         <!-- Top Products -->
-        @if (salesData()!.salesByProduct && salesData()!.salesByProduct!.length > 0) {
+        @if (salesData() && salesData()!.salesByProduct?.length) {
           <div class="card">
             <div class="card-body">
               <h2 class="text-lg font-semibold mb-4" style="color: var(--color-stone-900);">Top Products</h2>
