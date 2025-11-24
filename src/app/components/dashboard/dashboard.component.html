@@ -1,140 +1,175 @@
-<div class="min-h-screen bg-stone-50">
-  <div class="max-w-7xl mx-auto px-6 md:px-8 py-10">
+<div class="dashboard-wrapper">
+  <div class="container py-10">
 
     <!-- Header Section -->
-    <div class="mb-12">
-      <h1 class="text-4xl font-bold mb-2 text-stone-900 tracking-tight">Dashboard</h1>
-      @if (currentUser(); as user) {
-        <p class="text-base text-stone-500">Welcome back, {{ user.firstName }}</p>
-      }
+    <div class="header-section animate-fade-in-up">
+      <div>
+        <h1 class="dashboard-title">
+          <span class="gradient-text">Dashboard</span>
+        </h1>
+        @if (currentUser(); as user) {
+          <p class="dashboard-subtitle">Welcome back, <span class="font-bold gradient-text-secondary">{{ user.firstName }}</span></p>
+        }
+      </div>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    <!-- Stats Grid with Gradient Cards -->
+    <div class="stats-grid animate-fade-in-up" style="animation-delay: 0.1s">
       <!-- Today's Revenue -->
-      <div class="stat-card">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <p class="stat-label">Today's Revenue</p>
-            <p class="stat-value">${{ todayRevenue().toFixed(2) }}</p>
+      <div class="stat-card-gradient stat-card-primary hover-lift">
+        <div class="stat-card-content">
+          <div class="stat-card-icon">
+            <app-icon name="dollar" [size]="24"></app-icon>
           </div>
-          <div class="icon-container">
-            <app-icon name="dollar" [size]="20" customClass="text-stone-600"></app-icon>
+          <div class="stat-card-data">
+            <p class="stat-card-label">Today's Revenue</p>
+            <p class="stat-card-value">${{ todayRevenue().toFixed(2) }}</p>
+            <div class="stat-change stat-change-positive">
+              <span>↑ 12.5%</span> from yesterday
+            </div>
           </div>
         </div>
+        <div class="stat-card-bg-pattern"></div>
       </div>
 
       <!-- Today's Transactions -->
-      <div class="stat-card">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <p class="stat-label">Transactions</p>
-            <p class="stat-value">{{ todayTransactions().length }}</p>
+      <div class="stat-card-gradient stat-card-secondary hover-lift">
+        <div class="stat-card-content">
+          <div class="stat-card-icon">
+            <app-icon name="receipt" [size]="24"></app-icon>
           </div>
-          <div class="icon-container">
-            <app-icon name="receipt" [size]="20" customClass="text-stone-600"></app-icon>
+          <div class="stat-card-data">
+            <p class="stat-card-label">Transactions</p>
+            <p class="stat-card-value">{{ todayTransactions().length }}</p>
+            <div class="stat-change stat-change-positive">
+              <span>↑ 8.2%</span> from yesterday
+            </div>
           </div>
         </div>
+        <div class="stat-card-bg-pattern"></div>
       </div>
 
       <!-- Low Stock Items -->
-      <div class="stat-card">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <p class="stat-label">Low Stock</p>
-            <p class="stat-value">{{ lowStockProducts().length }}</p>
+      <div class="stat-card-gradient stat-card-warning hover-lift">
+        <div class="stat-card-content">
+          <div class="stat-card-icon">
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
-          <div class="icon-container bg-orange-50">
-            <app-icon name="alert" [size]="20" customClass="text-orange-600"></app-icon>
+          <div class="stat-card-data">
+            <p class="stat-card-label">Low Stock</p>
+            <p class="stat-card-value">{{ lowStockProducts().length }}</p>
+            @if (lowStockProducts().length > 0) {
+              <div class="stat-change stat-change-warning">
+                <span>⚠</span> Requires attention
+              </div>
+            } @else {
+              <div class="stat-change stat-change-positive">
+                <span>✓</span> All items stocked
+              </div>
+            }
           </div>
         </div>
+        <div class="stat-card-bg-pattern"></div>
       </div>
 
       <!-- Fuel Alerts -->
-      <div class="stat-card">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <p class="stat-label">Fuel Alerts</p>
-            <p class="stat-value">{{ lowFuelProducts().length }}</p>
+      <div class="stat-card-gradient stat-card-info hover-lift">
+        <div class="stat-card-content">
+          <div class="stat-card-icon">
+            <app-icon name="fuel" [size]="24"></app-icon>
           </div>
-          <div class="icon-container">
-            <app-icon name="fuel" [size]="20" customClass="text-stone-600"></app-icon>
+          <div class="stat-card-data">
+            <p class="stat-card-label">Fuel Alerts</p>
+            <p class="stat-card-value">{{ lowFuelProducts().length }}</p>
+            @if (lowFuelProducts().length > 0) {
+              <div class="stat-change stat-change-warning">
+                <span>⚠</span> Tanks low
+              </div>
+            } @else {
+              <div class="stat-change stat-change-positive">
+                <span>✓</span> All tanks full
+              </div>
+            }
           </div>
         </div>
+        <div class="stat-card-bg-pattern"></div>
       </div>
     </div>
 
     <!-- Current Shift Info -->
     @if (hasActiveShift() && shiftSummary(); as summary) {
-      <div class="card mb-12 animate-fade-in-up">
+      <div class="card glass animate-fade-in-up" style="animation-delay: 0.2s">
         <div class="card-body">
-          <div class="flex items-center gap-3 mb-10">
-            <div class="icon-container bg-green-50">
-              <app-icon name="check" [size]="20" customClass="text-green-600"></app-icon>
+          <div class="shift-header">
+            <div class="shift-header-icon">
+              <app-icon name="check" [size]="24"></app-icon>
             </div>
-            <h2 class="text-2xl font-semibold text-stone-900 tracking-tight">Active Shift</h2>
+            <h2 class="shift-title gradient-text">Active Shift</h2>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <p class="stat-label mb-2">Shift Number</p>
-              <p class="text-lg font-semibold text-stone-900">{{ summary.shift.shiftNumber }}</p>
+          <div class="shift-stats">
+            <div class="shift-stat">
+              <p class="shift-stat-label">Shift Number</p>
+              <p class="shift-stat-value">{{ summary.shift.shiftNumber }}</p>
             </div>
-            <div>
-              <p class="stat-label mb-2">Total Sales</p>
-              <p class="text-lg font-semibold text-stone-900">${{ summary.totalSales.toFixed(2) }}</p>
+            <div class="shift-stat">
+              <p class="shift-stat-label">Total Sales</p>
+              <p class="shift-stat-value gradient-text">${{ summary.totalSales.toFixed(2) }}</p>
             </div>
-            <div>
-              <p class="stat-label mb-2">Transactions</p>
-              <p class="text-lg font-semibold text-stone-900">{{ summary.totalTransactions }}</p>
+            <div class="shift-stat">
+              <p class="shift-stat-label">Transactions</p>
+              <p class="shift-stat-value">{{ summary.totalTransactions }}</p>
             </div>
-            <div>
-              <p class="stat-label mb-2">Cash Sales</p>
-              <p class="text-lg font-semibold text-stone-900">${{ summary.cashSales.toFixed(2) }}</p>
+            <div class="shift-stat">
+              <p class="shift-stat-label">Cash Sales</p>
+              <p class="shift-stat-value">${{ summary.cashSales.toFixed(2) }}</p>
             </div>
           </div>
         </div>
       </div>
     } @else {
-      <div class="card mb-12 bg-orange-50 border-orange-500">
-        <div class="p-8">
-          <div class="flex items-center justify-between flex-wrap gap-6">
-            <div class="flex items-center gap-6">
-              <div class="icon-container bg-orange-100 p-4">
-                <app-icon name="clock" [size]="28" customClass="text-orange-700"></app-icon>
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold mb-1 text-stone-900">No Active Shift</h2>
-                <p class="text-sm text-stone-600">Start a shift to begin processing transactions</p>
-              </div>
-            </div>
-            <a routerLink="/shifts" class="btn btn-primary">Start Shift</a>
+      <div class="no-shift-card animate-fade-in-up" style="animation-delay: 0.2s">
+        <div class="no-shift-content">
+          <div class="no-shift-icon">
+            <app-icon name="clock" [size]="32"></app-icon>
+          </div>
+          <div class="no-shift-text">
+            <h2 class="no-shift-title">No Active Shift</h2>
+            <p class="no-shift-description">Start a shift to begin processing transactions</p>
           </div>
         </div>
+        <a routerLink="/shifts" class="btn btn-primary">
+          <app-icon name="plus" [size]="16"></app-icon>
+          Start Shift
+        </a>
       </div>
     }
 
     <!-- Alerts & Quick Actions Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+    <div class="alerts-grid">
       <!-- Low Stock Alerts -->
       @if (lowStockProducts().length > 0) {
-        <div class="card animate-fade-in-up">
+        <div class="card glass hover-lift animate-fade-in-up" style="animation-delay: 0.3s">
+          <div class="card-header">
+            <h2 class="card-title">
+              <app-icon name="alert" [size]="20" customClass="text-orange-500"></app-icon>
+              Low Stock Alerts
+            </h2>
+            <span class="badge badge-error">{{ lowStockProducts().length }}</span>
+          </div>
           <div class="card-body">
-            <h2 class="text-xl font-semibold mb-8 text-stone-900">Low Stock Alerts</h2>
-            <div class="space-y-3">
+            <div class="alert-list">
               @for (product of lowStockProducts().slice(0, 5); track product.id) {
-                <div class="interactive-card p-4 rounded-xl bg-stone-50 border border-stone-200">
-                  <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                      <p class="font-semibold text-sm text-stone-900 mb-1">{{ product.name }}</p>
-                      <p class="text-xs text-stone-500">{{ product.stockQuantity }} {{ product.unit }} remaining</p>
-                    </div>
-                    <span class="badge badge-error">Low Stock</span>
+                <div class="alert-item hover-lift">
+                  <div class="alert-item-content">
+                    <p class="alert-item-title">{{ product.name }}</p>
+                    <p class="alert-item-subtitle">{{ product.stockQuantity }} {{ product.unit }} remaining</p>
                   </div>
+                  <span class="badge badge-gradient">Low Stock</span>
                 </div>
               }
               @if (lowStockProducts().length > 5) {
-                <a routerLink="/inventory" class="block text-center py-4 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">
-                  View all {{ lowStockProducts().length }} items
+                <a routerLink="/inventory" class="alert-view-all">
+                  View all {{ lowStockProducts().length }} items →
                 </a>
               }
             </div>
@@ -144,18 +179,24 @@
 
       <!-- Fuel Alerts -->
       @if (lowFuelProducts().length > 0) {
-        <div class="card animate-fade-in-up">
+        <div class="card glass hover-lift animate-fade-in-up" style="animation-delay: 0.35s">
+          <div class="card-header">
+            <h2 class="card-title">
+              <app-icon name="fuel" [size]="20" customClass="text-blue-500"></app-icon>
+              Fuel Level Alerts
+            </h2>
+            <span class="badge badge-info">{{ lowFuelProducts().length }}</span>
+          </div>
           <div class="card-body">
-            <h2 class="text-xl font-semibold mb-8 text-stone-900">Fuel Level Alerts</h2>
-            <div class="space-y-4">
+            <div class="alert-list">
               @for (fuel of lowFuelProducts(); track fuel.id) {
-                <div class="p-5 rounded-xl bg-stone-50 border border-stone-200 transition-all">
-                  <div class="flex items-center justify-between mb-3">
-                    <p class="font-semibold text-sm text-stone-900">{{ fuel.name }}</p>
-                    <p class="text-xs text-stone-500 font-mono">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gal</p>
+                <div class="fuel-alert-item">
+                  <div class="fuel-alert-header">
+                    <p class="fuel-alert-name">{{ fuel.name }}</p>
+                    <p class="fuel-alert-value">{{ fuel.currentStock }} / {{ fuel.tankCapacity }} gal</p>
                   </div>
-                  <div class="w-full rounded-full h-1.5 bg-stone-200 overflow-hidden">
-                    <div class="h-1.5 rounded-full bg-stone-900 transition-all" [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"></div>
+                  <div class="fuel-progress-bar">
+                    <div class="fuel-progress-fill" [style.width.%]="(fuel.currentStock / fuel.tankCapacity) * 100"></div>
                   </div>
                 </div>
               }
@@ -166,25 +207,35 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="card animate-fade-in-up">
+    <div class="card glass animate-fade-in-up" style="animation-delay: 0.4s">
+      <div class="card-header">
+        <h2 class="card-title gradient-text">Quick Actions</h2>
+      </div>
       <div class="card-body">
-        <h2 class="text-xl font-semibold mb-8 text-stone-900">Quick Actions</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a routerLink="/pos" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
-            <app-icon name="pos" [size]="22" customClass="text-stone-700"></app-icon>
-            <span class="font-semibold text-sm text-stone-900">New Sale</span>
+        <div class="quick-actions-grid">
+          <a routerLink="/pos" class="quick-action-card hover-lift hover-glow">
+            <div class="quick-action-icon gradient-primary">
+              <app-icon name="pos" [size]="24"></app-icon>
+            </div>
+            <span class="quick-action-label">New Sale</span>
           </a>
-          <a routerLink="/inventory" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
-            <app-icon name="inventory" [size]="22" customClass="text-stone-700"></app-icon>
-            <span class="font-semibold text-sm text-stone-900">Inventory</span>
+          <a routerLink="/inventory" class="quick-action-card hover-lift hover-glow">
+            <div class="quick-action-icon gradient-secondary">
+              <app-icon name="inventory" [size]="24"></app-icon>
+            </div>
+            <span class="quick-action-label">Inventory</span>
           </a>
-          <a routerLink="/fuel" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
-            <app-icon name="fuel" [size]="22" customClass="text-stone-700"></app-icon>
-            <span class="font-semibold text-sm text-stone-900">Fuel</span>
+          <a routerLink="/fuel" class="quick-action-card hover-lift hover-glow">
+            <div class="quick-action-icon gradient-info">
+              <app-icon name="fuel" [size]="24"></app-icon>
+            </div>
+            <span class="quick-action-label">Fuel</span>
           </a>
-          <a routerLink="/reports" class="interactive-card flex items-center gap-3 p-6 border border-stone-200 rounded-xl bg-white">
-            <app-icon name="chart" [size]="22" customClass="text-stone-700"></app-icon>
-            <span class="font-semibold text-sm text-stone-900">Reports</span>
+          <a routerLink="/reports" class="quick-action-card hover-lift hover-glow">
+            <div class="quick-action-icon gradient-success">
+              <app-icon name="chart" [size]="24"></app-icon>
+            </div>
+            <span class="quick-action-label">Reports</span>
           </a>
         </div>
       </div>

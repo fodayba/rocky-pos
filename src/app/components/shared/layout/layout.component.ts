@@ -1,5 +1,5 @@
-import { Component, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject, effect } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ShiftService } from '../../../services/shift.service';
@@ -22,11 +22,35 @@ export class LayoutComponent {
   public authService = inject(AuthService);
   private shiftService = inject(ShiftService);
   private router = inject(Router);
+  private document = inject(DOCUMENT);
 
   sidebarOpen = signal(true);
+  darkMode = signal(false);
   currentUser = this.authService.currentUser;
   currentShift = this.shiftService.currentShift;
   hasActiveShift = this.shiftService.hasActiveShift;
+
+  constructor() {
+    // Load dark mode preference from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    this.darkMode.set(savedDarkMode);
+
+    // Apply dark mode on init
+    if (savedDarkMode) {
+      this.document.documentElement.classList.add('dark');
+    }
+
+    // Watch for dark mode changes
+    effect(() => {
+      if (this.darkMode()) {
+        this.document.documentElement.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        this.document.documentElement.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+      }
+    });
+  }
 
   navItems: NavItem[] = [
     {
@@ -75,6 +99,10 @@ export class LayoutComponent {
 
   toggleSidebar(): void {
     this.sidebarOpen.set(!this.sidebarOpen());
+  }
+
+  toggleDarkMode(): void {
+    this.darkMode.set(!this.darkMode());
   }
 
   canAccessRoute(roles: string[]): boolean {

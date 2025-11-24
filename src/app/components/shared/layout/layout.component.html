@@ -1,13 +1,16 @@
-<div class="min-h-screen bg-stone-50">
+<div class="layout-wrapper">
   <!-- Top Navigation -->
   <nav class="nav-header">
+    <div class="nav-gradient"></div>
     <div class="nav-container">
       <div class="nav-content">
         <div class="nav-left">
           <button (click)="toggleSidebar()" class="nav-toggle" aria-label="Toggle sidebar">
             <app-icon name="menu" [size]="20"></app-icon>
           </button>
-          <h1 class="nav-title">Rocky POS</h1>
+          <h1 class="nav-title">
+            <span class="gradient-text">Rocky</span> POS
+          </h1>
         </div>
 
         <div class="nav-right">
@@ -22,6 +25,22 @@
               <span class="shift-text">No Active Shift</span>
             </div>
           }
+
+          <!-- Dark Mode Toggle -->
+          <button
+            (click)="toggleDarkMode()"
+            class="dark-mode-toggle"
+            [attr.aria-label]="darkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+            title="Toggle dark mode"
+          >
+            <div class="dark-mode-toggle-slider">
+              @if (darkMode()) {
+                <app-icon name="moon" [size]="12"></app-icon>
+              } @else {
+                <app-icon name="sun" [size]="12"></app-icon>
+              }
+            </div>
+          </button>
 
           @if (currentUser(); as user) {
             <div class="user-info-wrapper">
