@@ -1,122 +1,116 @@
-<div class="min-h-screen flex items-center justify-center px-4 py-12 bg-stone-50">
-  <div class="w-full max-w-md">
-    <div class="card animate-fade-in-up shadow-xl">
-      <div class="p-10">
-        <div class="text-center mb-10">
-          <h1 class="text-3xl font-bold mb-2 text-stone-900 tracking-tight">Create Account</h1>
-          <p class="text-sm text-stone-500">Start your business journey</p>
-        </div>
+<div class="signup-container">
+  <div class="signup-wrapper">
+    <div class="signup-card">
+      <div class="signup-header">
+        <h1 class="signup-title">{{ 'auth.createAccount' | translate }}</h1>
+        <p class="signup-subtitle">{{ 'auth.startYourJourney' | translate }}</p>
+      </div>
 
-        <form (ngSubmit)="onSubmit()" class="space-y-5">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="firstName" class="block text-sm font-semibold mb-2 text-stone-600">First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                [value]="firstName()"
-                (input)="firstName.set($any($event.target).value)"
-                class="input"
-                placeholder="John"
-                required
-              />
-            </div>
-
-            <div>
-              <label for="lastName" class="block text-sm font-semibold mb-2 text-stone-600">Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                [value]="lastName()"
-                (input)="lastName.set($any($event.target).value)"
-                class="input"
-                placeholder="Doe"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label for="businessName" class="block text-sm font-semibold mb-2 text-stone-600">Business Name</label>
+      <form (ngSubmit)="onSubmit()" class="signup-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">{{ 'auth.firstName' | translate }}</label>
             <input
-              id="businessName"
+              id="firstName"
               type="text"
-              [value]="businessName()"
-              (input)="businessName.set($any($event.target).value)"
+              [value]="firstName()"
+              (input)="firstName.set($any($event.target).value)"
               class="input"
-              placeholder="Rocky's Gas & Minimart"
+              placeholder="John"
               required
             />
           </div>
 
-          <div>
-            <label for="email" class="block text-sm font-semibold mb-2 text-stone-600">Email Address</label>
+          <div class="form-group">
+            <label for="lastName" class="form-label">{{ 'auth.lastName' | translate }}</label>
             <input
-              id="email"
-              type="email"
-              [value]="email()"
-              (input)="email.set($any($event.target).value)"
+              id="lastName"
+              type="text"
+              [value]="lastName()"
+              (input)="lastName.set($any($event.target).value)"
               class="input"
-              placeholder="john@example.com"
-              required
-            />
-            <p class="text-xs mt-2 text-stone-500">This will be your login email</p>
-          </div>
-
-          <div>
-            <label for="password" class="block text-sm font-semibold mb-2 text-stone-600">Password</label>
-            <input
-              id="password"
-              type="password"
-              [value]="password()"
-              (input)="password.set($any($event.target).value)"
-              class="input"
-              placeholder="••••••••"
-              required
-            />
-            <p class="text-xs mt-2 text-stone-500">Minimum 6 characters</p>
-          </div>
-
-          <div>
-            <label for="confirmPassword" class="block text-sm font-semibold mb-2 text-stone-600">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              [value]="confirmPassword()"
-              (input)="confirmPassword.set($any($event.target).value)"
-              class="input"
-              placeholder="••••••••"
+              placeholder="Doe"
               required
             />
           </div>
-
-          @if (error()) {
-            <div class="p-4 border border-red-600 bg-red-50 text-red-600 rounded-lg text-sm">
-              {{ error() }}
-            </div>
-          }
-
-          <button
-            type="submit"
-            [disabled]="loading()"
-            class="btn btn-primary w-full py-4 mt-6"
-          >
-            @if (loading()) {
-              <span>Creating account...</span>
-            } @else {
-              <span>Create Account</span>
-            }
-          </button>
-        </form>
-
-        <div class="text-center mt-10">
-          <p class="text-sm text-stone-600">
-            Already have an account?
-            <a routerLink="/login" class="text-stone-900 font-semibold ml-1 hover:opacity-70 transition-opacity">
-              Sign in
-            </a>
-          </p>
         </div>
+
+        <div class="form-group">
+          <label for="businessName" class="form-label">{{ 'auth.businessName' | translate }}</label>
+          <input
+            id="businessName"
+            type="text"
+            [value]="businessName()"
+            (input)="businessName.set($any($event.target).value)"
+            class="input"
+            placeholder="Rocky's Gas & Minimart"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">{{ 'auth.emailAddress' | translate }}</label>
+          <input
+            id="email"
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            class="input"
+            placeholder="john@example.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">{{ 'auth.password' | translate }}</label>
+          <input
+            id="password"
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">{{ 'auth.confirmPassword' | translate }}</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            [value]="confirmPassword()"
+            (input)="confirmPassword.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        @if (error()) {
+          <div class="error-message">
+            {{ error() }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="btn btn-primary"
+        >
+          @if (loading()) {
+            <span>{{ 'auth.creatingAccount' | translate }}</span>
+          } @else {
+            <span>{{ 'auth.createAccount' | translate }}</span>
+          }
+        </button>
+      </form>
+
+      <div class="signup-footer">
+        <p class="login-link-text">
+          {{ 'auth.alreadyHaveAccount' | translate }}
+          <a routerLink="/login">{{ 'auth.signInLink' | translate }}</a>
+        </p>
       </div>
     </div>
   </div>

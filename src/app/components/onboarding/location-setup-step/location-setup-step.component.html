@@ -1,0 +1,202 @@
+<div class="location-setup-container" role="article" aria-labelledby="setup-title">
+  <div class="setup-header">
+    <h2 id="setup-title" class="setup-title">Set Up Your Location</h2>
+    <p class="setup-subtitle">
+      Tell us about your business location. This information will be used throughout the system.
+    </p>
+  </div>
+
+  <form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="location-form" aria-label="Location setup form">
+    <!-- Business Name -->
+    <div class="form-group">
+      <label for="name" class="form-label">
+        Business Name <span class="required">*</span>
+      </label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-input"
+        [class.error]="isFieldInvalid('name')"
+        placeholder="e.g., Rocky's Gas Station - Main Street"
+      />
+      @if (isFieldInvalid('name')) {
+        <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('name') }}</span>
+      }
+    </div>
+
+    <!-- Store Number -->
+    <div class="form-group">
+      <label for="storeNumber" class="form-label">
+        Store Number <span class="required">*</span>
+      </label>
+      <div class="store-number-group">
+        <input
+          type="text"
+          id="storeNumber"
+          formControlName="storeNumber"
+          class="form-input"
+          [class.error]="isFieldInvalid('storeNumber')"
+          [readonly]="!storeNumberManual()"
+          placeholder="STORE-001"
+          [attr.aria-describedby]="!storeNumberManual() ? 'store-number-help' : null"
+          [attr.aria-readonly]="!storeNumberManual()"
+        />
+        <button
+          type="button"
+          class="btn btn-secondary btn-small"
+          (click)="toggleStoreNumberManual()"
+          [attr.aria-label]="storeNumberManual() ? 'Switch to auto-generated store number' : 'Switch to manual store number entry'">
+          {{ storeNumberManual() ? 'Auto-Generate' : 'Manual Entry' }}
+        </button>
+      </div>
+      @if (isFieldInvalid('storeNumber')) {
+        <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('storeNumber') }}</span>
+      }
+      @if (!storeNumberManual()) {
+        <span class="help-text" id="store-number-help">Store number is auto-generated. Click "Manual Entry" to customize.</span>
+      }
+    </div>
+
+    <!-- Store Format -->
+    <div class="form-group" role="radiogroup" aria-labelledby="store-format-label">
+      <label id="store-format-label" class="form-label">
+        Store Format <span class="required" aria-label="required">*</span>
+      </label>
+      <div class="store-format-grid">
+        @for (format of storeFormats; track format.value) {
+          <label class="format-card" [class.selected]="locationForm.get('storeFormat')?.value === format.value">
+            <input
+              type="radio"
+              formControlName="storeFormat"
+              [value]="format.value"
+              class="format-radio"
+              [attr.aria-label]="format.label"
+              [attr.aria-checked]="locationForm.get('storeFormat')?.value === format.value"
+            />
+            <div class="format-content">
+              <span class="format-icon" aria-hidden="true">{{ format.icon }}</span>
+              <span class="format-label">{{ format.label }}</span>
+            </div>
+          </label>
+        }
+      </div>
+      @if (isFieldInvalid('storeFormat')) {
+        <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('storeFormat') }}</span>
+      }
+    </div>
+
+    <!-- Address -->
+    <div class="form-group">
+      <label for="address" class="form-label">
+        Street Address <span class="required">*</span>
+      </label>
+      <input
+        type="text"
+        id="address"
+        formControlName="address"
+        class="form-input"
+        [class.error]="isFieldInvalid('address')"
+        placeholder="123 Main Street"
+      />
+      @if (isFieldInvalid('address')) {
+        <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('address') }}</span>
+      }
+    </div>
+
+    <!-- City, State, ZIP -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="city" class="form-label">
+          City <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="city"
+          formControlName="city"
+          class="form-input"
+          [class.error]="isFieldInvalid('city')"
+          placeholder="New York"
+        />
+        @if (isFieldInvalid('city')) {
+          <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('city') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="state" class="form-label">
+          State <span class="required">*</span>
+        </label>
+        <select
+          id="state"
+          formControlName="state"
+          class="form-input"
+          [class.error]="isFieldInvalid('state')">
+          <option value="">Select State</option>
+          @for (state of usStates; track state) {
+            <option [value]="state">{{ state }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('state')) {
+          <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('state') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="zipCode" class="form-label">
+          ZIP Code <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="zipCode"
+          formControlName="zipCode"
+          class="form-input"
+          [class.error]="isFieldInvalid('zipCode')"
+          placeholder="12345"
+        />
+        @if (isFieldInvalid('zipCode')) {
+          <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('zipCode') }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+      <label for="phone" class="form-label">
+        Phone Number <span class="required">*</span>
+      </label>
+      <input
+        type="tel"
+        id="phone"
+        formControlName="phone"
+        class="form-input"
+        [class.error]="isFieldInvalid('phone')"
+        placeholder="(555) 123-4567"
+      />
+      @if (isFieldInvalid('phone')) {
+        <span class="error-message" role="alert" aria-live="polite">{{ getFieldError('phone') }}</span>
+      }
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn btn-primary btn-large"
+        [disabled]="locationForm.invalid || isSubmitting()"
+        [attr.aria-label]="isSubmitting() ? 'Creating location, please wait' : 'Continue to next step'"
+        [attr.aria-busy]="isSubmitting()">
+        @if (isSubmitting()) {
+          <span class="btn-spinner" aria-hidden="true"></span>
+          <span>Creating Location...</span>
+        } @else {
+          <span>Continue</span>
+        }
+      </button>
+    </div>
+
+    <p class="form-note">
+      <strong>Note:</strong> This step is required. You can update these details later from the locations management page.
+    </p>
+  </form>
+</div>

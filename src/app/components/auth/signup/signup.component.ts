@@ -2,17 +2,19 @@ import { Component, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   firstName = signal('');
   lastName = signal('');
@@ -25,17 +27,17 @@ export class SignupComponent {
 
   onSubmit(): void {
     if (!this.firstName() || !this.lastName() || !this.email() || !this.password() || !this.businessName()) {
-      this.error.set('Please fill in all required fields');
+      this.error.set(this.translate.instant('validation.allFieldsRequired'));
       return;
     }
 
     if (this.password() !== this.confirmPassword()) {
-      this.error.set('Passwords do not match');
+      this.error.set(this.translate.instant('validation.passwordMismatch'));
       return;
     }
 
     if (this.password().length < 6) {
-      this.error.set('Password must be at least 6 characters');
+      this.error.set(this.translate.instant('validation.passwordMinLength', { min: 6 }));
       return;
     }
 
@@ -49,11 +51,17 @@ export class SignupComponent {
       password: this.password(),
       businessName: this.businessName()
     }).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
+      next: (user) => {
+        // New users should always go through onboarding
+        // The onboarding guard will handle the actual redirect
+        if (user.onboardingCompleted) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/onboarding']);
+        }
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Signup failed. Please try again.');
+        this.error.set(err.error?.message || this.translate.instant('validation.signupFailed'));
         this.loading.set(false);
       },
       complete: () => {

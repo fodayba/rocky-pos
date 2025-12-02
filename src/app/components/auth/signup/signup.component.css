@@ -1,1 +1,106 @@
-/* Signup component styles - using global design system */
+/* Signup page styles */
+.signup-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-6) var(--space-12);
+  background: var(--color-white);
+}
+
+.signup-wrapper {
+  width: 100%;
+  max-width: 32rem;
+}
+
+.signup-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  padding: var(--space-14);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signup-header {
+  text-align: center;
+  margin-bottom: var(--space-14);
+}
+
+.signup-title {
+  font-size: var(--text-4xl);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  color: var(--color-stone-900);
+  letter-spacing: var(--tracking-tight);
+}
+
+.signup-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-stone-500);
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-3);
+  color: var(--color-stone-700);
+}
+
+.error-message {
+  padding: var(--space-5);
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+}
+
+.signup-footer {
+  margin-top: var(--space-10);
+  text-align: center;
+}
+
+.login-link-text {
+  font-size: var(--text-sm);
+  color: var(--color-stone-600);
+}
+
+.login-link-text a {
+  color: var(--color-stone-900);
+  font-weight: 500;
+  margin-left: var(--space-1);
+}
+
+.login-link-text a:hover {
+  opacity: 0.7;
+}

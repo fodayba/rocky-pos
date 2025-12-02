@@ -1,0 +1,92 @@
+<div class="completion-container" role="article" aria-labelledby="completion-title">
+  <div class="success-animation" role="img" aria-label="Success checkmark">
+    <div class="success-icon" aria-hidden="true">✓</div>
+  </div>
+
+  <div class="completion-header">
+    <h1 id="completion-title" class="completion-title">You're All Set! 🎉</h1>
+    <p class="completion-subtitle">
+      Your Gas Metro POS system is ready to use. Here's a summary of what you've configured:
+    </p>
+  </div>
+
+  @if (locationData) {
+    <div class="summary-card" role="region" aria-labelledby="summary-title">
+      <h2 id="summary-title" class="summary-title">Location Details</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Business Name</span>
+          <span class="summary-value">{{ locationData.name }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span class="summary-label">Store Number</span>
+          <span class="summary-value">{{ locationData.storeNumber }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span class="summary-label">Store Format</span>
+          <span class="summary-value">{{ getStoreFormatLabel(locationData.storeFormat) }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span class="summary-label">Address</span>
+          <span class="summary-value">
+            {{ locationData.address }}<br>
+            {{ locationData.city }}, {{ locationData.state }} {{ locationData.zipCode }}
+          </span>
+        </div>
+        
+        <div class="summary-item">
+          <span class="summary-label">Phone</span>
+          <span class="summary-value">{{ locationData.phone }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="next-steps-card" role="region" aria-labelledby="next-steps-title">
+    <h2 id="next-steps-title" class="next-steps-title">What's Next?</h2>
+    <ul class="next-steps-list">
+      <li class="next-step-item">
+        <span class="step-icon" aria-hidden="true">📊</span>
+        <span class="step-text">Explore your dashboard to see sales, inventory, and reports</span>
+      </li>
+      <li class="next-step-item">
+        <span class="step-icon" aria-hidden="true">👥</span>
+        <span class="step-text">Add employees and assign roles from the team management section</span>
+      </li>
+      <li class="next-step-item">
+        <span class="step-icon" aria-hidden="true">📦</span>
+        <span class="step-text">Set up your product catalog and inventory</span>
+      </li>
+      <li class="next-step-item">
+        <span class="step-icon" aria-hidden="true">💳</span>
+        <span class="step-text">Configure payment methods and start processing transactions</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="completion-actions">
+    <button
+      type="button"
+      class="btn btn-primary btn-large"
+      [disabled]="isCompleting()"
+      (click)="onGoToDashboard()"
+      [attr.aria-label]="isCompleting() ? 'Finalizing setup, please wait' : 'Go to dashboard'"
+      [attr.aria-busy]="isCompleting()">
+      @if (isCompleting()) {
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <span>Finalizing...</span>
+      } @else {
+        <span>Go to Dashboard</span>
+      }
+    </button>
+  </div>
+
+  <div class="completion-footer">
+    <p class="footer-text">
+      Need help? Check out our documentation or contact support anytime.
+    </p>
+  </div>
+</div>

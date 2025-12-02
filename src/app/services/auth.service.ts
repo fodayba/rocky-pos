@@ -34,6 +34,12 @@ export class AuthService {
   public readonly currentUser = this.currentUserSignal.asReadonly();
   public readonly isAuthenticated = computed(() => this.currentUser() !== null);
   public readonly userRole = computed(() => this.currentUser()?.role ?? null);
+  public readonly onboardingCompleted = computed(() => this.currentUser()?.onboardingCompleted ?? false);
+  public readonly onboardingProgress = computed(() => this.currentUser()?.onboardingProgress ?? {
+    welcomeViewed: false,
+    locationSetup: false,
+    completionViewed: false
+  });
 
   constructor() {
     this.loadStoredAuth();
@@ -61,14 +67,33 @@ export class AuthService {
   login(credentials: LoginCredentials): Observable<User> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
+        // Ensure onboarding fields are present
+        const user: User = {
+          ...response.user,
+          onboardingCompleted: response.user.onboardingCompleted ?? false,
+          onboardingProgress: response.user.onboardingProgress ?? {
+            welcomeViewed: false,
+            locationSetup: false,
+            completionViewed: false
+          }
+        };
+        
         // Store token and user
         if (this.isBrowser) {
           localStorage.setItem('token', response.access_token);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          localStorage.setItem('currentUser', JSON.stringify(user));
         }
-        this.currentUserSignal.set(response.user);
+        this.currentUserSignal.set(user);
       }),
-      map(response => response.user),
+      map(response => ({
+        ...response.user,
+        onboardingCompleted: response.user.onboardingCompleted ?? false,
+        onboardingProgress: response.user.onboardingProgress ?? {
+          welcomeViewed: false,
+          locationSetup: false,
+          completionViewed: false
+        }
+      })),
       catchError(error => {
         console.error('Login error:', error);
         return throwError(() => new Error(error.error?.message || 'Login failed'));
@@ -79,14 +104,33 @@ export class AuthService {
   signup(signupData: SignupData): Observable<User> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/signup`, signupData).pipe(
       tap(response => {
+        // Ensure onboarding fields are present
+        const user: User = {
+          ...response.user,
+          onboardingCompleted: response.user.onboardingCompleted ?? false,
+          onboardingProgress: response.user.onboardingProgress ?? {
+            welcomeViewed: false,
+            locationSetup: false,
+            completionViewed: false
+          }
+        };
+        
         // Store token and user
         if (this.isBrowser) {
           localStorage.setItem('token', response.access_token);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          localStorage.setItem('currentUser', JSON.stringify(user));
         }
-        this.currentUserSignal.set(response.user);
+        this.currentUserSignal.set(user);
       }),
-      map(response => response.user),
+      map(response => ({
+        ...response.user,
+        onboardingCompleted: response.user.onboardingCompleted ?? false,
+        onboardingProgress: response.user.onboardingProgress ?? {
+          welcomeViewed: false,
+          locationSetup: false,
+          completionViewed: false
+        }
+      })),
       catchError(error => {
         console.error('Signup error:', error);
         return throwError(() => error);
@@ -114,6 +158,22 @@ export class AuthService {
   hasAnyRole(roles: UserRole[]): boolean {
     const userRole = this.currentUser()?.role;
     return userRole ? roles.includes(userRole) : false;
+  }
+
+  updateUserOnboardingStatus(onboardingCompleted: boolean, onboardingProgress: any): void {
+    const currentUser = this.currentUser();
+    if (currentUser) {
+      const updatedUser: User = {
+        ...currentUser,
+        onboardingCompleted,
+        onboardingProgress
+      };
+      
+      if (this.isBrowser) {
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      }
+      this.currentUserSignal.set(updatedUser);
+    }
   }
 
   // For development: Get available mock credentials

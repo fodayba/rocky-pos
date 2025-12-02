@@ -1,0 +1,40 @@
+<div class="welcome-container" role="article" aria-labelledby="welcome-title">
+  <div class="welcome-header">
+    <h1 id="welcome-title" class="welcome-title">Welcome to Gas Metro POS! 🎉</h1>
+    <p class="welcome-subtitle">
+      Let's get your business set up in just a few simple steps. 
+      This will only take a few minutes.
+    </p>
+  </div>
+
+  <div class="steps-overview">
+    <h2 class="overview-title">What we'll set up:</h2>
+    <div class="steps-list" role="list">
+      @for (step of steps; track step.title) {
+        <div class="step-card" role="listitem">
+          <div class="step-icon" aria-hidden="true">{{ step.icon }}</div>
+          <div class="step-content">
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-description">{{ step.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="welcome-actions">
+    <button 
+      type="button"
+      class="btn btn-primary btn-large"
+      (click)="onGetStarted()"
+      aria-label="Get started with onboarding">
+      Get Started
+    </button>
+  </div>
+
+  <div class="welcome-footer">
+    <p class="footer-text">
+      You can always update these settings later from your dashboard.
+    </p>
+  </div>
+</div>

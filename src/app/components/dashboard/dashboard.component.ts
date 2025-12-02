@@ -1,6 +1,7 @@
 import { Component, computed, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../services/auth.service';
 import { ShiftService } from '../../services/shift.service';
 import { TransactionService } from '../../services/transaction.service';
@@ -8,10 +9,12 @@ import { ProductService } from '../../services/product.service';
 import { FuelService } from '../../services/fuel.service';
 import { ShiftSummary } from '../../models';
 import { IconComponent } from '../shared/icon/icon.component';
+import { LocaleCurrencyPipe } from '../../pipes/locale-currency.pipe';
+import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, IconComponent],
+  imports: [CommonModule, RouterLink, IconComponent, TranslateModule, LocaleCurrencyPipe, LocaleDatePipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

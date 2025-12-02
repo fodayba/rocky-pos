@@ -1,0 +1,94 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>{{ 'settings.title' | translate }}</h1>
+    <p class="settings-subtitle">{{ 'settings.subtitle' | translate }}</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>{{ 'common.loading' | translate }}</p>
+    </div>
+  } @else {
+    <div class="settings-content">
+      <!-- Tab Navigation -->
+      <nav class="settings-tabs" role="tablist" aria-label="Settings navigation">
+        @for (tab of tabs; track tab.id; let i = $index) {
+          <button
+            type="button"
+            role="tab"
+            [id]="tab.id + '-tab'"
+            [attr.aria-selected]="currentTab() === tab.id"
+            [attr.aria-controls]="tab.id + '-panel'"
+            [attr.tabindex]="currentTab() === tab.id ? 0 : -1"
+            [class.active]="currentTab() === tab.id"
+            (click)="switchTab(tab.id)"
+            (keydown)="handleTabKeydown($event, i)"
+            class="tab-button"
+          >
+            <app-icon [name]="tab.icon" [size]="20"></app-icon>
+            <span>{{ tab.label | translate }}</span>
+          </button>
+        }
+      </nav>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        @switch (currentTab()) {
+          @case ('profile') {
+            <div role="tabpanel" id="profile-panel" [attr.aria-labelledby]="'profile-tab'" tabindex="0">
+              @if (userSettings()?.profile && currentUser()?.id) {
+                <app-profile-tab
+                  [userProfile]="userSettings()!.profile"
+                  [userId]="currentUser()!.id"
+                  (unsavedChanges)="setUnsavedChanges($event)"
+                  (profileUpdated)="onProfileUpdated($event)"
+                ></app-profile-tab>
+              }
+            </div>
+          }
+          @case ('security') {
+            <div role="tabpanel" id="security-panel" [attr.aria-labelledby]="'security-tab'" tabindex="0">
+              @if (userSettings()?.security && currentUser()?.id) {
+                <app-security-tab
+                  [securitySettings]="userSettings()!.security"
+                  [userId]="currentUser()!.id"
+                  (unsavedChanges)="setUnsavedChanges($event)"
+                ></app-security-tab>
+              }
+            </div>
+          }
+          @case ('preferences') {
+            <div role="tabpanel" id="preferences-panel" [attr.aria-labelledby]="'preferences-tab'" tabindex="0">
+              @if (userSettings()?.preferences) {
+                <app-preferences-tab
+                  [preferences]="userSettings()!.preferences"
+                  (unsavedChanges)="setUnsavedChanges($event)"
+                ></app-preferences-tab>
+              }
+            </div>
+          }
+          @case ('notifications') {
+            <div role="tabpanel" id="notifications-panel" [attr.aria-labelledby]="'notifications-tab'" tabindex="0">
+              @if (userSettings()?.notifications) {
+                <app-notifications-tab
+                  [notifications]="userSettings()!.notifications"
+                  (unsavedChanges)="setUnsavedChanges($event)"
+                ></app-notifications-tab>
+              }
+            </div>
+          }
+          @case ('advanced') {
+            <div role="tabpanel" id="advanced-panel" [attr.aria-labelledby]="'advanced-tab'" tabindex="0">
+              @if (userSettings()) {
+                <app-advanced-tab
+                  [userSettings]="userSettings()!"
+                ></app-advanced-tab>
+              }
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,27 +1,30 @@
-<div class="min-h-screen bg-stone-50">
+<div class="min-h-screen bg-white">
   <!-- Top Navigation -->
   <nav class="nav-header">
     <div class="nav-container">
       <div class="nav-content">
         <div class="nav-left">
           <button (click)="toggleSidebar()" class="nav-toggle" aria-label="Toggle sidebar">
-            <app-icon name="menu" [size]="20"></app-icon>
+            <app-icon name="menu" [size]="22"></app-icon>
           </button>
-          <h1 class="nav-title">Rocky POS</h1>
+          <h1 class="nav-title">{{ 'common.appTitle' | translate }}</h1>
         </div>
 
         <div class="nav-right">
           @if (hasActiveShift()) {
             <div class="shift-indicator shift-active">
               <div class="shift-dot"></div>
-              <span class="shift-text">Shift Active</span>
+              <span class="shift-text">{{ 'common.activeShift' | translate }}</span>
             </div>
           } @else {
             <div class="shift-indicator shift-inactive">
               <div class="shift-dot"></div>
-              <span class="shift-text">No Active Shift</span>
+              <span class="shift-text">{{ 'common.noShift' | translate }}</span>
             </div>
           }
+
+          <!-- Language Selector -->
+          <app-language-selector></app-language-selector>
 
           @if (currentUser(); as user) {
             <div class="user-info-wrapper">
@@ -29,9 +32,9 @@
                 <p class="user-name">{{ user.firstName }} {{ user.lastName }}</p>
                 <p class="user-role">{{ user.role }}</p>
               </div>
-              <button (click)="logout()" class="btn-logout" title="Logout">
-                <app-icon name="log-out" [size]="16"></app-icon>
-                <span class="btn-logout-text">Logout</span>
+              <button (click)="logout()" class="btn-logout" [title]="'common.logout' | translate">
+                <app-icon name="log-out" [size]="18"></app-icon>
+                <span class="btn-logout-text">{{ 'common.logout' | translate }}</span>
               </button>
             </div>
           }
@@ -56,7 +59,7 @@
                     class="nav-item"
                   >
                     <app-icon [name]="item.icon" [size]="18"></app-icon>
-                    <span>{{ item.label }}</span>
+                    <span>{{ item.label | translate }}</span>
                   </a>
                 </li>
               }
@@ -67,7 +70,7 @@
     }
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" [class.sidebar-open]="sidebarOpen()">
       <router-outlet />
     </main>
   </div>

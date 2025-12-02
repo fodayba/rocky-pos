@@ -1,0 +1,113 @@
+<div class="preferences-tab">
+  <div class="preferences-section">
+    <h3>{{ 'preferences.language.title' | translate }}</h3>
+    <p class="section-description">{{ 'preferences.language.description' | translate }}</p>
+    
+    <div class="form-group">
+      <label for="locale-select">{{ 'preferences.language.label' | translate }}</label>
+      <select 
+        id="locale-select"
+        [value]="selectedLocale()"
+        (change)="onLocaleChange($any($event.target).value)"
+        [disabled]="isSaving()"
+        class="form-control"
+        aria-label="Select language and region">
+        <option *ngFor="let locale of availableLocales" [value]="locale.code">
+          {{ locale.displayName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="locale-preview" *ngIf="selectedLocale()">
+      <h4>{{ 'preferences.language.preview' | translate }}</h4>
+      <div class="preview-item">
+        <span class="preview-label">{{ 'preferences.language.currency' | translate }}:</span>
+        <span class="preview-value">{{ previewAmount | localeCurrency:selectedLocale() }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="preview-label">{{ 'preferences.language.date' | translate }}:</span>
+        <span class="preview-value">{{ previewDate | localeDate:'long' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="preferences-section">
+    <h3>{{ 'preferences.appearance.title' | translate }}</h3>
+    <p class="section-description">{{ 'preferences.appearance.description' | translate }}</p>
+    
+    <div class="form-group">
+      <label for="theme-select">{{ 'preferences.theme.label' | translate }}</label>
+      <select 
+        id="theme-select"
+        [value]="selectedTheme()"
+        (change)="onThemeChange($any($event.target).value)"
+        [disabled]="isSaving()"
+        class="form-control"
+        aria-label="Select theme"
+        aria-describedby="theme-help">
+        <option *ngFor="let theme of availableThemes" [value]="theme.value">
+          {{ theme.label | translate }}
+        </option>
+      </select>
+      <small class="form-text" id="theme-help">{{ 'preferences.theme.help' | translate }}</small>
+    </div>
+
+    <div class="form-group">
+      <label for="density-select">{{ 'preferences.density.label' | translate }}</label>
+      <select 
+        id="density-select"
+        [value]="selectedDensity()"
+        (change)="onDensityChange($any($event.target).value)"
+        [disabled]="isSaving()"
+        class="form-control"
+        aria-label="Select display density"
+        aria-describedby="density-help">
+        <option *ngFor="let density of availableDensities" [value]="density.value">
+          {{ density.label | translate }}
+        </option>
+      </select>
+      <small class="form-text" id="density-help">{{ 'preferences.density.help' | translate }}</small>
+    </div>
+  </div>
+
+  <div class="preferences-section">
+    <h3>{{ 'preferences.session.title' | translate }}</h3>
+    <p class="section-description">{{ 'preferences.session.description' | translate }}</p>
+    
+    <div class="form-group checkbox-group">
+      <label class="checkbox-label">
+        <input 
+          type="checkbox"
+          [checked]="rememberMe()"
+          (change)="onRememberMeChange($any($event.target).checked)"
+          [disabled]="isSaving()"
+          aria-describedby="remember-me-help"
+          role="switch"
+          [attr.aria-checked]="rememberMe()">
+        <span>{{ 'preferences.session.rememberMe' | translate }}</span>
+      </label>
+      <small class="form-text" id="remember-me-help">{{ 'preferences.session.rememberMeHelp' | translate }}</small>
+    </div>
+
+    <div class="form-group" *ngIf="isAdmin()">
+      <label for="session-timeout">{{ 'preferences.session.timeout' | translate }}</label>
+      <select 
+        id="session-timeout"
+        [value]="sessionTimeout()"
+        (change)="onSessionTimeoutChange(+$any($event.target).value)"
+        [disabled]="isSaving()"
+        class="form-control">
+        <option [value]="1800">30 {{ 'preferences.session.minutes' | translate }}</option>
+        <option [value]="3600">1 {{ 'preferences.session.hour' | translate }}</option>
+        <option [value]="7200">2 {{ 'preferences.session.hours' | translate }}</option>
+        <option [value]="14400">4 {{ 'preferences.session.hours' | translate }}</option>
+        <option [value]="28800">8 {{ 'preferences.session.hours' | translate }}</option>
+      </select>
+      <small class="form-text">{{ 'preferences.session.timeoutHelp' | translate }}</small>
+    </div>
+  </div>
+
+  <div class="loading-overlay" *ngIf="isSaving()">
+    <div class="spinner"></div>
+  </div>
+</div>

@@ -1,100 +1,96 @@
-<div class="min-h-screen flex items-center justify-center px-4 bg-stone-50">
-  <div class="w-full max-w-md">
-    <div class="card animate-fade-in-up shadow-xl">
-      <div class="p-12">
-        <div class="text-center mb-12">
-          <h1 class="text-3xl font-bold mb-2 text-stone-900 tracking-tight">Rocky POS</h1>
-          <p class="text-sm text-stone-500">Gas Station & Minimart</p>
+<div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <h1 class="login-title">{{ 'auth.appTitle' | translate }}</h1>
+        <p class="login-subtitle">{{ 'auth.appSubtitle' | translate }}</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group">
+          <label for="email" class="form-label">{{ 'auth.emailAddress' | translate }}</label>
+          <input
+            id="email"
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            class="input"
+            placeholder="you@example.com"
+            required
+          />
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="space-y-6">
-          <div>
-            <label for="email" class="block text-sm font-semibold mb-3 text-stone-600">Email Address</label>
-            <input
-              id="email"
-              type="email"
-              [value]="email()"
-              (input)="email.set($any($event.target).value)"
-              class="input"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+        <div class="form-group">
+          <label for="password" class="form-label">{{ 'auth.password' | translate }}</label>
+          <input
+            id="password"
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            class="input"
+            placeholder="••••••••"
+            required
+          />
+        </div>
 
-          <div>
-            <label for="password" class="block text-sm font-semibold mb-3 text-stone-600">Password</label>
-            <input
-              id="password"
-              type="password"
-              [value]="password()"
-              (input)="password.set($any($event.target).value)"
-              class="input"
-              placeholder="••••••••"
-              required
-            />
+        @if (error()) {
+          <div class="error-message">
+            {{ error() }}
           </div>
+        }
 
-          @if (error()) {
-            <div class="p-4 border border-red-600 bg-red-50 text-red-600 rounded-lg text-sm">
-              {{ error() }}
-            </div>
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="btn btn-primary"
+        >
+          @if (loading()) {
+            <span>{{ 'auth.signingIn' | translate }}</span>
+          } @else {
+            <span>{{ 'auth.signIn' | translate }}</span>
           }
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            [disabled]="loading()"
-            class="btn btn-primary w-full py-4 mt-6"
-          >
-            @if (loading()) {
-              <span>Signing in...</span>
-            } @else {
-              <span>Sign In</span>
-            }
-          </button>
-        </form>
+      <div class="login-footer">
+        <div class="signup-link">
+          <p class="signup-text">
+            {{ 'auth.newBusiness' | translate }}
+            <a routerLink="/signup">{{ 'auth.createAccount' | translate }}</a>
+          </p>
+        </div>
 
-        <div class="mt-10">
-          <div class="text-center mb-6">
-            <p class="text-sm text-stone-600">
-              New business?
-              <a routerLink="/signup" class="text-stone-900 font-semibold ml-1 hover:opacity-70 transition-opacity">
-                Create an account
-              </a>
-            </p>
-          </div>
+        <button
+          type="button"
+          (click)="toggleCredentials()"
+          class="btn btn-ghost"
+        >
+          {{ (showCredentials() ? 'auth.hideTestCredentials' : 'auth.showTestCredentials') | translate }}
+        </button>
 
-          <button
-            type="button"
-            (click)="toggleCredentials()"
-            class="btn btn-ghost w-full text-stone-600 border border-stone-200"
-          >
-            {{ showCredentials() ? 'Hide' : 'Show' }} Test Credentials
-          </button>
-
-          @if (showCredentials()) {
-            <div class="p-6 mt-4 bg-stone-100 border border-stone-200 rounded-xl animate-slide-down">
-              <p class="text-sm font-semibold mb-5 text-stone-600 uppercase tracking-wider">Test Accounts</p>
-              <div class="space-y-3">
-                @for (cred of mockCredentials; track cred.email) {
-                  <div class="interactive-card flex justify-between items-center p-4 bg-white border border-stone-200 rounded-lg">
-                    <div>
-                      <span class="font-semibold text-sm text-stone-900">{{ cred.email }}</span>
-                      <span class="text-xs ml-2 text-stone-500 capitalize">({{ cred.role }})</span>
-                    </div>
-                    <button
-                      type="button"
-                      (click)="fillCredentials(cred.email, cred.password)"
-                      class="btn btn-secondary py-2 px-4 text-xs"
-                    >
-                      Use
-                    </button>
+        @if (showCredentials()) {
+          <div class="credentials-section">
+            <p class="credentials-header">{{ 'auth.testAccounts' | translate }}</p>
+            <div class="credentials-list">
+              @for (cred of mockCredentials; track cred.email) {
+                <div class="credential-item">
+                  <div class="credential-info">
+                    <span class="email">{{ cred.email }}</span>
+                    <span class="role">({{ cred.role }})</span>
                   </div>
-                }
-              </div>
-              <p class="mt-5 text-xs text-stone-500 font-mono">Password for all: password123</p>
+                  <button
+                    type="button"
+                    (click)="fillCredentials(cred.email, cred.password)"
+                    class="btn btn-secondary credential-use-btn"
+                  >
+                    {{ 'auth.use' | translate }}
+                  </button>
+                </div>
+              }
             </div>
-          }
-        </div>
+            <p class="credentials-password">{{ 'auth.passwordForAll' | translate }}</p>
+          </div>
+        }
       </div>
     </div>
   </div>

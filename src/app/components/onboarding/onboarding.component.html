@@ -1,0 +1,77 @@
+<div class="onboarding-container" role="main" aria-labelledby="onboarding-title">
+  <!-- Progress Indicator -->
+  <div class="progress-section" role="region" aria-label="Onboarding progress">
+    <div class="progress-header">
+      <h2 id="onboarding-title" class="progress-title">Getting Started</h2>
+      <p class="progress-text" aria-live="polite" aria-atomic="true">Step {{ state().currentStep + 1 }} of {{ state().totalSteps }}</p>
+    </div>
+    <div 
+      class="progress-bar-container" 
+      role="progressbar" 
+      [attr.aria-valuenow]="progressPercentage()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-label]="'Progress: ' + progressPercentage().toFixed(0) + ' percent complete'">
+      <div class="progress-bar" [style.width.%]="progressPercentage()"></div>
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="step-content" role="region" [attr.aria-label]="'Step ' + (state().currentStep + 1) + ' of ' + state().totalSteps">
+    @if (state().isLoading) {
+      <div class="loading-container" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Loading...</p>
+      </div>
+    } @else {
+      <!-- Welcome Step -->
+      @if (state().currentStep === 0) {
+        <app-welcome-step 
+          (complete)="onStepComplete()">
+        </app-welcome-step>
+      }
+
+      <!-- Location Setup Step -->
+      @if (state().currentStep === 1) {
+        <app-location-setup-step 
+          (complete)="onStepComplete($event)"
+          (dataChange)="onLocationDataChange($event)"
+          (loadingChange)="setLoading($event)">
+        </app-location-setup-step>
+      }
+
+      <!-- Completion Step -->
+      @if (state().currentStep === 2) {
+        <app-completion-step 
+          [locationData]="state().locationData"
+          (complete)="onStepComplete()">
+        </app-completion-step>
+      }
+    }
+  </div>
+
+  <!-- Navigation Buttons -->
+  <nav class="navigation-buttons" role="navigation" aria-label="Onboarding navigation">
+    <button 
+      type="button"
+      class="btn btn-secondary"
+      [disabled]="!canGoBack() || state().isLoading"
+      (click)="onBack()"
+      [attr.aria-label]="canGoBack() ? 'Go back to step ' + state().currentStep : 'Back button disabled'"
+      [attr.tabindex]="canGoBack() && !state().isLoading ? 0 : -1">
+      Back
+    </button>
+    
+    @if (state().currentStep < state().totalSteps - 1 && state().currentStep !== 1) {
+      <button 
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!canGoNext() || state().isLoading"
+        (click)="onNext()"
+        [attr.aria-label]="canGoNext() ? 'Continue to step ' + (state().currentStep + 2) : 'Next button disabled'"
+        [attr.tabindex]="canGoNext() && !state().isLoading ? 0 : -1">
+        Next
+      </button>
+    }
+  </nav>
+</div>

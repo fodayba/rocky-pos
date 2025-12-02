@@ -370,7 +370,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Total Employees</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                {{ employeeData()!.totalEmployees }}
+                {{ employeeData()?.totalEmployees || 0 }}
               </p>
             </div>
           </div>
@@ -378,7 +378,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Hours Worked</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                {{ employeeData()!.totalHoursWorked.toFixed(1) }}
+                {{ (employeeData()?.totalHoursWorked || 0).toFixed(1) }}
               </p>
             </div>
           </div>
@@ -386,7 +386,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Total Sales</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                {{ formatCurrency(employeeData()!.totalSales) }}
+                {{ formatCurrency(employeeData()?.totalSales || 0) }}
               </p>
             </div>
           </div>
@@ -410,18 +410,18 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (employee of employeeData()!.employees; track employee._id) {
+                  @for (employee of employeeData()?.employees || []; track employee._id) {
                     <tr class="border-b" style="border-color: var(--color-stone-100);">
                       <td class="py-2 px-4 text-sm" style="color: var(--color-stone-900);">{{ employee.name }}</td>
                       <td class="py-2 px-4 text-sm" style="color: var(--color-stone-700);">{{ employee.role }}</td>
-                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ employee.shiftsWorked }}</td>
-                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ employee.hoursWorked.toFixed(1) }}</td>
+                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ employee.shiftsWorked || 0 }}</td>
+                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ (employee.hoursWorked || 0).toFixed(1) }}</td>
                       <td class="py-2 px-4 text-sm text-right font-semibold" style="color: var(--color-stone-900);">
-                        {{ formatCurrency(employee.sales) }}
+                        {{ formatCurrency(employee.sales || 0) }}
                       </td>
-                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ employee.transactions }}</td>
+                      <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">{{ employee.transactions || 0 }}</td>
                       <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">
-                        {{ formatCurrency(employee.averageTransactionValue) }}
+                        {{ formatCurrency(employee.averageTransactionValue || 0) }}
                       </td>
                     </tr>
                   }
@@ -495,20 +495,20 @@
                 <div class="flex justify-between items-center">
                   <span class="text-sm" style="color: var(--color-stone-600);">Total Revenue</span>
                   <span class="text-lg font-semibold" style="color: var(--color-green-600);">
-                    {{ formatCurrency(financialData()!.revenue.total) }}
+                    {{ formatCurrency(financialData()?.revenue?.total || 0) }}
                   </span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Fuel</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.revenue.fuel) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.revenue?.fuel || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Products</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.revenue.products) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.revenue?.products || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Services</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.revenue.services) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.revenue?.services || 0) }}</span>
                 </div>
               </div>
             </div>
@@ -522,28 +522,28 @@
                 <div class="flex justify-between items-center">
                   <span class="text-sm" style="color: var(--color-stone-600);">Total Expenses</span>
                   <span class="text-lg font-semibold" style="color: var(--color-red-600);">
-                    {{ formatCurrency(financialData()!.expenses.total) }}
+                    {{ formatCurrency(financialData()?.expenses?.total || 0) }}
                   </span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Cost of Goods</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.expenses.cost_of_goods) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.expenses?.cost_of_goods || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Labor</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.expenses.labor) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.expenses?.labor || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Utilities</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.expenses.utilities) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.expenses?.utilities || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Rent</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.expenses.rent) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.expenses?.rent || 0) }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
                   <span style="color: var(--color-stone-500);">Other</span>
-                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()!.expenses.other) }}</span>
+                  <span style="color: var(--color-stone-700);">{{ formatCurrency(financialData()?.expenses?.other || 0) }}</span>
                 </div>
               </div>
             </div>
@@ -558,19 +558,19 @@
               <div class="text-center p-4 rounded-lg" style="background: var(--color-green-50);">
                 <p class="text-sm" style="color: var(--color-green-700);">Gross Profit</p>
                 <p class="text-2xl font-semibold mt-1" style="color: var(--color-green-900);">
-                  {{ formatCurrency(financialData()!.profit.gross) }}
+                  {{ formatCurrency(financialData()?.profit?.gross || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-blue-50);">
                 <p class="text-sm" style="color: var(--color-blue-700);">Net Profit</p>
                 <p class="text-2xl font-semibold mt-1" style="color: var(--color-blue-900);">
-                  {{ formatCurrency(financialData()!.profit.net) }}
+                  {{ formatCurrency(financialData()?.profit?.net || 0) }}
                 </p>
               </div>
               <div class="text-center p-4 rounded-lg" style="background: var(--color-purple-50);">
                 <p class="text-sm" style="color: var(--color-purple-700);">Profit Margin</p>
                 <p class="text-2xl font-semibold mt-1" style="color: var(--color-purple-900);">
-                  {{ (financialData()!.profit.margin * 100).toFixed(2) }}%
+                  {{ ((financialData()?.profit?.margin || 0) * 100).toFixed(2) }}%
                 </p>
               </div>
             </div>
@@ -601,7 +601,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Total Gallons Sold</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                {{ fuelData()!.totalGallonsSold.toLocaleString() }}
+                {{ (fuelData()?.totalGallonsSold || 0).toLocaleString() }}
               </p>
             </div>
           </div>
@@ -609,7 +609,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Total Revenue</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                {{ formatCurrency(fuelData()!.totalRevenue) }}
+                {{ formatCurrency(fuelData()?.totalRevenue || 0) }}
               </p>
             </div>
           </div>
@@ -617,7 +617,7 @@
             <div class="card-body">
               <p class="text-sm" style="color: var(--color-stone-500);">Avg Price/Gallon</p>
               <p class="text-2xl font-semibold mt-1" style="color: var(--color-stone-900);">
-                ${{ fuelData()!.averagePricePerGallon.toFixed(3) }}
+                ${{ (fuelData()?.averagePricePerGallon || 0).toFixed(3) }}
               </p>
             </div>
           </div>
@@ -640,21 +640,21 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (product of fuelData()!.products; track product._id) {
+                  @for (product of fuelData()?.products || []; track product._id) {
                     <tr class="border-b" style="border-color: var(--color-stone-100);">
                       <td class="py-2 px-4 text-sm" style="color: var(--color-stone-900);">{{ product.name }}</td>
                       <td class="py-2 px-4 text-sm" style="color: var(--color-stone-700);">{{ product.type }}</td>
                       <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">
-                        {{ product.gallonsSold.toLocaleString() }}
+                        {{ (product.gallonsSold || 0).toLocaleString() }}
                       </td>
                       <td class="py-2 px-4 text-sm text-right font-semibold" style="color: var(--color-stone-900);">
-                        {{ formatCurrency(product.revenue) }}
+                        {{ formatCurrency(product.revenue || 0) }}
                       </td>
                       <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">
-                        ${{ product.averagePrice.toFixed(3) }}
+                        ${{ (product.averagePrice || 0).toFixed(3) }}
                       </td>
                       <td class="py-2 px-4 text-sm text-right" style="color: var(--color-stone-700);">
-                        {{ product.stockLevel.toLocaleString() }} gal
+                        {{ (product.stockLevel || 0).toLocaleString() }} gal
                       </td>
                     </tr>
                   }

@@ -2,17 +2,19 @@ import { Component, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private translate = inject(TranslateService);
 
   email = signal('');
   password = signal('');
@@ -24,7 +26,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (!this.email() || !this.password()) {
-      this.error.set('Please enter email and password');
+      this.error.set(this.translate.instant('validation.enterEmailAndPassword'));
       return;
     }
 
@@ -35,11 +37,17 @@ export class LoginComponent {
       email: this.email(),
       password: this.password()
     }).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
+      next: (user) => {
+        // Navigate based on onboarding status
+        // The onboarding guard will handle the actual redirect
+        if (user.onboardingCompleted) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/onboarding']);
+        }
       },
       error: (err) => {
-        this.error.set(err.message || 'Invalid email or password');
+        this.error.set(err.message || this.translate.instant('validation.invalidEmailOrPassword'));
         this.loading.set(false);
       },
       complete: () => {

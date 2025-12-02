@@ -1,0 +1,228 @@
+<div class="advanced-tab">
+  <!-- Location Display Section -->
+  <section class="settings-section">
+    <h3 class="section-title">{{ 'advanced.location.title' | translate }}</h3>
+    <p class="section-description">{{ 'advanced.location.description' | translate }}</p>
+    
+    <div class="location-display">
+      @if (assignedLocation) {
+        <div class="location-info">
+          <div class="info-row">
+            <span class="info-label">{{ 'advanced.location.name' | translate }}:</span>
+            <span class="info-value">{{ assignedLocation.name }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">{{ 'advanced.location.address' | translate }}:</span>
+            <span class="info-value">
+              {{ assignedLocation.address.street }}, 
+              {{ assignedLocation.address.city }}, 
+              {{ assignedLocation.address.state }} 
+              {{ assignedLocation.address.zipCode }}
+            </span>
+          </div>
+          @if (isAdmin) {
+            <div class="admin-note">
+              <app-icon name="info" size="small"></app-icon>
+              <span>{{ 'advanced.location.adminNote' | translate }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-location">
+          <app-icon name="alert" size="medium"></app-icon>
+          <p>{{ 'advanced.location.noAssignment' | translate }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Recent Activity Section -->
+  <section class="settings-section">
+    <h3 class="section-title">{{ 'advanced.activity.title' | translate }}</h3>
+    <p class="section-description">{{ 'advanced.activity.description' | translate }}</p>
+    
+    <div class="activity-info">
+      @if (lastLogin) {
+        <div class="info-row">
+          <span class="info-label">{{ 'advanced.activity.lastLogin' | translate }}:</span>
+          <span class="info-value">{{ formatTimestamp(lastLogin) }}</span>
+        </div>
+      }
+      @if (lastLoginIp) {
+        <div class="info-row">
+          <span class="info-label">{{ 'advanced.activity.lastLoginIp' | translate }}:</span>
+          <span class="info-value">{{ lastLoginIp }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="activity-list">
+      @if (isLoadingActivity()) {
+        <div class="loading-state">
+          <app-icon name="loader" size="medium"></app-icon>
+          <span>{{ 'advanced.activity.loading' | translate }}</span>
+        </div>
+      } @else if (recentActivity().length > 0) {
+        <div class="activity-table">
+          <div class="activity-header">
+            <span class="activity-col-action">{{ 'advanced.activity.action' | translate }}</span>
+            <span class="activity-col-timestamp">{{ 'advanced.activity.timestamp' | translate }}</span>
+            <span class="activity-col-details">{{ 'advanced.activity.details' | translate }}</span>
+          </div>
+          @for (activity of recentActivity(); track activity.id) {
+            <div class="activity-row">
+              <span class="activity-col-action">{{ activity.action }}</span>
+              <span class="activity-col-timestamp">{{ formatTimestamp(activity.timestamp) }}</span>
+              <span class="activity-col-details">{{ activity.details }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <app-icon name="inbox" size="medium"></app-icon>
+          <p>{{ 'advanced.activity.noActivity' | translate }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Data Export Section -->
+  <section class="settings-section">
+    <h3 class="section-title">{{ 'advanced.export.title' | translate }}</h3>
+    <p class="section-description">{{ 'advanced.export.description' | translate }}</p>
+    
+    <div class="export-controls">
+      <button 
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="isExporting()"
+        (click)="exportData()"
+        [attr.aria-busy]="isExporting()"
+        aria-label="Export your data">
+        @if (isExporting()) {
+          <app-icon name="loader" size="small" aria-hidden="true"></app-icon>
+          <span role="status">{{ 'advanced.export.generating' | translate }}</span>
+        } @else {
+          <app-icon name="download" size="small" aria-hidden="true"></app-icon>
+          <span>{{ 'advanced.export.button' | translate }}</span>
+        }
+      </button>
+
+      @if (exportDownloadUrl()) {
+        <div class="export-ready" role="status" aria-live="polite">
+          <app-icon name="check" size="small" aria-hidden="true"></app-icon>
+          <span>{{ 'advanced.export.ready' | translate }}</span>
+          <button 
+            type="button"
+            class="btn btn-primary"
+            (click)="downloadExport()"
+            aria-label="Download exported data">
+            <app-icon name="download" size="small" aria-hidden="true"></app-icon>
+            <span>{{ 'advanced.export.download' | translate }}</span>
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Danger Zone Section -->
+  <section class="settings-section danger-zone">
+    <h3 class="section-title danger-title">
+      <app-icon name="alert" size="small"></app-icon>
+      {{ 'advanced.dangerZone.title' | translate }}
+    </h3>
+    <p class="section-description">{{ 'advanced.dangerZone.description' | translate }}</p>
+    
+    <div class="danger-actions">
+      <button 
+        type="button"
+        class="btn btn-danger"
+        (click)="initiateAccountDeletion()"
+        aria-label="Delete account permanently">
+        <app-icon name="trash" size="small" aria-hidden="true"></app-icon>
+        <span>{{ 'advanced.dangerZone.deleteButton' | translate }}</span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- Password Confirmation Modal -->
+@if (showDeleteConfirmation()) {
+  <app-modal 
+    [title]="'advanced.deleteModal.title' | translate"
+    (close)="cancelDeletion()">
+    <div class="modal-content">
+      <p class="modal-description">{{ 'advanced.deleteModal.description' | translate }}</p>
+      
+      <div class="form-group">
+        <label for="delete-password">{{ 'advanced.deleteModal.passwordLabel' | translate }}</label>
+        <input 
+          type="password"
+          id="delete-password"
+          class="form-control"
+          [(ngModel)]="deletePassword"
+          [placeholder]="'advanced.deleteModal.passwordPlaceholder' | translate"
+          required>
+      </div>
+
+      <div class="modal-actions">
+        <button 
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelDeletion()">
+          {{ 'cancel' | translate }}
+        </button>
+        <button 
+          type="button"
+          class="btn btn-danger"
+          (click)="proceedToFinalWarning()">
+          {{ 'continue' | translate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+}
+
+<!-- Final Warning Modal -->
+@if (showFinalWarning()) {
+  <app-modal 
+    [title]="'advanced.finalWarning.title' | translate"
+    (close)="cancelDeletion()">
+    <div class="modal-content">
+      <div class="warning-content">
+        <app-icon name="alert" size="large" class="warning-icon"></app-icon>
+        <h4>{{ 'advanced.finalWarning.heading' | translate }}</h4>
+        <p>{{ 'advanced.finalWarning.message' | translate }}</p>
+        
+        <ul class="consequences-list">
+          <li>{{ 'advanced.finalWarning.consequence1' | translate }}</li>
+          <li>{{ 'advanced.finalWarning.consequence2' | translate }}</li>
+          <li>{{ 'advanced.finalWarning.consequence3' | translate }}</li>
+          <li>{{ 'advanced.finalWarning.consequence4' | translate }}</li>
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <button 
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelDeletion()"
+          [disabled]="isDeletingAccount()">
+          {{ 'cancel' | translate }}
+        </button>
+        <button 
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmAccountDeletion()"
+          [disabled]="isDeletingAccount()">
+          @if (isDeletingAccount()) {
+            <app-icon name="loader" size="small"></app-icon>
+            <span>{{ 'advanced.finalWarning.deleting' | translate }}</span>
+          } @else {
+            <span>{{ 'advanced.finalWarning.confirmButton' | translate }}</span>
+          }
+        </button>
+      </div>
+    </div>
+  </app-modal>
+}
