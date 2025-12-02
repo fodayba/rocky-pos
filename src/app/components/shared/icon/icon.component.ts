@@ -36,7 +36,12 @@ export type IconName =
   | 'inbox'
   | 'location'
   | 'globe'
-  | 'settings';
+  | 'settings'
+  | 'loader'
+  | 'download'
+  | 'eye'
+  | 'eye-off'
+  | 'monitor';
 
 @Component({
   selector: 'app-icon',
@@ -44,8 +49,8 @@ export type IconName =
   imports: [CommonModule],
   template: `
     <svg
-      [attr.width]="size"
-      [attr.height]="size"
+      [attr.width]="sizeValue"
+      [attr.height]="sizeValue"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -275,6 +280,39 @@ export type IconName =
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
         </g>
+
+        <!-- Loader / Refresh -->
+        <g *ngSwitchCase="'loader'">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </g>
+
+        <!-- Download -->
+        <g *ngSwitchCase="'download'">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </g>
+
+        <!-- Eye -->
+        <g *ngSwitchCase="'eye'">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </g>
+
+        <!-- Eye Off -->
+        <g *ngSwitchCase="'eye-off'">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </g>
+
+        <!-- Monitor -->
+        <g *ngSwitchCase="'monitor'">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </g>
       </ng-container>
     </svg>
   `,
@@ -291,6 +329,11 @@ export type IconName =
 })
 export class IconComponent {
   @Input() name: IconName = 'circle';
-  @Input() size: number = 24;
+  @Input() size: number | string = 24;
   @Input() customClass: string = '';
+
+  // Getter to ensure size is always a number for the template
+  get sizeValue(): number {
+    return typeof this.size === 'string' ? parseInt(this.size, 10) : this.size;
+  }
 }

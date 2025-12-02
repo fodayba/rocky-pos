@@ -10,6 +10,7 @@ export interface OnboardingProgress {
 
 export interface User {
   id: string;
+  _id?: string; // MongoDB ID for backend compatibility
   email: string;
   role: UserRole;
   fullName: string;

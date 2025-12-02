@@ -88,7 +88,7 @@ export class AdvancedTabComponent implements OnInit {
    */
   formatTimestamp(timestamp: Date): string {
     const locale = this.localeService.getCurrentLocale();
-    return new Date(timestamp).toLocaleString(locale, {
+    return new Date(timestamp).toLocaleString(locale.code, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

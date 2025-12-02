@@ -19,6 +19,9 @@ async function migrateOnboardingFields() {
     console.log('Connected to MongoDB');
 
     const db = connection.db;
+    if (!db) {
+      throw new Error('Database connection not established');
+    }
     const usersCollection = db.collection('users');
 
     // Get count of users that need migration
