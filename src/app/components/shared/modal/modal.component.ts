@@ -1,4 +1,4 @@
-import { Component, input, output, effect } from '@angular/core';
+import { Component, input, output, effect, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../icon/icon.component';
 
@@ -12,22 +12,28 @@ import { IconComponent } from '../icon/icon.component';
         class="modal-backdrop"
         (click)="handleBackdropClick()"
         [@fadeIn]
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-labelledby]="'modal-title'"
       >
         <div
+          #modalContainer
           class="modal-container"
           [class]="'modal-' + size()"
           (click)="$event.stopPropagation()"
           [@scaleIn]
+          tabindex="-1"
         >
           <!-- Header -->
           <div class="modal-header">
-            <h2 class="modal-title">{{ title() }}</h2>
+            <h2 class="modal-title" id="modal-title">{{ title() }}</h2>
             @if (showClose()) {
               <button
+                #closeButton
                 class="modal-close-btn"
                 (click)="close()"
                 type="button"
-                aria-label="Close"
+                aria-label="Close modal"
               >
                 <app-icon name="x" />
               </button>
@@ -155,7 +161,10 @@ import { IconComponent } from '../icon/icon.component';
   `],
   animations: []
 })
-export class ModalComponent {
+export class ModalComponent implements AfterViewInit {
+  @ViewChild('modalContainer') modalContainer?: ElementRef;
+  @ViewChild('closeButton') closeButton?: ElementRef;
+
   isOpen = input(false);
   title = input('');
   size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
@@ -165,14 +174,57 @@ export class ModalComponent {
 
   closed = output<void>();
 
+  private previousActiveElement: HTMLElement | null = null;
+
   constructor() {
     effect(() => {
       if (this.isOpen()) {
         document.body.style.overflow = 'hidden';
+        this.storeFocusAndFocusModal();
       } else {
         document.body.style.overflow = '';
+        this.restoreFocus();
       }
     });
+  }
+
+  ngAfterViewInit() {
+    if (this.isOpen()) {
+      this.focusModal();
+    }
+  }
+
+  private storeFocusAndFocusModal() {
+    // Store the currently focused element
+    this.previousActiveElement = document.activeElement as HTMLElement;
+    
+    // Focus the modal after a short delay to ensure it's rendered
+    setTimeout(() => {
+      this.focusModal();
+    }, 100);
+  }
+
+  private focusModal() {
+    // Try to focus the first focusable element in the modal
+    const focusableElements = this.modalContainer?.nativeElement.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    if (focusableElements && focusableElements.length > 0) {
+      (focusableElements[0] as HTMLElement).focus();
+    } else if (this.modalContainer) {
+      // If no focusable elements, focus the container itself
+      this.modalContainer.nativeElement.focus();
+    }
+  }
+
+  private restoreFocus() {
+    // Return focus to the element that had focus before the modal opened
+    if (this.previousActiveElement && typeof this.previousActiveElement.focus === 'function') {
+      setTimeout(() => {
+        this.previousActiveElement?.focus();
+      }, 0);
+    }
   }
 
   close() {

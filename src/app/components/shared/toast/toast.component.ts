@@ -8,14 +8,17 @@ import { IconComponent } from '../icon/icon.component';
   standalone: true,
   imports: [CommonModule, IconComponent],
   template: `
-    <div class="toast-container">
+    <div class="toast-container" role="region" aria-label="Notifications">
       @for (toast of toastService.toasts(); track toast.id) {
         <div
           class="toast toast-{{ toast.type }}"
           [class.toast-enter]="true"
           (click)="toastService.removeToast(toast.id)"
+          role="alert"
+          [attr.aria-live]="toast.type === 'error' ? 'assertive' : 'polite'"
+          aria-atomic="true"
         >
-          <div class="toast-icon">
+          <div class="toast-icon" aria-hidden="true">
             @switch (toast.type) {
               @case ('success') {
                 <app-icon name="check" class="text-white" />
@@ -36,6 +39,7 @@ import { IconComponent } from '../icon/icon.component';
             class="toast-close"
             (click)="toastService.removeToast(toast.id)"
             type="button"
+            aria-label="Close notification"
           >
             <app-icon name="x" class="text-white" />
           </button>

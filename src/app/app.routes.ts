@@ -22,22 +22,32 @@ import { InventoryTransfersComponent } from './components/inventory-transfers/in
 import { InvoicingComponent } from './components/invoicing/invoicing.component';
 import { ShiftsComponent } from './components/shifts/shifts.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { SettingsComponent } from './components/settings/settings.component';
 import { LayoutComponent } from './components/shared/layout/layout.component';
+import { OnboardingComponent } from './components/onboarding/onboarding.component';
 import { authGuard, roleGuard } from './guards/auth.guard';
+import { onboardingGuard } from './guards/onboarding.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [onboardingGuard],
   },
   {
     path: 'signup',
     component: SignupComponent,
+    canActivate: [onboardingGuard],
+  },
+  {
+    path: 'onboarding',
+    component: OnboardingComponent,
+    canActivate: [authGuard, onboardingGuard],
   },
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, onboardingGuard],
     children: [
       {
         path: '',
@@ -153,6 +163,10 @@ export const routes: Routes = [
         path: 'reports',
         component: ReportsComponent,
         canActivate: [roleGuard(['admin', 'manager'])],
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
       },
     ],
   },

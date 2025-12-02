@@ -2,13 +2,13 @@
   <div class="login-wrapper">
     <div class="login-card">
       <div class="login-header">
-        <h1 class="login-title">Rocky POS</h1>
-        <p class="login-subtitle">Gas Station & Minimart</p>
+        <h1 class="login-title">{{ 'auth.appTitle' | translate }}</h1>
+        <p class="login-subtitle">{{ 'auth.appSubtitle' | translate }}</p>
       </div>
 
       <form (ngSubmit)="onSubmit()" class="login-form">
         <div class="form-group">
-          <label for="email" class="form-label">Email Address</label>
+          <label for="email" class="form-label">{{ 'auth.emailAddress' | translate }}</label>
           <input
             id="email"
             type="email"
@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group">
-          <label for="password" class="form-label">Password</label>
+          <label for="password" class="form-label">{{ 'auth.password' | translate }}</label>
           <input
             id="password"
             type="password"
@@ -45,9 +45,9 @@
           class="btn btn-primary"
         >
           @if (loading()) {
-            <span>Signing in...</span>
+            <span>{{ 'auth.signingIn' | translate }}</span>
           } @else {
-            <span>Sign In</span>
+            <span>{{ 'auth.signIn' | translate }}</span>
           }
         </button>
       </form>
@@ -55,8 +55,8 @@
       <div class="login-footer">
         <div class="signup-link">
           <p class="signup-text">
-            New business?
-            <a routerLink="/signup">Create an account</a>
+            {{ 'auth.newBusiness' | translate }}
+            <a routerLink="/signup">{{ 'auth.createAccount' | translate }}</a>
           </p>
         </div>
 
@@ -65,12 +65,12 @@
           (click)="toggleCredentials()"
           class="btn btn-ghost"
         >
-          {{ showCredentials() ? 'Hide' : 'Show' }} Test Credentials
+          {{ (showCredentials() ? 'auth.hideTestCredentials' : 'auth.showTestCredentials') | translate }}
         </button>
 
         @if (showCredentials()) {
           <div class="credentials-section">
-            <p class="credentials-header">Test Accounts</p>
+            <p class="credentials-header">{{ 'auth.testAccounts' | translate }}</p>
             <div class="credentials-list">
               @for (cred of mockCredentials; track cred.email) {
                 <div class="credential-item">
@@ -83,12 +83,12 @@
                     (click)="fillCredentials(cred.email, cred.password)"
                     class="btn btn-secondary credential-use-btn"
                   >
-                    Use
+                    {{ 'auth.use' | translate }}
                   </button>
                 </div>
               }
             </div>
-            <p class="credentials-password">Password for all: password123</p>
+            <p class="credentials-password">{{ 'auth.passwordForAll' | translate }}</p>
           </div>
         }
       </div>

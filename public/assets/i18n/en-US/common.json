@@ -1,0 +1,248 @@
+{
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "search": "Search",
+  "loading": "Loading...",
+  "submit": "Submit",
+  "close": "Close",
+  "confirm": "Confirm",
+  "back": "Back",
+  "next": "Next",
+  "finish": "Finish",
+  "yes": "Yes",
+  "no": "No",
+  "ok": "OK",
+  "error": "Error",
+  "success": "Success",
+  "warning": "Warning",
+  "info": "Information",
+  "actions": "Actions",
+  "status": "Status",
+  "date": "Date",
+  "time": "Time",
+  "name": "Name",
+  "description": "Description",
+  "total": "Total",
+  "subtotal": "Subtotal",
+  "quantity": "Quantity",
+  "price": "Price",
+  "amount": "Amount",
+  "itemCount": "{{count}} items",
+  "greeting": "Hello, {{name}}!",
+  "priceDisplay": "Price: {{price}}",
+  "dateDisplay": "Date: {{date}}",
+  "multiParam": "{{user}} purchased {{count}} items for {{total}}",
+  "itemsPlural": "{count, plural, =0{No items} =1{One item} other{{{count}} items}}",
+  "messagesPlural": "{count, plural, =0{No messages} =1{One message} other{{{count}} messages}}",
+  "daysPlural": "{count, plural, =0{Today} =1{Tomorrow} other{In {{count}} days}}",
+  "filesPlural": "{count, plural, =0{No files selected} =1{One file selected} other{{{count}} files selected}}",
+  "usersPlural": "{count, plural, =0{No users} =1{One user} other{{{count}} users}}",
+  "relativeTime": {
+    "justNow": "just now",
+    "secondsAgo": "{{count}} seconds ago",
+    "minuteAgo": "a minute ago",
+    "minutesAgo": "{{count}} minutes ago",
+    "hourAgo": "an hour ago",
+    "hoursAgo": "{{count}} hours ago",
+    "dayAgo": "a day ago",
+    "daysAgo": "{{count}} days ago",
+    "weekAgo": "a week ago",
+    "weeksAgo": "{{count}} weeks ago",
+    "monthAgo": "a month ago",
+    "monthsAgo": "{{count}} months ago",
+    "yearAgo": "a year ago",
+    "yearsAgo": "{{count}} years ago",
+    "inSeconds": "in {{count}} seconds",
+    "inMinute": "in a minute",
+    "inMinutes": "in {{count}} minutes",
+    "inHour": "in an hour",
+    "inHours": "in {{count}} hours",
+    "inDay": "in a day",
+    "inDays": "in {{count}} days",
+    "inWeek": "in a week",
+    "inWeeks": "in {{count}} weeks",
+    "inMonth": "in a month",
+    "inMonths": "in {{count}} months",
+    "inYear": "in a year",
+    "inYears": "in {{count}} years"
+  },
+  "appTitle": "Rocky POS",
+  "dashboard": "Dashboard",
+  "posTerminal": "POS Terminal",
+  "inventory": "Inventory",
+  "fuelManagement": "Fuel Management",
+  "customers": "Customers",
+  "shifts": "Shifts",
+  "reports": "Reports",
+  "activeShift": "Active Shift",
+  "noShift": "No Shift",
+  "logout": "Logout",
+  "logoutConfirm": "Are you sure you want to logout?",
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "tabs": {
+      "profile": "Profile",
+      "security": "Security",
+      "preferences": "Preferences",
+      "notifications": "Notifications",
+      "advanced": "Advanced"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Manage your personal information",
+      "accountInfo": "Account Information",
+      "personalInfo": "Personal Information",
+      "role": "Role",
+      "createdAt": "Account Created",
+      "lastLogin": "Last Login",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "edit": "Edit Profile"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Manage your password and security settings",
+      "passwordChange": "Change Password",
+      "passwordChangeDescription": "Update your password to keep your account secure",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "changePassword": "Change Password",
+      "lastPasswordChange": "Last changed",
+      "passwordMismatch": "Passwords do not match",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "sessionManagement": "Session Management",
+      "sessionManagementDescription": "Manage your active sessions across devices",
+      "activeSessions": "Active Sessions",
+      "logoutAllSessions": "Logout All Other Sessions",
+      "logoutAllSessionsHelp": "This will end all active sessions except your current one"
+    }
+  },
+  "preferences": {
+    "language": {
+      "title": "Language & Region",
+      "description": "Choose your preferred language and regional format",
+      "label": "Language",
+      "preview": "Format Preview",
+      "currency": "Currency",
+      "date": "Date"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize how the application looks"
+    },
+    "theme": {
+      "label": "Theme",
+      "help": "Choose your preferred color scheme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System Default"
+    },
+    "density": {
+      "label": "Display Density",
+      "help": "Adjust the spacing and size of UI elements",
+      "compact": "Compact",
+      "comfortable": "Comfortable",
+      "spacious": "Spacious"
+    },
+    "session": {
+      "title": "Session Settings",
+      "description": "Configure how the application handles your login sessions",
+      "rememberMe": "Remember Me",
+      "rememberMeHelp": "Stay logged in on this device",
+      "timeout": "Session Timeout",
+      "timeoutHelp": "Automatically log out after this period of inactivity (admin only)",
+      "minutes": "minutes",
+      "hour": "hour",
+      "hours": "hours"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Manage your notification preferences",
+    "email": {
+      "title": "Email Notifications",
+      "description": "Receive notifications via email"
+    },
+    "inApp": {
+      "title": "In-App Notifications",
+      "description": "Receive notifications within the application"
+    },
+    "categories": {
+      "sales": {
+        "label": "Sales",
+        "description": "Notifications about transactions, refunds, and sales reports"
+      },
+      "inventory": {
+        "label": "Inventory",
+        "description": "Notifications about stock levels, low inventory, and product updates"
+      },
+      "system": {
+        "label": "System",
+        "description": "Notifications about system updates, maintenance, and important announcements"
+      },
+      "security": {
+        "label": "Security",
+        "description": "Notifications about login attempts, password changes, and security alerts"
+      }
+    }
+  },
+  "saving": "Saving...",
+  "continue": "Continue",
+  "advanced": {
+    "location": {
+      "title": "Location Assignment",
+      "description": "View your assigned store location",
+      "name": "Location Name",
+      "address": "Address",
+      "noAssignment": "You are not currently assigned to a location",
+      "adminNote": "As an administrator, you can change location assignments in the Locations management section"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "description": "View your recent account activity",
+      "lastLogin": "Last Login",
+      "lastLoginIp": "Last Login IP",
+      "loading": "Loading activity...",
+      "noActivity": "No recent activity",
+      "action": "Action",
+      "timestamp": "Time",
+      "details": "Details"
+    },
+    "export": {
+      "title": "Data Export",
+      "description": "Download a copy of your personal data",
+      "button": "Export My Data",
+      "generating": "Generating export...",
+      "ready": "Your data export is ready",
+      "download": "Download"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Irreversible and destructive actions",
+      "deleteButton": "Delete Account"
+    },
+    "deleteModal": {
+      "title": "Confirm Account Deletion",
+      "description": "Please enter your password to confirm account deletion. This action cannot be undone immediately.",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password"
+    },
+    "finalWarning": {
+      "title": "Final Warning",
+      "heading": "Are you absolutely sure?",
+      "message": "This action will mark your account for deletion. Your account will be permanently deleted in 30 days unless you recover it.",
+      "consequence1": "All your personal data will be permanently deleted",
+      "consequence2": "You will lose access to all your settings and preferences",
+      "consequence3": "This action cannot be undone after 30 days",
+      "consequence4": "You will receive an email with recovery instructions",
+      "confirmButton": "Yes, Delete My Account",
+      "deleting": "Deleting account..."
+    }
+  }
+}

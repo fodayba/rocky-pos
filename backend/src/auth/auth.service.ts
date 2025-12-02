@@ -16,7 +16,10 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    const user = await this.userModel.findOne({ email: loginDto.email }).exec();
+    const user = await this.userModel
+      .findOne({ email: loginDto.email })
+      .populate('primaryLocation')
+      .exec();
 
     if (!user || !user.active) {
       throw new UnauthorizedException('Invalid credentials');
@@ -41,6 +44,10 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         active: user.active,
+        onboardingCompleted: user.onboardingCompleted,
+        onboardingCompletedAt: user.onboardingCompletedAt,
+        onboardingProgress: user.onboardingProgress,
+        primaryLocation: user.primaryLocation,
       },
     };
   }
@@ -66,9 +73,18 @@ export class AuthService {
       firstName: signupDto.firstName,
       lastName: signupDto.lastName,
       active: true,
+      onboardingCompleted: false,
+      onboardingProgress: {
+        welcomeViewed: false,
+        locationSetup: false,
+        completionViewed: false,
+      },
     });
 
     const savedUser = await user.save();
+
+    // Populate primaryLocation for response
+    await savedUser.populate('primaryLocation');
 
     // Generate JWT token for immediate login
     const payload = { sub: savedUser._id, email: savedUser.email, role: savedUser.role };
@@ -84,6 +100,10 @@ export class AuthService {
         firstName: savedUser.firstName,
         lastName: savedUser.lastName,
         active: savedUser.active,
+        onboardingCompleted: savedUser.onboardingCompleted,
+        onboardingCompletedAt: savedUser.onboardingCompletedAt,
+        onboardingProgress: savedUser.onboardingProgress,
+        primaryLocation: savedUser.primaryLocation,
       },
     };
   }
@@ -125,7 +145,10 @@ export class AuthService {
   }
 
   async getProfile(userId: string) {
-    const user = await this.userModel.findById(userId).exec();
+    const user = await this.userModel
+      .findById(userId)
+      .populate('primaryLocation')
+      .exec();
 
     if (!user) {
       throw new UnauthorizedException();
@@ -139,6 +162,7 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
       active: user.active,
+      primaryLocation: user.primaryLocation,
     };
   }
 
@@ -153,5 +177,32 @@ export class AuthService {
       lastName: user.lastName,
       active: user.active,
     }));
+  }
+
+  async getUserPreferences(userId: string) {
+    const user = await this.userModel.findById(userId).exec();
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return {
+      locale: user.locale || 'en-US',
+    };
+  }
+
+  async updateUserPreferences(userId: string, locale: string) {
+    const user = await this.userModel.findById(userId).exec();
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    user.locale = locale;
+    await user.save();
+
+    return {
+      locale: user.locale,
+    };
   }
 }

@@ -1,4 +1,12 @@
+import { Location } from './location.model';
+
 export type UserRole = 'admin' | 'manager' | 'cashier';
+
+export interface OnboardingProgress {
+  welcomeViewed: boolean;
+  locationSetup: boolean;
+  completionViewed: boolean;
+}
 
 export interface User {
   id: string;
@@ -8,6 +16,9 @@ export interface User {
   firstName: string;
   lastName: string;
   active: boolean;
+  onboardingCompleted: boolean;
+  onboardingProgress: OnboardingProgress;
+  primaryLocation?: Location;
 }
 
 export interface LoginCredentials {

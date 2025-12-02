@@ -11,22 +11,22 @@ export enum UserRole {
 
 @Schema({ timestamps: true })
 export class User extends Document {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, type: String })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   password: string;
 
-  @Prop({ required: true, enum: UserRole, default: UserRole.CASHIER })
+  @Prop({ required: true, enum: UserRole, default: UserRole.CASHIER, type: String })
   role: UserRole;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   fullName: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   firstName: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   lastName: string;
 
   // Location assignment - users can be assigned to multiple locations
@@ -37,45 +37,45 @@ export class User extends Document {
   primaryLocation: Types.ObjectId; // Main location for the user
 
   // Contact information
-  @Prop()
+  @Prop({ type: String })
   phone: string;
 
-  @Prop()
+  @Prop({ type: String })
   address: string;
 
-  @Prop()
+  @Prop({ type: String })
   city: string;
 
-  @Prop()
+  @Prop({ type: String })
   state: string;
 
-  @Prop()
+  @Prop({ type: String })
   zipCode: string;
 
   // Employee details
-  @Prop()
+  @Prop({ type: String })
   employeeId: string;
 
-  @Prop()
+  @Prop({ type: Date })
   hireDate: Date;
 
-  @Prop()
+  @Prop({ type: Date })
   terminationDate: Date;
 
   @Prop({ type: Number })
   hourlyRate: number;
 
-  @Prop()
+  @Prop({ type: String })
   jobTitle: string;
 
   // Emergency contact
-  @Prop()
+  @Prop({ type: String })
   emergencyContactName: string;
 
-  @Prop()
+  @Prop({ type: String })
   emergencyContactPhone: string;
 
-  @Prop()
+  @Prop({ type: String })
   emergencyContactRelationship: string;
 
   // Permissions - granular permissions beyond role
@@ -93,32 +93,107 @@ export class User extends Document {
   maxCashRefund: number;
 
   // Status
-  @Prop({ default: true })
+  @Prop({ default: true, type: Boolean })
   active: boolean;
 
-  @Prop({ default: false })
+  @Prop({ default: false, type: Boolean })
   isSuspended: boolean;
 
-  @Prop()
+  @Prop({ type: String })
   suspensionReason: string;
 
   // PIN for POS login (in addition to email/password)
-  @Prop()
+  @Prop({ type: String })
   pin: string; // Hashed 4-6 digit PIN
 
   // Last login tracking
-  @Prop()
+  @Prop({ type: Date })
   lastLogin: Date;
 
-  @Prop()
+  @Prop({ type: Types.ObjectId, ref: 'Location' })
   lastLoginLocation: Types.ObjectId;
 
   // Certifications (for age-restricted sales, etc.)
   @Prop({ type: [String], default: [] })
   certifications: string[]; // e.g., ['alcohol_sales', 'tobacco_sales', 'lottery']
 
-  @Prop()
+  @Prop({ type: Date })
   certificationsExpiry: Date;
+
+  // Onboarding tracking
+  @Prop({ default: false, type: Boolean })
+  onboardingCompleted: boolean;
+
+  @Prop({ type: Date })
+  onboardingCompletedAt: Date;
+
+  @Prop({
+    type: Object,
+    default: {
+      welcomeViewed: false,
+      locationSetup: false,
+      completionViewed: false,
+    },
+  })
+  onboardingProgress: {
+    welcomeViewed: boolean;
+    locationSetup: boolean;
+    completionViewed: boolean;
+  };
+
+  // User preferences
+  @Prop({ default: 'en-US', type: String })
+  locale: string;
+
+  @Prop({
+    type: Object,
+    default: {
+      theme: 'system',
+      displayDensity: 'comfortable',
+      rememberMe: false,
+      sessionTimeout: 3600,
+    },
+  })
+  preferences: {
+    theme: string;
+    displayDensity: string;
+    rememberMe: boolean;
+    sessionTimeout: number;
+  };
+
+  @Prop({
+    type: Object,
+    default: {
+      email: { sales: true, inventory: true, system: true, security: true },
+      inApp: { sales: true, inventory: true, system: true, security: true },
+    },
+  })
+  notificationPreferences: {
+    email: {
+      sales: boolean;
+      inventory: boolean;
+      system: boolean;
+      security: boolean;
+    };
+    inApp: {
+      sales: boolean;
+      inventory: boolean;
+      system: boolean;
+      security: boolean;
+    };
+  };
+
+  @Prop({ type: Date })
+  lastPasswordChange: Date;
+
+  @Prop({ type: String })
+  lastLoginIp: string;
+
+  @Prop({ default: false, type: Boolean })
+  markedForDeletion: boolean;
+
+  @Prop({ type: Date })
+  deletionScheduledFor: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

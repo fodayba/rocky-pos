@@ -3,10 +3,20 @@
 
     <!-- Header - More Compact -->
     <div class="dashboard-header">
-      <h1 class="dashboard-title">Dashboard</h1>
-      @if (currentUser(); as user) {
-        <p class="dashboard-subtitle">Welcome back, {{ user.firstName }}</p>
-      }
+      <div class="header-content">
+        <div>
+          <h1 class="dashboard-title">{{ 'dashboard.title' | translate }}</h1>
+          @if (currentUser(); as user) {
+            <p class="dashboard-subtitle">{{ 'dashboard.welcomeBack' | translate: {name: user.firstName} }}</p>
+          }
+        </div>
+        @if (currentUser()?.primaryLocation; as location) {
+          <div class="location-badge">
+            <app-icon name="location" [size]="16" customClass="text-stone-600"></app-icon>
+            <span class="location-name">{{ location.name }}</span>
+          </div>
+        }
+      </div>
     </div>
 
     <!-- Stats Grid - Compact -->
@@ -14,8 +24,8 @@
       <div class="stat-card">
         <div class="stat-card-content">
           <div>
-            <p class="stat-label">Today's Revenue</p>
-            <p class="stat-value">${{ todayRevenue().toFixed(2) }}</p>
+            <p class="stat-label">{{ 'dashboard.todayRevenue' | translate }}</p>
+            <p class="stat-value">{{ todayRevenue() | localeCurrency }}</p>
           </div>
           <div class="icon-container bg-stone-50">
             <app-icon name="dollar" [size]="20" customClass="text-stone-700"></app-icon>
@@ -26,7 +36,7 @@
       <div class="stat-card">
         <div class="stat-card-content">
           <div>
-            <p class="stat-label">Transactions</p>
+            <p class="stat-label">{{ 'dashboard.transactions' | translate }}</p>
             <p class="stat-value">{{ todayTransactions().length }}</p>
           </div>
           <div class="icon-container bg-stone-50">
@@ -38,7 +48,7 @@
       <div class="stat-card">
         <div class="stat-card-content">
           <div>
-            <p class="stat-label">Low Stock</p>
+            <p class="stat-label">{{ 'dashboard.lowStock' | translate }}</p>
             <p class="stat-value">{{ lowStockProducts().length }}</p>
           </div>
           <div class="icon-container bg-orange-50">
@@ -50,7 +60,7 @@
       <div class="stat-card">
         <div class="stat-card-content">
           <div>
-            <p class="stat-label">Fuel Alerts</p>
+            <p class="stat-label">{{ 'dashboard.fuelAlerts' | translate }}</p>
             <p class="stat-value">{{ lowFuelProducts().length }}</p>
           </div>
           <div class="icon-container bg-stone-50">
@@ -73,21 +83,21 @@
                 <div class="shift-icon">
                   <app-icon name="check" [size]="18" customClass="text-green-700"></app-icon>
                 </div>
-                <h3>Active Shift #{{ summary.shift.shiftNumber }}</h3>
+                <h3>{{ 'dashboard.activeShift' | translate: {number: summary.shift.shiftNumber} }}</h3>
               </div>
             </div>
             <div class="shift-stats">
               <div class="shift-stat">
-                <span class="shift-stat-label">Sales</span>
-                <span class="shift-stat-value">${{ summary.totalSales.toFixed(2) }}</span>
+                <span class="shift-stat-label">{{ 'dashboard.sales' | translate }}</span>
+                <span class="shift-stat-value">{{ summary.totalSales | localeCurrency }}</span>
               </div>
               <div class="shift-stat">
-                <span class="shift-stat-label">Transactions</span>
+                <span class="shift-stat-label">{{ 'dashboard.transactions' | translate }}</span>
                 <span class="shift-stat-value">{{ summary.totalTransactions }}</span>
               </div>
               <div class="shift-stat">
-                <span class="shift-stat-label">Cash</span>
-                <span class="shift-stat-value">${{ summary.cashSales.toFixed(2) }}</span>
+                <span class="shift-stat-label">{{ 'dashboard.cash' | translate }}</span>
+                <span class="shift-stat-value">{{ summary.cashSales | localeCurrency }}</span>
               </div>
             </div>
           </div>
@@ -98,33 +108,33 @@
                 <app-icon name="clock" [size]="20" customClass="text-orange-700"></app-icon>
               </div>
               <div class="no-shift-text">
-                <h3>No Active Shift</h3>
-                <p>Start a shift to begin</p>
+                <h3>{{ 'dashboard.noActiveShift' | translate }}</h3>
+                <p>{{ 'dashboard.startShift' | translate }}</p>
               </div>
-              <a routerLink="/shifts" class="btn btn-primary btn-sm">Start</a>
+              <a routerLink="/shifts" class="btn btn-primary btn-sm">{{ 'dashboard.start' | translate }}</a>
             </div>
           </div>
         }
 
         <!-- Quick Actions - Compact Grid -->
         <div class="quick-actions-card">
-          <h3 class="section-title">Quick Actions</h3>
+          <h3 class="section-title">{{ 'dashboard.quickActions' | translate }}</h3>
           <div class="quick-actions-grid">
             <a routerLink="/pos" class="action-btn">
               <app-icon name="pos" [size]="18" customClass="text-stone-700"></app-icon>
-              <span>New Sale</span>
+              <span>{{ 'dashboard.newSale' | translate }}</span>
             </a>
             <a routerLink="/inventory" class="action-btn">
               <app-icon name="inventory" [size]="18" customClass="text-stone-700"></app-icon>
-              <span>Inventory</span>
+              <span>{{ 'dashboard.inventory' | translate }}</span>
             </a>
             <a routerLink="/fuel" class="action-btn">
               <app-icon name="fuel" [size]="18" customClass="text-stone-700"></app-icon>
-              <span>Fuel</span>
+              <span>{{ 'dashboard.fuel' | translate }}</span>
             </a>
             <a routerLink="/reports" class="action-btn">
               <app-icon name="chart" [size]="18" customClass="text-stone-700"></app-icon>
-              <span>Reports</span>
+              <span>{{ 'dashboard.reports' | translate }}</span>
             </a>
           </div>
         </div>
@@ -136,7 +146,7 @@
         @if (lowStockProducts().length > 0) {
           <div class="alerts-card">
             <div class="alerts-header">
-              <h3 class="section-title">Low Stock</h3>
+              <h3 class="section-title">{{ 'dashboard.lowStock' | translate }}</h3>
               <span class="badge badge-error">{{ lowStockProducts().length }}</span>
             </div>
             <div class="alerts-list">
@@ -151,7 +161,7 @@
             </div>
             @if (lowStockProducts().length > 4) {
               <a routerLink="/inventory" class="view-all-link">
-                +{{ lowStockProducts().length - 4 }} more
+                {{ 'dashboard.more' | translate: {count: lowStockProducts().length - 4} }}
               </a>
             }
           </div>
@@ -161,7 +171,7 @@
         @if (lowFuelProducts().length > 0) {
           <div class="alerts-card">
             <div class="alerts-header">
-              <h3 class="section-title">Fuel Levels</h3>
+              <h3 class="section-title">{{ 'dashboard.fuelLevels' | translate }}</h3>
               <span class="badge badge-warning">{{ lowFuelProducts().length }}</span>
             </div>
             <div class="fuel-list">

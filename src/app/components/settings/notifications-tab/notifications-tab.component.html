@@ -1,0 +1,78 @@
+<div class="notifications-tab">
+  <div class="tab-header">
+    <h2>{{ 'notifications.title' | translate }}</h2>
+    <p class="tab-description">{{ 'notifications.description' | translate }}</p>
+  </div>
+
+  <div class="notifications-content">
+    <!-- Email Notifications Section -->
+    <div class="notification-section">
+      <h3>{{ 'notifications.email.title' | translate }}</h3>
+      <p class="section-description">{{ 'notifications.email.description' | translate }}</p>
+      
+      <div class="notification-list">
+        <div class="notification-item" *ngFor="let category of categories">
+          <div class="notification-info">
+            <label [for]="'email-' + category.key" class="notification-label">
+              {{ category.label | translate }}
+            </label>
+            <p class="notification-description" [id]="'email-' + category.key + '-desc'">{{ category.description | translate }}</p>
+          </div>
+          <div class="notification-toggle">
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                [id]="'email-' + category.key"
+                [checked]="getEmailNotification(category.key)"
+                (change)="toggleEmailNotification(category.key)"
+                [disabled]="isSaving()"
+                [attr.aria-describedby]="'email-' + category.key + '-desc'"
+                role="switch"
+                [attr.aria-checked]="getEmailNotification(category.key)"
+              />
+              <span class="toggle-slider" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- In-App Notifications Section -->
+    <div class="notification-section">
+      <h3>{{ 'notifications.inApp.title' | translate }}</h3>
+      <p class="section-description">{{ 'notifications.inApp.description' | translate }}</p>
+      
+      <div class="notification-list">
+        <div class="notification-item" *ngFor="let category of categories">
+          <div class="notification-info">
+            <label [for]="'inApp-' + category.key" class="notification-label">
+              {{ category.label | translate }}
+            </label>
+            <p class="notification-description" [id]="'inApp-' + category.key + '-desc'">{{ category.description | translate }}</p>
+          </div>
+          <div class="notification-toggle">
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                [id]="'inApp-' + category.key"
+                [checked]="getInAppNotification(category.key)"
+                (change)="toggleInAppNotification(category.key)"
+                [disabled]="isSaving()"
+                [attr.aria-describedby]="'inApp-' + category.key + '-desc'"
+                role="switch"
+                [attr.aria-checked]="getInAppNotification(category.key)"
+              />
+              <span class="toggle-slider" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saving Indicator -->
+    <div class="saving-indicator" *ngIf="isSaving()">
+      <span class="spinner"></span>
+      <span>{{ 'common.saving' | translate }}</span>
+    </div>
+  </div>
+</div>

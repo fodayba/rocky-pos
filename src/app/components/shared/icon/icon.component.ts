@@ -33,7 +33,10 @@ export type IconName =
   | 'barcode'
   | 'log-out'
   | 'info'
-  | 'inbox';
+  | 'inbox'
+  | 'location'
+  | 'globe'
+  | 'settings';
 
 @Component({
   selector: 'app-icon',
@@ -252,6 +255,25 @@ export type IconName =
         <g *ngSwitchCase="'inbox'">
           <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
           <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+        </g>
+
+        <!-- Location / Map Pin -->
+        <g *ngSwitchCase="'location'">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </g>
+
+        <!-- Globe -->
+        <g *ngSwitchCase="'globe'">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </g>
+
+        <!-- Settings / Gear -->
+        <g *ngSwitchCase="'settings'">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
         </g>
       </ng-container>
     </svg>

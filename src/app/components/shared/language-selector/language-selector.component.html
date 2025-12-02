@@ -1,0 +1,41 @@
+<div class="language-selector">
+  <button 
+    class="language-button" 
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="isOpen()"
+    aria-label="Select language"
+    type="button"
+  >
+    <app-icon name="globe" [size]="18"></app-icon>
+    <span class="language-label">{{ currentLocale.displayName }}</span>
+    <app-icon name="chevron-down" [size]="16" [class.rotate-180]="isOpen()"></app-icon>
+  </button>
+
+  @if (isOpen()) {
+    <div class="language-dropdown">
+      <ul class="language-list" role="menu">
+        @for (locale of availableLocales; track locale.code) {
+          <li role="none">
+            <button
+              class="language-option"
+              [class.language-option-active]="isCurrentLocale(locale)"
+              (click)="selectLocale(locale)"
+              role="menuitem"
+              type="button"
+            >
+              <span class="language-option-name">{{ locale.displayName }}</span>
+              @if (isCurrentLocale(locale)) {
+                <app-icon name="check" [size]="16" class="language-check"></app-icon>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>
+
+<!-- Backdrop to close dropdown when clicking outside -->
+@if (isOpen()) {
+  <div class="language-backdrop" (click)="closeDropdown()"></div>
+}

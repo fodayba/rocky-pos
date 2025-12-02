@@ -1,0 +1,169 @@
+<div class="security-tab">
+  <!-- Password Change Section -->
+  <section class="security-section">
+    <div class="section-header">
+      <h3>{{ 'settings.security.passwordChange' | translate }}</h3>
+      <p class="section-description">{{ 'settings.security.passwordChangeDescription' | translate }}</p>
+    </div>
+
+    <div class="last-password-change" *ngIf="securitySettings.lastPasswordChange">
+      <app-icon name="clock" size="small"></app-icon>
+      <span>{{ 'settings.security.lastPasswordChange' | translate }}: {{ securitySettings.lastPasswordChange | date:'medium' }}</span>
+    </div>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+      <!-- Current Password -->
+      <div class="form-group">
+        <label for="currentPassword">{{ 'settings.security.currentPassword' | translate }} *</label>
+        <div class="password-input-wrapper">
+          <input
+            id="currentPassword"
+            [type]="showCurrentPassword() ? 'text' : 'password'"
+            formControlName="currentPassword"
+            class="form-control"
+            [class.error]="hasError('currentPassword', 'required')"
+            [attr.aria-label]="'settings.security.currentPassword' | translate"
+            [attr.aria-invalid]="hasError('currentPassword', 'required')"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility('current')"
+            [attr.aria-label]="showCurrentPassword() ? ('settings.security.hidePassword' | translate) : ('settings.security.showPassword' | translate)"
+          >
+            <app-icon [name]="showCurrentPassword() ? 'eye-off' : 'eye'" size="small"></app-icon>
+          </button>
+        </div>
+        <span class="error-message" *ngIf="hasError('currentPassword', 'required')">
+          {{ 'validation.required' | translate }}
+        </span>
+      </div>
+
+      <!-- New Password -->
+      <div class="form-group">
+        <label for="newPassword">{{ 'settings.security.newPassword' | translate }} *</label>
+        <div class="password-input-wrapper">
+          <input
+            id="newPassword"
+            [type]="showNewPassword() ? 'text' : 'password'"
+            formControlName="newPassword"
+            class="form-control"
+            [class.error]="hasError('newPassword', 'required') || hasError('newPassword', 'weakPassword')"
+            [attr.aria-label]="'settings.security.newPassword' | translate"
+            [attr.aria-invalid]="hasError('newPassword', 'required') || hasError('newPassword', 'weakPassword')"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility('new')"
+            [attr.aria-label]="showNewPassword() ? ('settings.security.hidePassword' | translate) : ('settings.security.showPassword' | translate)"
+          >
+            <app-icon [name]="showNewPassword() ? 'eye-off' : 'eye'" size="small"></app-icon>
+          </button>
+        </div>
+        
+        <!-- Password Strength Indicator -->
+        <div class="password-strength" *ngIf="newPasswordControl?.value">
+          <div class="strength-bar">
+            <div 
+              class="strength-fill" 
+              [class]="getPasswordStrengthClass()"
+              [style.width.%]="(passwordStrength().score / 4) * 100"
+            ></div>
+          </div>
+          <span class="strength-label" [class]="getPasswordStrengthClass()">
+            {{ getPasswordStrengthLabel() }}
+          </span>
+        </div>
+
+        <!-- Password Requirements -->
+        <div class="password-requirements" *ngIf="newPasswordControl?.value && !passwordStrength().isValid">
+          <ul>
+            <li *ngFor="let feedback of passwordStrength().feedback">{{ feedback }}</li>
+          </ul>
+        </div>
+
+        <span class="error-message" *ngIf="hasError('newPassword', 'required')">
+          {{ 'validation.required' | translate }}
+        </span>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">{{ 'settings.security.confirmPassword' | translate }} *</label>
+        <div class="password-input-wrapper">
+          <input
+            id="confirmPassword"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            class="form-control"
+            [class.error]="hasError('confirmPassword', 'required') || hasFormError('passwordMismatch')"
+            [attr.aria-label]="'settings.security.confirmPassword' | translate"
+            [attr.aria-invalid]="hasError('confirmPassword', 'required') || hasFormError('passwordMismatch')"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility('confirm')"
+            [attr.aria-label]="showConfirmPassword() ? ('settings.security.hidePassword' | translate) : ('settings.security.showPassword' | translate)"
+          >
+            <app-icon [name]="showConfirmPassword() ? 'eye-off' : 'eye'" size="small"></app-icon>
+          </button>
+        </div>
+        <span class="error-message" *ngIf="hasError('confirmPassword', 'required')">
+          {{ 'validation.required' | translate }}
+        </span>
+        <span class="error-message" *ngIf="hasFormError('passwordMismatch')">
+          {{ 'settings.security.passwordMismatch' | translate }}
+        </span>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="passwordForm.invalid || isChangingPassword()"
+          [attr.aria-busy]="isChangingPassword()"
+          aria-label="Change password"
+        >
+          <span *ngIf="!isChangingPassword()">{{ 'settings.security.changePassword' | translate }}</span>
+          <span *ngIf="isChangingPassword()" role="status">{{ 'common.saving' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Session Management Section -->
+  <section class="security-section">
+    <div class="section-header">
+      <h3>{{ 'settings.security.sessionManagement' | translate }}</h3>
+      <p class="section-description">{{ 'settings.security.sessionManagementDescription' | translate }}</p>
+    </div>
+
+    <div class="session-info">
+      <div class="info-item">
+        <app-icon name="monitor" size="small"></app-icon>
+        <div class="info-content">
+          <span class="info-label">{{ 'settings.security.activeSessions' | translate }}</span>
+          <span class="info-value">{{ securitySettings.activeSessions }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session-actions">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="logoutAllSessions()"
+        [disabled]="securitySettings.activeSessions <= 1"
+        aria-label="Log out of all other sessions"
+        [attr.aria-describedby]="'logout-help'"
+      >
+        <app-icon name="log-out" size="small" aria-hidden="true"></app-icon>
+        {{ 'settings.security.logoutAllSessions' | translate }}
+      </button>
+      <p class="help-text" id="logout-help">{{ 'settings.security.logoutAllSessionsHelp' | translate }}</p>
+    </div>
+  </section>
+</div>

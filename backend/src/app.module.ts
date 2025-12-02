@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -23,6 +24,10 @@ import { SchedulingModule } from './scheduling/scheduling.module';
 import { TimeTrackingModule } from './time-tracking/time-tracking.module';
 import { TaxModule } from './tax/tax.module';
 import { ReportsModule } from './reports/reports.module';
+import { OnboardingModule } from './onboarding/onboarding.module';
+import { SettingsModule } from './settings/settings.module';
+import { ActivityLoggingInterceptor } from './common/interceptors/activity-logging.interceptor';
+import { ActivityLog, ActivityLogSchema } from './schemas/activity-log.schema';
 
 @Module({
   imports: [
@@ -36,6 +41,9 @@ import { ReportsModule } from './reports/reports.module';
       }),
       inject: [ConfigService],
     }),
+    MongooseModule.forFeature([
+      { name: ActivityLog.name, schema: ActivityLogSchema },
+    ]),
     AuthModule,
     ProductsModule,
     FuelModule,
@@ -56,8 +64,16 @@ import { ReportsModule } from './reports/reports.module';
     TimeTrackingModule,
     TaxModule,
     ReportsModule,
+    OnboardingModule,
+    SettingsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ActivityLoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
